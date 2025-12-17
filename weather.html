@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast - Smart Irrigation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .navbar-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .navbar-brand .logo {
+            font-size: 4em !important;
+        }
+
+        .navbar-brand span:not(.logo) {
+            font-size: 2.5em !important;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 20px;
+            background: #f5f5f5;
+            border-radius: 25px;
+            font-weight: 600;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            margin-top: 5px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        /* Alert Banners */
+        .alert-banner {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-banner.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .alert-banner.danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .alert-banner.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .current-weather {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .location {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .location-details {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .weather-icon {
+            font-size: 6em;
+            margin: 20px 0;
+        }
+
+        .temperature {
+            font-size: 4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .weather-description {
+            font-size: 1.5em;
+            color: #666;
+            text-transform: capitalize;
+            margin-bottom: 30px;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .detail-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .detail-box:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .detail-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .detail-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Water Savings Calculator */
+        .water-savings {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .water-savings h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .savings-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .savings-text {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .forecast-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .forecast-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .forecast-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .forecast-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .forecast-day {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .forecast-date {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .forecast-icon {
+            font-size: 3em;
+            margin: 10px 0;
+        }
+
+        .forecast-temp {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .forecast-desc {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 5px;
+            text-transform: capitalize;
+        }
+
+        .forecast-rain {
+            margin-top: 8px;
+            padding: 5px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        /* Irrigation Schedule */
+        .irrigation-schedule {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .irrigation-schedule h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .schedule-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .schedule-card.skip {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .schedule-card.caution {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .schedule-card.irrigate {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .schedule-day {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .schedule-action {
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .schedule-reason {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .irrigation-advice {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .irrigation-advice h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .advice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .advice-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid white;
+        }
+
+        .advice-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .advice-card p {
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-buttons {
+                position: static;
+                margin-top: 15px;
+            }
+
+            .weather-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .forecast-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .advice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-center">
+            <div class="navbar-brand">
+                <span class="logo">🌾</span>
+                <span>Smart Irrigation System</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">Loading...</span>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="goToDashboard()">🏠 Dashboard</button>
+            <button class="nav-btn logout-btn" onclick="handleLogout()">🚪 Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>🌤️ Weather Forecast & Irrigation Planning</h1>
+            <p>Real-time weather data for smart water management</p>
+            <button class="refresh-btn" onclick="refreshWeatherData()">🔄 Refresh Location & Weather</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Detecting location and loading weather data...</p>
+        </div>
+
+        <div id="weatherContent" style="display: none;">
+            <!-- Alert Banner -->
+            <div id="alertBanner"></div>
+
+            <!-- Water Savings Calculator -->
+            <div class="water-savings" id="waterSavings" style="display: none;">
+                <h2>💰 Predicted Water Savings from Rain</h2>
+                <div class="savings-value" id="savingsValue">0 L</div>
+                <div class="savings-text" id="savingsText">Expected rainfall will naturally irrigate your crops</div>
+            </div>
+
+            <!-- Current Weather -->
+            <div class="current-weather">
+                <div class="location" id="location">Loading...</div>
+                <div class="location-details">
+                    <div id="coordinates">Lat: --, Lon: --</div>
+                    <div id="accuracy">Accuracy: --</div>
+                </div>
+                <div class="weather-icon" id="weatherIcon">☀️</div>
+                <div class="temperature" id="temperature">--°C</div>
+                <div class="weather-description" id="description">Loading...</div>
+
+                <div class="weather-details">
+                    <div class="detail-box">
+                        <div class="detail-icon">💧</div>
+                        <div class="detail-value" id="humidity">--%</div>
+                        <div class="detail-label">Humidity</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-icon">💨</div>
+                        <div class="detail-value" id="windSpeed">-- km/h</div>
+                        <div class="detail-label">Wind Speed</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-icon">🌡️</div>
+                        <div class="detail-value" id="feelsLike">--°C</div>
+                        <div class="detail-label">Feels Like</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-icon">🔽</div>
+                        <div class="detail-value" id="pressure">-- hPa</div>
+                        <div class="detail-label">Pressure</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-icon">🌅</div>
+                        <div class="detail-value" id="sunrise">--:--</div>
+                        <div class="detail-label">Sunrise</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-icon">🌇</div>
+                        <div class="detail-value" id="sunset">--:--</div>
+                        <div class="detail-label">Sunset</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5-Day Forecast -->
+            <div class="forecast-section">
+                <h2>📅 7-Day Weather Forecast</h2>
+                <div class="forecast-grid" id="forecastGrid">
+                    <!-- Forecast cards will be inserted here -->
+                </div>
+            </div>
+
+            <!-- 7-Day Irrigation Schedule -->
+            <div class="irrigation-schedule">
+                <h2>📋 7-Day Irrigation Schedule</h2>
+                <div class="schedule-grid" id="scheduleGrid">
+                    <!-- Schedule cards will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Irrigation Advice -->
+            <div class="irrigation-advice">
+                <h2>💡 Smart Irrigation Recommendations</h2>
+                <div class="advice-grid" id="adviceGrid">
+                    <!-- Advice cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WEATHER_API_KEY = '7941d1d68e6c2211e4eac4a66bab0097';
+        const DEFAULT_LAT = 4.1996; // Tapah, Perak
+        const DEFAULT_LON = 101.2570;
+        
+        let userLat = null;
+        let userLon = null;
+        let userAccuracy = null;
+        let locationName = 'Unknown Location';
+
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadWeatherData();
+        });
+
+        function checkAuth() {
+            const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+
+            if (!userName && !userEmail) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            displayUserInfo(userName, userEmail);
+        }
+
+        function displayUserInfo(name, email) {
+            const userName = name || email || 'User';
+            document.getElementById('userName').textContent = userName;
+            const initial = userName.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = initial;
+        }
+
+        async function getUserLocation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    console.log('❌ Geolocation not supported, using default location');
+                    userLat = DEFAULT_LAT;
+                    userLon = DEFAULT_LON;
+                    userAccuracy = 1000;
+                    locationName = 'Tapah, Perak, Malaysia (Default)';
+                    resolve();
+                    return;
+                }
+
+                const ACCURACY_THRESHOLD = 50; // High accuracy target
+                const LAPTOP_ACCURACY_THRESHOLD = 200; // Acceptable for laptops
+                let bestAccuracy = Infinity;
+                let attempts = 0;
+                const maxAttempts = 3;
+
+                console.log('📍 Starting high-accuracy location detection...');
+
+                const watchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        attempts++;
+                        const currentAccuracy = position.coords.accuracy;
+                        
+                        console.log(`📍 Location attempt ${attempts}: Accuracy ${currentAccuracy.toFixed(0)}m`);
+                        console.log(`   Lat: ${position.coords.latitude.toFixed(6)}, Lon: ${position.coords.longitude.toFixed(6)}`);
+
+                        // Accept if accuracy meets threshold OR if we've tried enough times
+                        const shouldAccept = currentAccuracy <= ACCURACY_THRESHOLD || 
+                                           (attempts >= maxAttempts && currentAccuracy <= LAPTOP_ACCURACY_THRESHOLD);
+
+                        if (shouldAccept && currentAccuracy < bestAccuracy) {
+                            userLat = position.coords.latitude;
+                            userLon = position.coords.longitude;
+                            userAccuracy = currentAccuracy;
+                            bestAccuracy = currentAccuracy;
+
+                            console.log(`✅ Location accepted: ${userLat.toFixed(6)}, ${userLon.toFixed(6)} (${userAccuracy.toFixed(0)}m)`);
+
+                            if (currentAccuracy <= ACCURACY_THRESHOLD) {
+                                console.log('🎯 High accuracy achieved!');
+                                navigator.geolocation.clearWatch(watchId);
+                                resolve();
+                            } else if (attempts >= maxAttempts) {
+                                console.log('✅ Acceptable accuracy after multiple attempts');
+                                navigator.geolocation.clearWatch(watchId);
+                                resolve();
+                            }
+                        } else {
+                            console.log(`⏳ Refining location... (current: ${currentAccuracy.toFixed(0)}m, target: ${ACCURACY_THRESHOLD}m)`);
+                        }
+                    },
+                    (error) => {
+                        console.error('❌ Geolocation Error:', error.code, error.message);
+                        navigator.geolocation.clearWatch(watchId);
+                        
+                        // Use default location
+                        userLat = DEFAULT_LAT;
+                        userLon = DEFAULT_LON;
+                        userAccuracy = 1000;
+                        locationName = 'Tapah, Perak, Malaysia (Default - Location Access Denied)';
+                        
+                        if (error.code === error.PERMISSION_DENIED) {
+                            console.log('❌ Location permission denied by user');
+                        } else if (error.code === error.TIMEOUT) {
+                            console.log('⏱️ Location timeout');
+                        } else if (error.code === error.POSITION_UNAVAILABLE) {
+                            console.log('❌ Location unavailable');
+                        }
+                        
+                        resolve();
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000, // 15 seconds per attempt
+                        maximumAge: 0 // Don't use cached location
+                    }
+                );
+
+                // Fallback timeout: Accept best location after 20 seconds
+                setTimeout(() => {
+                    if (!userLat || userAccuracy === null) {
+                        navigator.geolocation.clearWatch(watchId);
+                        
+                        if (bestAccuracy < Infinity && bestAccuracy <= LAPTOP_ACCURACY_THRESHOLD) {
+                            // Use the best location we got
+                            console.log(`⏰ Timeout reached, using best available location (${bestAccuracy.toFixed(0)}m)`);
+                            resolve();
+                        } else {
+                            // Use default location
+                            console.log('⏰ Timeout reached, using default location');
+                            userLat = DEFAULT_LAT;
+                            userLon = DEFAULT_LON;
+                            userAccuracy = 1000;
+                            locationName = 'Tapah, Perak, Malaysia (Default - Timeout)';
+                            resolve();
+                        }
+                    }
+                }, 20000);
+            });
+        }
+
+        async function loadWeatherData() {
+            try {
+                document.getElementById('loading').innerHTML = '<div class="spinner"></div><p>Detecting your location...</p>';
+                
+                await getUserLocation();
+                
+                document.getElementById('loading').innerHTML = '<div class="spinner"></div><p>Fetching weather data...</p>';
+                
+                // Fetch weather data
+                const weatherData = await fetchWeatherData();
+                const forecastData = await fetchForecastData();
+
+                // Display all data
+                displayLocationInfo();
+                displayCurrentWeather(weatherData);
+                displayForecast(forecastData);
+                generateIrrigationSchedule(forecastData);
+                generateIrrigationAdvice(weatherData, forecastData);
+                calculateWaterSavings(forecastData);
+                showWeatherAlerts(weatherData, forecastData);
+
+                // Hide loading, show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('weatherContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="error">
+                        <strong>❌ Error Loading Weather Data</strong>
+                        <p>${error.message}</p>
+                        <button class="refresh-btn" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        async function fetchWeatherData() {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${userLat}&lon=${userLon}&appid=${WEATHER_API_KEY}&units=metric`;
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Weather API failed');
+            const data = await response.json();
+            
+            // Get location name
+            if (data.name) {
+                locationName = `${data.name}, ${data.sys.country}`;
+            } else {
+                const geoApiUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${userLat}&lon=${userLon}&limit=1&appid=${WEATHER_API_KEY}`;
+                try {
+                    const geoResponse = await fetch(geoApiUrl);
+                    const geoData = await geoResponse.json();
+                    if (geoData && geoData.length > 0) {
+                        locationName = `${geoData[0].name}, ${geoData[0].state || geoData[0].country}`;
+                    }
+                } catch (e) {
+                    locationName = `Lat: ${userLat.toFixed(4)}, Lon: ${userLon.toFixed(4)}`;
+                }
+            }
+            
+            return data;
+        }
+
+        async function fetchForecastData() {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${userLat}&lon=${userLon}&appid=${WEATHER_API_KEY}&units=metric`;
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Forecast API failed');
+            return await response.json();
+        }
+
+        function displayLocationInfo() {
+            document.getElementById('location').textContent = locationName;
+            document.getElementById('coordinates').textContent = `📍 Lat: ${userLat.toFixed(6)}, Lon: ${userLon.toFixed(6)}`;
+            
+            // Show accuracy with visual indicator
+            let accuracyText = `Accuracy: ±${userAccuracy.toFixed(0)} meters`;
+            let accuracyColor = '#28a745'; // Green
+            
+            if (userAccuracy <= 50) {
+                accuracyText += ' 🎯 (Excellent)';
+                accuracyColor = '#28a745';
+            } else if (userAccuracy <= 200) {
+                accuracyText += ' ✅ (Good)';
+                accuracyColor = '#ffc107';
+            } else if (userAccuracy <= 1000) {
+                accuracyText += ' ⚠️ (Approximate)';
+                accuracyColor = '#ff9800';
+            } else {
+                accuracyText += ' 📍 (Default Location)';
+                accuracyColor = '#dc3545';
+            }
+            
+            const accuracyElement = document.getElementById('accuracy');
+            accuracyElement.textContent = accuracyText;
+            accuracyElement.style.color = accuracyColor;
+            accuracyElement.style.fontWeight = '600';
+        }
+
+        function displayCurrentWeather(data) {
+            document.getElementById('temperature').textContent = Math.round(data.main.temp) + '°C';
+            document.getElementById('description').textContent = data.weather[0].description;
+            document.getElementById('humidity').textContent = data.main.humidity + '%';
+            document.getElementById('windSpeed').textContent = (data.wind.speed * 3.6).toFixed(1) + ' km/h';
+            document.getElementById('feelsLike').textContent = Math.round(data.main.feels_like) + '°C';
+            document.getElementById('pressure').textContent = data.main.pressure + ' hPa';
+
+            // Sunrise/Sunset
+            const sunrise = new Date(data.sys.sunrise * 1000);
+            const sunset = new Date(data.sys.sunset * 1000);
+            document.getElementById('sunrise').textContent = sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sunset').textContent = sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            // Weather icon
+            const iconCode = data.weather[0].main.toLowerCase();
+            const icons = {
+                'clear': '☀️',
+                'clouds': '☁️',
+                'rain': '🌧️',
+                'drizzle': '🌦️',
+                'thunderstorm': '⛈️',
+                'snow': '❄️',
+                'mist': '🌫️',
+                'fog': '🌫️',
+                'haze': '🌫️'
+            };
+            document.getElementById('weatherIcon').textContent = icons[iconCode] || '🌤️';
+        }
+
+        function displayForecast(data) {
+            const forecastGrid = document.getElementById('forecastGrid');
+            forecastGrid.innerHTML = '';
+
+            // Get one forecast per day (at noon)
+            const dailyForecasts = data.list.filter(item => item.dt_txt.includes('12:00:00')).slice(0, 7);
+
+            dailyForecasts.forEach((forecast, index) => {
+                const date = new Date(forecast.dt * 1000);
+                const dayName = index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
+                const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                const iconCode = forecast.weather[0].main.toLowerCase();
+                const icons = {
+                    'clear': '☀️',
+                    'clouds': '☁️',
+                    'rain': '🌧️',
+                    'drizzle': '🌦️',
+                    'thunderstorm': '⛈️',
+                    'snow': '❄️',
+                    'mist': '🌫️'
+                };
+
+                // Calculate rain amount
+                const rainAmount = forecast.rain ? (forecast.rain['3h'] || 0) : 0;
+                const rainHTML = rainAmount > 0 ? `<div class="forecast-rain">🌧️ ${rainAmount.toFixed(1)} mm</div>` : '';
+
+                const card = document.createElement('div');
+                card.className = 'forecast-card';
+                card.innerHTML = `
+                    <div class="forecast-day">${dayName}</div>
+                    <div class="forecast-date">${dateStr}</div>
+                    <div class="forecast-icon">${icons[iconCode] || '🌤️'}</div>
+                    <div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div>
+                    <div class="forecast-desc">${forecast.weather[0].description}</div>
+                    ${rainHTML}
+                `;
+                forecastGrid.appendChild(card);
+            });
+        }
+
+        function generateIrrigationSchedule(data) {
+            const scheduleGrid = document.getElementById('scheduleGrid');
+            scheduleGrid.innerHTML = '';
+
+            const dailyForecasts = data.list.filter(item => item.dt_txt.includes('12:00:00')).slice(0, 7);
+
+            dailyForecasts.forEach((forecast, index) => {
+                const date = new Date(forecast.dt * 1000);
+                const dayName = index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                const temp = forecast.main.temp;
+                const rainAmount = forecast.rain ? (forecast.rain['3h'] || 0) : 0;
+                const humidity = forecast.main.humidity;
+
+                let action, reason, cardClass;
+
+                if (rainAmount > 5) {
+                    action = '✅ Skip Irrigation';
+                    reason = `${rainAmount.toFixed(1)}mm rain expected - natural watering`;
+                    cardClass = 'skip';
+                } else if (rainAmount > 2) {
+                    action = '⚠️ Reduce by 50%';
+                    reason = `Light rain (${rainAmount.toFixed(1)}mm) will supplement`;
+                    cardClass = 'caution';
+                } else if (temp > 35) {
+                    action = '🔥 Increase Irrigation';
+                    reason = `High temp (${temp.toFixed(0)}°C) - more evaporation`;
+                    cardClass = 'irrigate';
+                } else if (humidity < 40) {
+                    action = '💧 Normal + 20%';
+                    reason = `Low humidity (${humidity}%) - faster drying`;
+                    cardClass = 'irrigate';
+                } else if (temp < 20) {
+                    action = '⚠️ Reduce by 30%';
+                    reason = `Cool weather (${temp.toFixed(0)}°C) - less evaporation`;
+                    cardClass = 'caution';
+                } else {
+                    action = '✅ Normal Irrigation';
+                    reason = 'Conditions are optimal';
+                    cardClass = 'schedule-card';
+                }
+
+                const card = document.createElement('div');
+                card.className = `schedule-card ${cardClass}`;
+                card.innerHTML = `
+                    <div class="schedule-day">${dayName}</div>
+                    <div style="font-size: 0.85em; color: #999; margin-bottom: 10px;">${dateStr}</div>
+                    <div class="schedule-action"><strong>${action}</strong></div>
+                    <div class="schedule-reason">${reason}</div>
+                `;
+                scheduleGrid.appendChild(card);
+            });
+        }
+
+        function generateIrrigationAdvice(current, forecast) {
+            const adviceGrid = document.getElementById('adviceGrid');
+            adviceGrid.innerHTML = '';
+
+            const advice = [];
+
+            // Current Temperature Advice
+            if (current.main.temp > 35) {
+                advice.push({
+                    title: '🌡️ High Temperature Alert',
+                    text: `Current temperature is ${current.main.temp.toFixed(1)}°C. Increase irrigation by 30% and water during early morning (6-8 AM) or evening (6-8 PM) to minimize evaporation losses.`
+                });
+            } else if (current.main.temp < 15) {
+                advice.push({
+                    title: '❄️ Cool Weather',
+                    text: `Temperature is ${current.main.temp.toFixed(1)}°C. Reduce watering by 20-30% as plants require less water in cooler conditions and evaporation is minimal.`
+                });
+            } else {
+                advice.push({
+                    title: '✅ Optimal Temperature',
+                    text: `Temperature is ${current.main.temp.toFixed(1)}°C - ideal for most crops. Maintain your regular irrigation schedule.`
+                });
+            }
+
+            // Humidity Advice
+            if (current.main.humidity > 80) {
+                advice.push({
+                    title: '💧 High Humidity',
+                    text: `Humidity at ${current.main.humidity}%. Soil retains moisture better in humid conditions. Reduce irrigation by 10-15% to prevent waterlogging and fungal diseases.`
+                });
+            } else if (current.main.humidity < 40) {
+                advice.push({
+                    title: '💨 Low Humidity Warning',
+                    text: `Humidity only ${current.main.humidity}%. Plants lose water faster through transpiration. Increase watering by 15-20% and consider mulching to retain soil moisture.`
+                });
+            }
+
+            // Rain Forecast
+            const rainInForecast = forecast.list.slice(0, 16).filter(item => {
+                return item.rain && item.rain['3h'] > 0;
+            });
+
+            if (rainInForecast.length > 0) {
+                const totalRain = rainInForecast.reduce((sum, item) => sum + (item.rain['3h'] || 0), 0);
+                advice.push({
+                    title: '🌧️ Rain Expected',
+                    text: `${totalRain.toFixed(1)}mm of rain forecasted in the next 48 hours. Delay irrigation and let nature water your crops naturally. This will save water and reduce costs.`
+                });
+            } else {
+                advice.push({
+                    title: '☀️ No Rain Forecasted',
+                    text: 'No significant rainfall expected in the next 7 days. Ensure consistent irrigation schedule to maintain optimal soil moisture for crop growth.'
+                });
+            }
+
+            // Wind Advisory
+            if (current.wind.speed > 5) {
+                advice.push({
+                    title: '💨 Windy Conditions',
+                    text: `Wind speed: ${(current.wind.speed * 3.6).toFixed(1)} km/h. Strong winds increase water loss through drift and evaporation. Use drip irrigation or water early morning when winds are calmer.`
+                });
+            }
+
+            // Best Irrigation Time
+            const hour = new Date().getHours();
+            const sunrise = new Date(current.sys.sunrise * 1000).getHours();
+            const sunset = new Date(current.sys.sunset * 1000).getHours();
+
+            if (hour >= sunrise && hour <= sunrise + 2) {
+                advice.push({
+                    title: '⏰ Perfect Timing - Morning Golden Hour',
+                    text: `It's currently ${hour}:00 - the BEST time to irrigate! Morning watering (6-8 AM) allows plants to absorb water before heat peaks, minimizing evaporation by up to 40%.`
+                });
+            } else if (hour >= sunset - 2 && hour <= sunset) {
+                advice.push({
+                    title: '⏰ Good Timing - Evening Window',
+                    text: `It's ${hour}:00 - a good time to irrigate. Evening watering (5-7 PM) is effective but ensure leaves dry before nightfall to prevent fungal diseases.`
+                });
+            } else if (hour >= 11 && hour <= 15) {
+                advice.push({
+                    title: '⚠️ Avoid Midday Irrigation',
+                    text: `It's ${hour}:00 - the WORST time to water! Midday irrigation loses 50-70% water to evaporation. Wait until evening (after 5 PM) or tomorrow morning (6-8 AM).`
+                });
+            } else {
+                advice.push({
+                    title: '⏰ Optimal Irrigation Windows',
+                    text: `Best times to irrigate: Early morning (6-8 AM) for maximum absorption, or Evening (5-7 PM) to minimize evaporation. Avoid watering between 11 AM - 3 PM.`
+                });
+            }
+
+            // Crop-Specific Advice
+            advice.push({
+                title: '🌾 General Crop Care',
+                text: 'Monitor soil moisture at root depth (6-12 inches). Most crops need 25-50mm water per week. Adjust based on crop type, growth stage, and weather conditions.'
+            });
+
+            // Display advice
+            advice.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'advice-card';
+                card.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.text}</p>
+                `;
+                adviceGrid.appendChild(card);
+            });
+        }
+
+        function calculateWaterSavings(forecast) {
+            // Calculate total expected rainfall in next 7 days
+            const totalRain = forecast.list.reduce((sum, item) => {
+                return sum + (item.rain ? (item.rain['3h'] || 0) : 0);
+            }, 0);
+
+            if (totalRain > 10) {
+                // Assume 1mm rain = 1L per m² = 10,000L per hectare
+                // Average field size 1-5 hectares
+                const avgFieldSize = 2; // hectares
+                const waterSaved = totalRain * 10000 * avgFieldSize;
+
+                document.getElementById('waterSavings').style.display = 'block';
+                document.getElementById('savingsValue').textContent = `${waterSaved.toLocaleString()} L`;
+                document.getElementById('savingsText').textContent = `Estimated water savings from ${totalRain.toFixed(1)}mm forecasted rain over the next 7 days (based on ${avgFieldSize}ha field)`;
+            } else {
+                document.getElementById('waterSavings').style.display = 'none';
+            }
+        }
+
+        function showWeatherAlerts(current, forecast) {
+            const alertBanner = document.getElementById('alertBanner');
+            alertBanner.innerHTML = '';
+
+            // Extreme temperature alert
+            if (current.main.temp > 40) {
+                alertBanner.innerHTML = `
+                    <div class="alert-banner danger">
+                        <span style="font-size: 1.5em;">🔥</span>
+                        <div>
+                            <strong>EXTREME HEAT WARNING!</strong> Temperature exceeds 40°C. 
+                            Increase irrigation immediately and provide shade for sensitive crops.
+                        </div>
+                    </div>
+                `;
+            } else if (current.main.temp < 5) {
+                alertBanner.innerHTML = `
+                    <div class="alert-banner danger">
+                        <span style="font-size: 1.5em;">❄️</span>
+                        <div>
+                            <strong>FROST WARNING!</strong> Temperature near freezing. 
+                            Protect sensitive crops and consider covering plants overnight.
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Heavy rain alert
+            const heavyRain = forecast.list.slice(0, 8).some(item => 
+                item.rain && item.rain['3h'] > 15
+            );
+
+            if (heavyRain) {
+                alertBanner.innerHTML += `
+                    <div class="alert-banner warning">
+                        <span style="font-size: 1.5em;">⛈️</span>
+                        <div>
+                            <strong>HEAVY RAIN ALERT!</strong> Significant rainfall expected in next 24 hours. 
+                            Skip all irrigation to prevent waterlogging and soil erosion.
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Perfect conditions alert
+            if (current.main.temp >= 20 && current.main.temp <= 30 && 
+                current.main.humidity >= 50 && current.main.humidity <= 70 &&
+                !heavyRain) {
+                alertBanner.innerHTML += `
+                    <div class="alert-banner success">
+                        <span style="font-size: 1.5em;">✅</span>
+                        <div>
+                            <strong>IDEAL CONDITIONS!</strong> Temperature and humidity are perfect for crop growth. 
+                            Maintain regular irrigation schedule for optimal yields.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function refreshWeatherData() {
+            document.getElementById('weatherContent').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerHTML = `
+                <div class="spinner"></div>
+                <p>🔄 Refreshing your location and weather data...</p>
+                <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                    This may take a few seconds for high accuracy
+                </p>
+            `;
+            
+            // Reset location variables to force fresh detection
+            userLat = null;
+            userLon = null;
+            userAccuracy = null;
+            locationName = 'Unknown Location';
+            
+            await loadWeatherData();
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

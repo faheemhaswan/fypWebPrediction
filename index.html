@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Irrigation System - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .logo-section p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            font-size: 0.9em;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            font-size: 0.9em;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.85em;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #ff4444; width: 33%; }
+        .strength-medium { background: #ffaa00; width: 66%; }
+        .strength-strong { background: #00C851; width: 100%; }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Corrected CSS for toggle button */
+        .password-toggle-btn {
+            position: absolute; 
+            right: 12px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 0.9em; 
+            padding: 5px 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 25px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo-section">
+            <div class="logo-icon">🌾</div>
+            <h1>Smart Irrigation</h1>
+            <p>Water Usage Prediction System</p>
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <div id="loginForm" class="form-content active">
+            <div class="error-message" id="loginError"></div>
+            <div class="success-message" id="loginSuccess"></div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="youremail@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('loginPassword', 'toggleLoginPass')" id="toggleLoginPass" class="password-toggle-btn">Show</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; font-weight: normal; font-size: 0.9em; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe" style="width: auto; margin-right: 8px;">
+                        <span>Remember me</span>
+                    </label>
+                    <div class="forgot-password" style="margin: 0;">
+                        <a href="#" onclick="handleForgotPassword(event)">Forgot Password ?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+            </form>
+        </div>
+
+        <div id="signupForm" class="form-content">
+            <div class="error-message" id="signupError"></div>
+            <div class="success-message" id="signupSuccess"></div>
+
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Your Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="youremail@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="signupPassword" placeholder="Create a strong password" required minlength="6" oninput="checkPasswordStrength(this.value)" style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('signupPassword', 'toggleSignupPass')" id="toggleSignupPass" class="password-toggle-btn">Show</button>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="password-strength" id="strengthText"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="signupConfirmPassword" placeholder="Re-enter your password" required style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('signupConfirmPassword', 'toggleConfirmPass')" id="toggleConfirmPass" class="password-toggle-btn">Show</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="display: flex; align-items: flex-start; font-weight: normal; font-size: 0.9em; cursor: pointer;">
+                        <input type="checkbox" id="agreeTerms" required style="width: auto; margin-right: 8px; margin-top: 3px;">
+                        <span>I agree to the <a href="#" style="color: #667eea; text-decoration: none;">Terms & Conditions</a> and <a href="#" style="color: #667eea; text-decoration: none;">Privacy Policy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary" id="signupBtn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail,
+            updateProfile
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { 
+            getDatabase, 
+            ref, 
+            set 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
+            authDomain: "smart-irrigation-system-3a5ff.firebaseapp.com",
+            projectId: "smart-irrigation-system-3a5ff",
+            storageBucket: "smart-irrigation-system-3a5ff.firebasestorage.app",
+            messagingSenderId: "778942848929",
+            appId: "1:778942848929:web:a793c928a1ea78b1a635e0",
+            measurementId: "G-ZQRXSSSVL7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // Make functions available globally
+        window.firebaseAuth = auth;
+        window.firebaseDatabase = database;
+        window.firebaseModules = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail,
+            updateProfile,
+            ref,
+            set
+        };
+    </script>
+
+    <script>
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+            if (userId) {
+                // User is already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Tab switching
+        function switchTab(tab) {
+            const loginTab = document.querySelector('.tab-btn:first-child');
+            const signupTab = document.querySelector('.tab-btn:last-child');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+
+            // Clear messages
+            clearMessages();
+        }
+
+        // Password strength checker 
+        function checkPasswordStrength(password) {
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+            strengthFill.className = 'strength-fill';
+            
+            if (strength <= 2) {
+                strengthFill.classList.add('strength-weak');
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#ff4444';
+            } else if (strength <= 4) {
+                strengthFill.classList.add('strength-medium');
+                strengthText.textContent = 'Good password';
+                strengthText.style.color = '#ffaa00';
+            } else {
+                strengthFill.classList.add('strength-strong');
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#00C851';
+            }
+        }
+
+        // Clear all messages
+        function clearMessages() {
+            document.querySelectorAll('.error-message, .success-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        // Show success message
+        function showSuccess(elementId, message) {
+            const successEl = document.getElementById(elementId);
+            successEl.textContent = message;
+            successEl.classList.add('show');
+        }
+
+        // Handle Login 
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearMessages();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!email || !password || !isValidEmail(email)) {
+                 showError('loginError', 'Please enter a valid email and password.');
+                 return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Logging in... <span class="loading-spinner"></span>';
+
+            try {
+                const { signInWithEmailAndPassword } = window.firebaseModules;
+                const userCredential = await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+                
+                showSuccess('loginSuccess', 'Login successful! Redirecting to dashboard...');
+                
+                const rememberMe = document.getElementById('rememberMe').checked;
+                const storage = rememberMe ? localStorage : sessionStorage;
+                
+                storage.setItem('userId', userCredential.user.uid);
+                storage.setItem('userEmail', userCredential.user.email);
+                storage.setItem('userName', userCredential.user.displayName || 'User');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'Login failed. Please try again.';
+                
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please check your credentials.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed login attempts. Please try again later.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network error. Please check your internet connection.';
+                        break;
+                    default:
+                        errorMessage = `Error: ${error.message}`;
+                }
+                
+                showError('loginError', errorMessage);
+            } finally {
+                if (!document.getElementById('loginSuccess').classList.contains('show')) {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                }
+            }
+        }
+
+        // Handle Signup (FINAL, SMOOTH TRANSITION FIX)
+        async function handleSignup(event) {
+            event.preventDefault();
+            clearMessages();
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const signupBtn = document.getElementById('signupBtn');
+
+            if (!name || !email || !password || password !== confirmPassword || password.length < 6 || !isValidEmail(email)) {
+                 showError('signupError', 'Please fill out all fields correctly and ensure passwords match (min 6 chars).');
+                 return;
+            }
+
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = 'Creating Account... <span class="loading-spinner"></span>';
+
+            try {
+                const { createUserWithEmailAndPassword, updateProfile, ref, set } = window.firebaseModules;
+                
+                // 1. AWAIT ONLY THE CRITICAL ACCOUNT CREATION
+                const userCredential = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+                const user = userCredential.user;
+
+                // 2. START NON-ESSENTIAL DB/PROFILE WRITES IN BACKGROUND (NO AWAIT)
+                // This ensures the page doesn't hang waiting for the database to write.
+                updateProfile(user, { displayName: name }).catch(e => console.error("Background profile update failed:", e));
+                set(ref(window.firebaseDatabase, 'users/' + user.uid), {
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString(),
+                    role: 'farmer',
+                    lastLogin: new Date().toISOString()
+                }).catch(e => console.error("Background DB write failed:", e));
+                
+                // 3. Reset button state and show IMMEDIATE success message on the signup tab
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+                showSuccess('signupSuccess', 'Account registered successfully!');
+                
+                // 4. Introduce a 1-second delay for the user to read the success message
+                setTimeout(() => {
+                    // Clear signup form
+                    document.getElementById('signupName').value = '';
+                    document.getElementById('signupEmail').value = '';
+                    document.getElementById('signupPassword').value = '';
+                    document.getElementById('signupConfirmPassword').value = '';
+                    document.getElementById('strengthFill').className = 'strength-fill';
+                    document.getElementById('strengthText').textContent = '';
+
+                    // Switch to login tab
+                    switchTab('login');
+                    
+                    // Show follow-up message on the login tab
+                    showSuccess('loginSuccess', 'Success! Please login with your new credentials.');
+                    
+                    // Pre-fill email and set focus
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').focus();
+                }, 1000); // 1-second delay for smooth transition
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                let errorMessage = 'Signup failed. Please try again.';
+                
+                switch(error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'This email is already registered. Please login or use a different email.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password is too weak (min 6 characters).';
+                        break;
+                    default:
+                        errorMessage = `Error: ${error.message}`;
+                }
+                
+                showError('signupError', errorMessage);
+                
+                // Reset button state immediately on error
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        }
+
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = 'Hide';
+                button.setAttribute('title', 'Hide password');
+            } else {
+                input.type = 'password';
+                button.textContent = 'Show';
+                button.setAttribute('title', 'Show password');
+            }
+        }
+
+        // Handle Forgot Password
+        async function handleForgotPassword(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            
+            if (!email || !isValidEmail(email)) {
+                showError('loginError', 'Please enter a valid email address in the field above first.');
+                return;
+            }
+
+            try {
+                const { sendPasswordResetEmail } = window.firebaseModules;
+                await sendPasswordResetEmail(window.firebaseAuth, email);
+                showSuccess('loginSuccess', 'Password reset email sent successfully! Please check your inbox and spam folder.');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                let errorMessage = 'Failed to send reset email.';
+                
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    default:
+                        errorMessage = `Error: ${error.message}`;
+                }
+                
+                showError('loginError', errorMessage);
+            }
+        }
+
+        // Make functions available globally
+        window.switchTab = switchTab;
+        window.handleLogin = handleLogin;
+        window.handleSignup = handleSignup;
+        window.handleForgotPassword = handleForgotPassword;
+        window.checkPasswordStrength = checkPasswordStrength;
+        window.isValidEmail = isValidEmail;
+        window.togglePassword = togglePassword;
+    </script>
+</body>
+</html>
