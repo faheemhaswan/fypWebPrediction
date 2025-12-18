@@ -1369,19 +1369,25 @@
         }
 
         function predictWithRules(data) {
-            const baseWater = 5000;
-            const cropFactors = {
-                'rice': 1.3, 'maize': 1.1, 'banana': 1.0, 'pomegranate': 0.9,
-                'mango': 0.9, 'watermelon': 0.9, 'papaya': 1.0
+            // EXACT Logic from adapt_data.py (Reference Implementation)
+            const CROP_RULES_FULL = {
+                'rice': 6500, 'maize': 5000, 'pomegranate': 4400, 'banana': 5100,
+                'mango': 4600, 'watermelon': 4700, 'papaya': 4850
             };
-            const cropFactor = cropFactors[data.cropType] || 1.0;
-            const moistureFactor = 1 - (data.soilMoisture / 200);
-            const tempFactor = data.temperature > 30 ? 1.2 : 1.0;
-            const humidityFactor = 1 - (data.humidity / 300);
-            const rainfallReduction = data.rainfall * 100;
-            let waterPerHa = baseWater * cropFactor * moistureFactor * tempFactor * humidityFactor;
-            waterPerHa = Math.max(1000, waterPerHa - rainfallReduction);
-            return Math.round(waterPerHa);
+
+            const cropBaseWater = CROP_RULES_FULL[data.cropType] || 4000;
+
+            // Additive Formula used in training
+            let waterPerHa = (
+                cropBaseWater +
+                (data.temperature * 15) -
+                (data.soilMoisture * 20) -
+                (data.rainfall * 50) +
+                (data.humidity * 10)
+            );
+
+            // Ensure bounds
+            return Math.max(500, Math.round(waterPerHa));
         }
 
         function generateRecommendations(data, mlPrediction, rulePrediction) {
