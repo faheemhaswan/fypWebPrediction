@@ -782,7 +782,7 @@
             if (predictions.length === 0) {
                 container.innerHTML = `
                     <div class="no-activity">
-                        <p>📭 No predictions yet. Start by making your first water prediction!</p>
+                        <p><i class="fas fa-clipboard-list"></i> No predictions yet. Start by making your first water prediction!</p>
                     </div>
                 `;
                 return;
@@ -799,8 +799,9 @@
                     <div class="activity-item">
                         <div class="activity-time">${pred.date} at ${pred.time}</div>
                         <div class="activity-text">
-                            🌾 ${pred.crop} prediction for ${locationShort} - 
-                            ${pred.water.toLocaleString()}L needed for ${pred.fieldSize}ha
+                            <i class="fas fa-seedling" style="color: var(--success);"></i> 
+                            <strong style="text-transform: capitalize;">${pred.crop}</strong> prediction for ${locationShort} - 
+                            <span style="color: var(--primary); font-weight: 600;">${pred.water.toLocaleString()}L</span> needed for ${pred.fieldSize}ha
                         </div>
                     </div>
                 `;

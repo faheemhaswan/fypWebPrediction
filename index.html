@@ -873,6 +873,8 @@
 
                 switch (error.code) {
                     case 'auth/user-not-found':
+                        errorMessage = 'Account does not exist. Please Sign Up.';
+                        break;
                     case 'auth/wrong-password':
                     case 'auth/invalid-credential':
                         errorMessage = 'Invalid email or password. Please check your credentials.';
