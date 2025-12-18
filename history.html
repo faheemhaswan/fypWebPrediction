@@ -643,12 +643,6 @@
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userName">User</span>
             </div>
-            <a href="dashboard.html" class="nav-btn">
-                <i class="fas fa-home"></i> Home
-            </a>
-            <button class="nav-btn logout-btn" onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
         </div>
     </nav>
 
@@ -999,10 +993,6 @@
                 await window.firebaseModules.remove(window.firebaseModules.ref(window.firebaseDatabase, `predictions/${sanitized}/${id}`));
                 // alert('Deleted');
             } catch (e) { console.error(e); alert('Error deleting'); }
-        }
-
-        function handleLogout() {
-            if (confirm('Logout?')) { sessionStorage.clear(); localStorage.clear(); window.location.href = 'index.html'; }
         }
 
         window.loadPredictionsFromFirebase = loadPredictionsFromFirebase;

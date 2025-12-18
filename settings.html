@@ -476,12 +476,6 @@
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userName">Loading...</span>
             </div>
-            <button class="nav-btn" onclick="goToDashboard()">
-                <i class="fas fa-home"></i> Home
-            </button>
-            <button class="nav-btn logout-btn" onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
         </div>
     </nav>
 
@@ -1188,11 +1182,6 @@
                 }
             }
         }
-
-        function goToDashboard() {
-            window.location.href = 'dashboard.html';
-        }
-
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 sessionStorage.clear();
