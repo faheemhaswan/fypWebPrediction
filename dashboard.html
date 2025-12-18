@@ -719,10 +719,13 @@
                         const data = childSnapshot.val();
                         totalPredictions++;
 
-                        // Use the correct structure from predict.html
-                        const waterUsed = data.predictions?.ml_model?.total_water_liters || 0;
-                        const fieldSize = data.field?.size_hectares || 0;
-                        const predDate = new Date(data.timestamp);
+                        // Use the correct structure with fallbacks
+                        const waterUsed = (data.prediction_outputs?.total_water_required_liters ||
+                            data.predictions?.ml_model?.total_water_liters || 0);
+                        const fieldSize = (data.input_parameters?.field_size_hectares ||
+                            data.field?.size_hectares || 0);
+                        const timestamp = data.meta?.timestamp_iso || data.timestamp;
+                        const predDate = new Date(timestamp);
 
                         totalWaterUsed += waterUsed;
                         totalArea += fieldSize;
@@ -734,11 +737,11 @@
 
                         // Store for recent activity
                         recentPredictions.push({
-                            date: data.date || 'N/A',
-                            time: data.time || 'N/A',
-                            timestamp: data.timestamp,
-                            crop: data.crop?.type_display || 'Unknown',
-                            location: data.location?.name || 'Unknown',
+                            date: data.meta?.date_formatted || data.date || 'N/A',
+                            time: data.meta?.time_formatted || data.time || 'N/A',
+                            timestamp: timestamp,
+                            crop: data.input_parameters?.crop_type || data.crop?.type_display || 'Unknown',
+                            location: data.location_data?.location_name || data.location?.name || 'Unknown',
                             water: waterUsed,
                             fieldSize: fieldSize
                         });
