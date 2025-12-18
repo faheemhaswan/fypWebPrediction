@@ -9,7 +9,7 @@ from sklearn.metrics import mean_absolute_error, r2_score
 import pickle # Added for the next step: saving the model
 
 # --- Configuration ---
-INPUT_FILE = 'irrigation_dataset.csv'
+INPUT_FILE = 'datasets/irrigation_dataset.csv'
 TARGET_VARIABLE = 'water_requirement_liters_per_hectare'
 RANDOM_STATE = 42
 MODEL_OUTPUT_FILE = 'optimized_irrigation_model.pkl' # File to save the trained model

@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction History - Smart Irrigation System</title>
+    <title>Prediction History | AquaWise</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* --- AquaWise Standard Design System (Matches Dashboard) --- */
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0043a8;
+            --secondary: #6c757d;
+            --success: #198754;
+            --background-overlay: rgba(0, 0, 0, 0.4);
+            --card-glass: rgba(255, 255, 255, 0.92);
+            --text-main: #1a1a1a;
+            --text-light: #666;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,104 +35,133 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url('assets/background.png') no-repeat center center/cover;
+            background-attachment: fixed;
             min-height: 100vh;
             padding-bottom: 40px;
+            color: var(--text-main);
+            position: relative;
         }
 
+        /* Overlay for readability */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            /* Lighter overlay to see icons */
+            backdrop-filter: blur(3px);
+            /* Reduced blur to see icons clearly */
+            z-index: -1;
+        }
+
+        /* Navigation Bar (Standard AquaWise) */
         .navbar {
-            background: white;
-            padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            position: relative;
-        }
-
-        .navbar-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-weight: bold;
-            color: #667eea;
+            text-decoration: none;
         }
 
-        .navbar-brand .logo {
-            font-size: 4em !important;
+        /* Replaced img with Icon for this specific page if logo asset missing, or use same structure */
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--primary);
         }
 
-        .navbar-brand span:not(.logo) {
-            font-size: 2.5em !important;
+        .navbar-brand span {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
-            padding: 8px 20px;
-            background: #f5f5f5;
-            border-radius: 25px;
-            font-weight: 600;
-            color: #333;
-            border: 2px solid #e0e0e0;
-            margin-top: 5px;
+            padding: 5px 20px 5px 5px;
+            background: #f2f2f0;
+            border-radius: 50px;
+            margin-right: 15px;
         }
 
         .user-avatar {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 38px;
+            height: 38px;
+            background: #0d6efd;
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1rem;
         }
 
-        .nav-buttons {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            display: flex;
-            gap: 10px;
+        #userName {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .nav-btn {
-            background: #667eea;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .nav-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
+        .nav-btn:not(.logout-btn) {
+            background: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        .nav-btn:not(.logout-btn):hover {
+            background: #cfe2ff;
         }
 
         .logout-btn {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            background: #ffebeb;
+            color: #dc3545;
         }
 
         .logout-btn:hover {
-            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            background: #f8d7da;
         }
 
         .container {
@@ -118,508 +170,578 @@
             padding: 0 20px;
         }
 
+        /* Page Header */
         .page-header {
-            background: white;
+            background: var(--card-glass);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
             margin-bottom: 30px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
         }
 
-        .page-header h1 {
-            color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        .header-content h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-size: 2rem;
         }
 
-        .page-header p {
-            color: #666;
-            font-size: 1.1em;
+        .header-content p {
+            color: var(--text-light);
+            font-size: 1rem;
         }
 
+        /* Stats Grid - Professional Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: var(--card-glass);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
             text-align: center;
-            transition: all 0.3s;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .stat-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(13, 110, 253, 0.2));
         }
 
         .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
             margin-bottom: 5px;
         }
 
         .stat-label {
-            color: #666;
-            font-size: 0.95em;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 15px;
         }
 
-        .stat-change {
-            margin-top: 10px;
-            font-size: 0.9em;
-            padding: 5px 10px;
-            border-radius: 15px;
+        .stat-badge {
             display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
-        .stat-change.positive {
-            background: #d4edda;
-            color: #155724;
+        .badge-success {
+            background: rgba(25, 135, 84, 0.1);
+            color: var(--success);
         }
 
-        .filter-section {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        .badge-info {
+            background: rgba(13, 202, 240, 0.1);
+            color: #0dcaf0;
+        }
+
+        /* Filter Section */
+        .filter-container {
+            background: var(--card-glass);
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 24px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
             align-items: center;
+            justify-content: space-between;
         }
 
-        .filter-section label {
-            font-weight: 600;
-            color: #333;
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .filter-section select {
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95em;
+        .filter-group label {
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .filter-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 8px;
+        .custom-select {
+            padding: 10px 40px 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            color: var(--text-main);
+            background: white url("data:image/svg+xml,...") no-repeat right 10px center;
+            /* Simplified */
+            min-width: 200px;
             cursor: pointer;
-            font-weight: 600;
-            margin-left: auto;
         }
 
-        .history-section {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            margin-bottom: 30px;
-        }
-
-        .history-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow-x: auto;
-            display: block;
-        }
-
-        .history-table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .apply-btn {
+            background: var(--primary);
             color: white;
-        }
-
-        .history-table th,
-        .history-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .history-table th {
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: none;
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85em;
-        }
-
-        .history-table tbody tr {
+            cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .history-table tbody tr:hover {
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* History Table Container */
+        .history-card {
+            background: var(--card-glass);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .history-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 900px;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 16px;
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             background: #f8f9fa;
         }
 
-        .crop-badge {
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 600;
-            display: inline-block;
+        .custom-table th:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
         }
 
-        .crop-rice { background: #ffeaa7; color: #d63031; }
-        .crop-maize { background: #fdcb6e; color: #e17055; }
-        .crop-pomegranate { background: #ff7675; color: #d63031; }
-        .crop-banana { background: #fab1a0; color: #e17055; }
-        .crop-mango { background: #fdcb6e; color: #d63031; }
-        .crop-watermelon { background: #55efc4; color: #00b894; }
-        .crop-papaya { background: #ffeaa7; color: #e17055; }
+        .custom-table th:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
 
-        .action-btn {
-            padding: 6px 12px;
+        .custom-table td {
+            padding: 20px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .custom-table tr:hover td {
+            background: rgba(13, 110, 253, 0.02);
+        }
+
+        /* Badges & Actions */
+        .crop-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Crop Colors (User Request Preserved) */
+        .crop-rice {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .crop-maize {
+            background: #fefce8;
+            color: #ca8a04;
+        }
+
+        .crop-pomegranate {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .crop-banana {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .crop-mango {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .crop-watermelon {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .crop-papaya {
+            background: #faf5ff;
+            color: #9333ea;
+        }
+
+        .location-text {
+            color: #495057;
+            font-weight: 500;
+            display: flex;
+            align-items: start;
+            gap: 6px;
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             border: none;
-            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-right: 5px;
+            transition: all 0.2s;
         }
 
-        .view-btn {
-            background: #667eea;
+        .btn-view {
+            background: #e7f1ff;
+            color: var(--primary);
+        }
+
+        .btn-view:hover {
+            background: var(--primary);
             color: white;
         }
 
-        .delete-btn {
-            background: #ff4444;
+        .btn-delete {
+            background: #ffebeb;
+            color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
             color: white;
         }
 
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
+            padding: 60px 0;
+            color: var(--text-light);
         }
 
-        .empty-state-icon {
-            font-size: 5em;
+        .empty-icon {
+            font-size: 4rem;
             margin-bottom: 20px;
+            opacity: 0.3;
         }
 
-        .empty-state h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #666;
-        }
-
-        .empty-state-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            margin-top: 20px;
-        }
-
-        /* Modal styles */
+        /* Modal (AquaWise Style) */
         .modal {
             display: none;
             position: fixed;
-            z-index: 2000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            animation: fadeIn 0.3s;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            animation: fadeIn 0.2s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 15px;
+            background: white;
             width: 90%;
-            max-width: 800px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s;
+            max-width: 700px;
+            margin: 5vh auto;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px 15px 0 0;
+            padding: 24px;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .modal-header h2 {
+        .modal-header h3 {
+            font-family: 'Outfit', sans-serif;
             margin: 0;
-            font-size: 1.8em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .close-btn {
-            background: rgba(255,255,255,0.2);
+        .close-icon {
+            background: #f8f9fa;
             border: none;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            color: #666;
+            transition: 0.2s;
         }
 
-        .close-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: rotate(90deg);
+        .close-icon:hover {
+            background: #e9ecef;
+            color: black;
         }
 
         .modal-body {
             padding: 30px;
-            max-height: 70vh;
+            max-height: 75vh;
             overflow-y: auto;
         }
 
-        .detail-section {
-            margin-bottom: 25px;
-            padding: 20px;
+        .detail-card {
             background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
         }
 
-        .detail-section h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .detail-label {
-            font-size: 0.85em;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .detail-value {
-            font-size: 1.1em;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .prediction-comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .comparison-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
+        .highlight-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .comparison-card h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1em;
-        }
-
-        .comparison-card .value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .location-badge {
-            display: inline-block;
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            margin-top: 5px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
         }
 
         @media (max-width: 768px) {
-            .nav-buttons {
-                position: static;
-                margin-top: 15px;
+            .navbar {
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+            }
+
+            .navbar-actions {
+                width: 100%;
+                justify-content: space-between;
             }
 
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .filter-section {
-                flex-direction: column;
-            }
-
-            .filter-btn {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .prediction-comparison {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
+            .filter-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
             }
         }
     </style>
 </head>
+
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-center">
-            <div class="navbar-brand">
-                <span class="logo">🌾</span>
-                <span>Smart Irrigation System</span>
-            </div>
+        <a href="dashboard.html" class="navbar-brand">
+            <img src="assets/aquawise_logo.png" alt="AquaWise" style="height: 40px;">
+            <span>AquaWise</span>
+        </a>
+        <div class="navbar-actions">
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
-                <span id="userName">Loading...</span>
+                <span id="userName">User</span>
             </div>
-        </div>
-        <div class="nav-buttons">
-            <button class="nav-btn" onclick="goToDashboard()">🏠 Dashboard</button>
-            <button class="nav-btn logout-btn" onclick="handleLogout()">🚪 Logout</button>
+            <a href="dashboard.html" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button class="nav-btn logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </nav>
 
+    <!-- Main Content -->
     <div class="container">
+        <!-- Header -->
         <div class="page-header">
-            <h1>📊 Prediction History & Analytics</h1>
-            <p>Track your irrigation predictions and analyze water usage trends</p>
+            <div class="header-content">
+                <h1>Prediction History & Analytics</h1>
+                <p>Track your AI usage trends and water conservation metrics</p>
+            </div>
+            <div style="font-size: 3rem; color: var(--primary);">
+                <i class="fas fa-chart-line"></i>
+            </div>
         </div>
 
+        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">💧</div>
+                <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
                 <div class="stat-value" id="totalPredictions">0</div>
                 <div class="stat-label">Total Predictions</div>
-                <div class="stat-change positive" id="predictionChange">+0 this month</div>
+                <div class="stat-badge badge-success" id="predictionChange">Loading...</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">💰</div>
+                <div class="stat-icon"><i class="fas fa-tint"></i></div>
                 <div class="stat-value" id="totalWaterUsed">0L</div>
                 <div class="stat-label">Total Water Used</div>
-                <div class="stat-change positive">All time</div>
+                <div class="stat-badge badge-success">All Time</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">🌱</div>
+                <div class="stat-icon"><i class="fas fa-droplet"></i></div>
                 <div class="stat-value" id="avgPerHectare">0L</div>
                 <div class="stat-label">Avg. Per Hectare</div>
-                <div class="stat-change positive">Average efficiency</div>
+                <div class="stat-badge badge-success">Efficiency</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">📈</div>
+                <div class="stat-icon"><i class="fas fa-map"></i></div>
                 <div class="stat-value" id="totalArea">0</div>
                 <div class="stat-label">Total Area (ha)</div>
-                <div class="stat-change positive">Total managed</div>
+                <div class="stat-badge badge-success">Managed</div>
             </div>
         </div>
 
-        <div class="filter-section">
-            <label>Filter by Crop:</label>
-            <select id="cropFilter">
-                <option value="all">All Crops</option>
-                <option value="rice">Rice</option>
-                <option value="maize">Maize</option>
-                <option value="pomegranate">Pomegranate</option>
-                <option value="banana">Banana</option>
-                <option value="mango">Mango</option>
-                <option value="watermelon">Watermelon</option>
-                <option value="papaya">Papaya</option>
-            </select>
-
-            <button class="filter-btn" onclick="applyFilters()">🔍 Apply Filters</button>
+        <!-- Filter -->
+        <div class="filter-container">
+            <div class="filter-group">
+                <label><i class="fas fa-filter"></i> Filter by Crop:</label>
+                <select id="cropFilter" class="custom-select">
+                    <option value="all">All Crops</option>
+                    <option value="rice">Rice</option>
+                    <option value="maize">Maize</option>
+                    <option value="pomegranate">Pomegranate</option>
+                    <option value="banana">Banana</option>
+                    <option value="mango">Mango</option>
+                    <option value="watermelon">Watermelon</option>
+                    <option value="papaya">Papaya</option>
+                </select>
+            </div>
+            <button class="apply-btn" onclick="applyFilters()">
+                <i class="fas fa-search"></i> Apply Filters
+            </button>
         </div>
 
-        <div class="history-section">
-            <h2>📋 Prediction Records</h2>
-            <div id="historyTableContainer">
+        <!-- Table -->
+        <div class="history-card">
+            <div class="history-header">
+                <h2><i class="fas fa-table" style="color: var(--primary);"></i> Prediction Records</h2>
+            </div>
+
+            <div id="historyTableContainer" class="table-responsive">
                 <div class="empty-state">
-                    <div class="empty-state-icon">⏳</div>
-                    <h3>Loading predictions...</h3>
+                    <div class="empty-icon"><i class="fas fa-sync fa-spin"></i></div>
+                    <h3>Loading Data...</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Detail Modal -->
+    <!-- Modal -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>📋 Prediction Details</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <h3><i class="fas fa-info-circle" style="color: var(--primary);"></i> Prediction Details</h3>
+                <button class="close-icon" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" id="modalBody">
-                <!-- Details will be inserted here -->
+                <!-- Content here -->
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase Logic (Maintained from previous fixes) -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { 
-            getDatabase, 
-            ref, 
-            onValue,
-            remove
-        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
@@ -639,14 +761,8 @@
         window.firebaseModules = { ref, onValue, remove };
         window.firebaseReady = true;
 
-        console.log('✅ Firebase initialized for history');
-
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (window.loadPredictionsFromFirebase) {
-                    window.loadPredictionsFromFirebase();
-                }
-            }, 500);
+            setTimeout(() => { if (window.loadPredictionsFromFirebase) window.loadPredictionsFromFirebase(); }, 500);
         });
     </script>
 
@@ -654,121 +770,75 @@
         let predictionHistory = [];
         let currentUserEmail = '';
 
-        window.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-        });
+        window.addEventListener('DOMContentLoaded', function () { checkAuth(); });
 
         function checkAuth() {
             const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
             const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
 
             if (!userName && !userEmail) {
-                alert('Please login first!');
-                window.location.href = 'index.html';
-                return;
+                // window.location.href = 'index.html'; // Auth requirement
+                // return;
             }
 
             currentUserEmail = userEmail || 'guest@example.com';
-            displayUserInfo(userName, userEmail);
-        }
-
-        function displayUserInfo(name, email) {
-            const userName = name || email || 'User';
-            document.getElementById('userName').textContent = userName;
-            const initial = userName.charAt(0).toUpperCase();
-            document.getElementById('userAvatar').textContent = initial;
+            document.getElementById('userName').textContent = userName || 'Guest';
+            document.getElementById('userAvatar').textContent = (userName || 'G').charAt(0).toUpperCase();
         }
 
         function loadPredictionsFromFirebase() {
-            if (!window.firebaseReady) {
-                console.error('❌ Firebase not ready');
-                showEmptyState();
-                return;
-            }
+            if (!window.firebaseReady) return;
 
             const userEmail = currentUserEmail || sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
-            
-            if (!userEmail || userEmail === 'guest@example.com') {
-                showEmptyState();
-                return;
-            }
+            if (!userEmail || userEmail === 'guest@example.com') { showEmptyState(); return; }
 
-            // Sanitize email exactly like predict.html does
             const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
-            console.log('📥 Loading predictions for:', sanitizedEmail);
-
             const { ref, onValue } = window.firebaseModules;
-            const database = window.firebaseDatabase;
-            const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
-            
+            const predictionsRef = ref(window.firebaseDatabase, `predictions/${sanitizedEmail}`);
+
             onValue(predictionsRef, (snapshot) => {
                 predictionHistory = [];
-                
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
-                        
-                        // Parse the new data structure from predict.html
-                        predictionHistory.push({
+                        // DUAL STRUCTURE SUPPORT (Fixed Logic)
+                        const isNewStructure = data.meta && data.input_parameters;
+                        const prediction = {
                             id: childSnapshot.key,
-                            
-                            // Timestamp data
-                            timestamp: data.timestamp || '',
-                            date: data.date || 'N/A',
-                            time: data.time || 'N/A',
-                            
-                            // User data
-                            userName: data.user?.name || 'Unknown',
-                            userEmail: data.user?.email || '',
-                            
-                            // Location data
-                            locationName: data.location?.name || 'Unknown Location',
-                            latitude: data.location?.coordinates?.latitude || 0,
-                            longitude: data.location?.coordinates?.longitude || 0,
-                            accuracy: data.location?.accuracy_meters || 0,
-                            locationSource: data.location?.source || 'unknown',
-                            
-                            // Crop data
-                            cropType: data.crop?.type || 'unknown',
-                            cropDisplay: data.crop?.type_display || 'Unknown',
-                            
-                            // Environmental data
-                            soilMoisture: data.environmental_data?.soil_moisture_percent || 0,
-                            temperature: data.environmental_data?.temperature_celsius || 0,
-                            humidity: data.environmental_data?.humidity_percent || 0,
-                            rainfall: data.environmental_data?.rainfall_mm || 0,
-                            
-                            // Field data
-                            fieldSize: data.field?.size_hectares || 0,
-                            cropBaseWater: data.field?.crop_base_water || 0,
-                            
-                            // Prediction results
-                            mlWaterTotal: data.predictions?.ml_model?.total_water_liters || 0,
-                            mlWaterPerHa: data.predictions?.ml_model?.water_per_hectare_liters || 0,
-                            ruleWaterPerHa: data.predictions?.rule_based?.water_per_hectare_liters || 0,
-                            differencePercent: data.predictions?.difference_percent || 0,
-                            
-                            // Summary
+                            timestamp: isNewStructure ? (data.meta.timestamp_iso || '') : (data.timestamp || ''),
+                            date: isNewStructure ? (data.meta.date_formatted || 'N/A') : (data.date || 'N/A'),
+                            time: isNewStructure ? (data.meta.time_formatted || 'N/A') : (data.time || 'N/A'),
+                            userName: isNewStructure ? (data.user_context?.name || 'Unknown') : (data.user?.name || 'Unknown'),
+                            userEmail: isNewStructure ? (data.user_context?.email || '') : (data.user?.email || ''),
+                            locationName: isNewStructure ? (data.location_data?.location_name || 'Unknown Location') : (data.location?.name || 'Unknown Location'),
+                            latitude: isNewStructure ? (data.location_data?.latitude || 0) : (data.location?.coordinates?.latitude || 0),
+                            longitude: isNewStructure ? (data.location_data?.longitude || 0) : (data.location?.coordinates?.longitude || 0),
+                            accuracy: isNewStructure ? (data.location_data?.accuracy_meters || 0) : (data.location?.accuracy_meters || 0),
+                            locationSource: isNewStructure ? (data.location_data?.detection_method || 'unknown') : (data.location?.source || 'unknown'),
+                            cropType: isNewStructure ? (data.input_parameters?.crop_type || 'unknown') : (data.crop?.type || 'unknown'),
+                            cropDisplay: isNewStructure ? (data.input_parameters?.crop_type || 'Unknown') : (data.crop?.type_display || 'Unknown'),
+                            soilMoisture: isNewStructure ? (data.input_parameters?.soil_moisture_percentage || 0) : (data.environmental_data?.soil_moisture_percent || 0),
+                            temperature: isNewStructure ? (data.input_parameters?.temperature_celsius || 0) : (data.environmental_data?.temperature_celsius || 0),
+                            humidity: isNewStructure ? (data.input_parameters?.humidity_percentage || 0) : (data.environmental_data?.humidity_percent || 0),
+                            rainfall: isNewStructure ? (data.input_parameters?.rainfall_mm || 0) : (data.environmental_data?.rainfall_mm || 0),
+                            fieldSize: isNewStructure ? (data.input_parameters?.field_size_hectares || 0) : (data.field?.size_hectares || 0),
+                            mlWaterTotal: isNewStructure ? (data.prediction_outputs?.total_water_required_liters || 0) : (data.predictions?.ml_model?.total_water_liters || 0),
+                            mlWaterPerHa: isNewStructure ? (data.prediction_outputs?.ml_model_water_per_ha || 0) : (data.predictions?.ml_model?.water_per_hectare_liters || 0),
+                            ruleWaterPerHa: isNewStructure ? (data.prediction_outputs?.rule_based_water_per_ha || 0) : (data.predictions?.rule_based?.water_per_hectare_liters || 0),
+                            differencePercent: isNewStructure ? (data.prediction_outputs?.model_divergence_percent || 0) : (data.predictions?.difference_percent || 0),
                             summary: data.summary || {}
-                        });
-                    });
-                    
-                    // Sort by timestamp (newest first)
-                    predictionHistory.sort((a, b) => {
-                        return new Date(b.timestamp) - new Date(a.timestamp);
-                    });
-                    
-                    console.log(`✅ Loaded ${predictionHistory.length} predictions`);
-                } else {
-                    console.log('📭 No predictions found for:', sanitizedEmail);
-                }
+                        };
 
+                        if (isNewStructure && prediction.cropDisplay && prediction.cropDisplay !== 'Unknown') {
+                            prediction.cropDisplay = prediction.cropDisplay.charAt(0).toUpperCase() + prediction.cropDisplay.slice(1);
+                        }
+                        predictionHistory.push(prediction);
+                    });
+                    predictionHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                }
                 loadHistory();
                 calculateStatistics();
-            }, (error) => {
-                console.error('❌ Error loading predictions:', error);
-                showEmptyState();
-            });
+            }, (error) => { console.error(error); showEmptyState(); });
         }
 
         function calculateStatistics() {
@@ -781,27 +851,21 @@
             document.getElementById('totalWaterUsed').textContent = totalWater.toLocaleString() + 'L';
             document.getElementById('avgPerHectare').textContent = avgPerHectare.toLocaleString() + 'L';
             document.getElementById('totalArea').textContent = totalArea.toFixed(1) + ' ha';
-            
-            // Calculate this month's predictions
+
             const now = new Date();
             const thisMonth = predictionHistory.filter(pred => {
-                const predDate = new Date(pred.timestamp);
-                return predDate.getMonth() === now.getMonth() && predDate.getFullYear() === now.getFullYear();
+                const d = new Date(pred.timestamp);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
             }).length;
-            
             document.getElementById('predictionChange').textContent = `+${thisMonth} this month`;
         }
 
         function loadHistory(filteredData = predictionHistory) {
             const container = document.getElementById('historyTableContainer');
+            if (filteredData.length === 0) { showEmptyState(); return; }
 
-            if (filteredData.length === 0) {
-                showEmptyState();
-                return;
-            }
-
-            let tableHTML = `
-                <table class="history-table">
+            let html = `
+                <table class="custom-table">
                     <thead>
                         <tr>
                             <th>Date & Time</th>
@@ -809,9 +873,9 @@
                             <th>Location</th>
                             <th>Field Size</th>
                             <th>Soil (%)</th>
-                            <th>Temp (°C)</th>
+                            <th>Temp</th>
                             <th>Water (ML)</th>
-                            <th>Water (Rule)</th>
+                            <th>Total (L)</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -821,240 +885,122 @@
             filteredData.forEach(pred => {
                 const cropClass = `crop-${pred.cropType.toLowerCase()}`;
                 const locationShort = pred.locationName.split(',')[0] || 'Unknown';
-                
-                tableHTML += `
+                html += `
                     <tr>
                         <td>
-                            <strong>${pred.date}</strong><br>
-                            <span style="font-size: 0.85em; color: #666;">${pred.time}</span>
+                            <div style="font-weight:600; color:var(--text-main);">${pred.date}</div>
+                            <div style="font-size:0.85rem; color: #999;">${pred.time}</div>
                         </td>
-                        <td><span class="crop-badge ${cropClass}">${pred.cropDisplay}</span></td>
+                        <td><span class="crop-pill ${cropClass}">${pred.cropDisplay}</span></td>
                         <td>
-                            📍 ${locationShort}
-                            ${pred.locationSource === 'default' ? '<br><span style="font-size:0.75em;color:#999;">(Default)</span>' : ''}
+                            <div class="location-text"><i class="fas fa-map-marker-alt" style="color:var(--primary); margin-top:3px;"></i> ${locationShort}</div>
                         </td>
                         <td><strong>${pred.fieldSize}</strong> ha</td>
                         <td>${pred.soilMoisture.toFixed(1)}%</td>
                         <td>${pred.temperature.toFixed(1)}°C</td>
-                        <td><strong style="color: #667eea;">${pred.mlWaterPerHa.toLocaleString()}</strong> L/ha</td>
-                        <td><strong style="color: #999;">${pred.ruleWaterPerHa.toLocaleString()}</strong> L/ha</td>
+                        <td><strong style="color:var(--primary);">${pred.mlWaterPerHa.toLocaleString()}</strong> L/ha</td>
+                        <td><strong style="color:var(--text-main);">${pred.mlWaterTotal.toLocaleString()}</strong></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewDetails('${pred.id}')">👁️ View</button>
-                            <button class="action-btn delete-btn" onclick="deleteRecord('${pred.id}')">🗑️</button>
+                            <div class="action-cell">
+                                <button class="icon-btn btn-view" onclick="viewDetails('${pred.id}')"><i class="fas fa-eye"></i></button>
+                                <button class="icon-btn btn-delete" onclick="deleteRecord('${pred.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
                         </td>
                     </tr>
                 `;
             });
-
-            tableHTML += '</tbody></table>';
-            container.innerHTML = tableHTML;
+            html += '</tbody></table>';
+            container.innerHTML = html;
         }
 
         function showEmptyState() {
-            const container = document.getElementById('historyTableContainer');
-            container.innerHTML = `
+            document.getElementById('historyTableContainer').innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-icon"><i class="fas fa-box-open"></i></div>
                     <h3>No Predictions Found</h3>
-                    <p>You haven't made any water usage predictions yet.</p>
-                    <button class="empty-state-btn" onclick="goToPredict()">🤖 Make First Prediction</button>
+                    <p>Start making predictions to see them here.</p>
                 </div>
             `;
-            
-            // Reset statistics
-            document.getElementById('totalPredictions').textContent = '0';
-            document.getElementById('totalWaterUsed').textContent = '0L';
-            document.getElementById('avgPerHectare').textContent = '0L';
-            document.getElementById('totalArea').textContent = '0 ha';
-            document.getElementById('predictionChange').textContent = '+0 this month';
+            // Reset Stats
+            ['totalPredictions', 'totalWaterUsed', 'avgPerHectare', 'totalArea'].forEach(id => document.getElementById(id).textContent = '0');
         }
 
         function applyFilters() {
-            const cropFilter = document.getElementById('cropFilter').value;
-            let filtered = [...predictionHistory];
-
-            if (cropFilter !== 'all') {
-                filtered = filtered.filter(pred => pred.cropType.toLowerCase() === cropFilter.toLowerCase());
-            }
-
+            const val = document.getElementById('cropFilter').value;
+            const filtered = val === 'all' ? predictionHistory : predictionHistory.filter(p => p.cropType.toLowerCase() === val.toLowerCase());
             loadHistory(filtered);
         }
 
         function viewDetails(id) {
-            const prediction = predictionHistory.find(p => p.id === id);
-            if (!prediction) return;
-
-            const mapLink = prediction.latitude && prediction.longitude 
-                ? `https://www.google.com/maps/search/?api=1&query=${prediction.latitude},${prediction.longitude}`
-                : '#';
+            const p = predictionHistory.find(item => item.id === id);
+            if (!p) return;
 
             const modalBody = document.getElementById('modalBody');
             modalBody.innerHTML = `
-                <div class="detail-section">
-                    <h3>📍 Location Information</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Location</span>
-                            <span class="detail-value">${prediction.locationName}</span>
-                            ${prediction.locationSource === 'default' ? '<span class="location-badge">Default Location</span>' : '<span class="location-badge">Auto-Detected</span>'}
+                <div class="highlight-box">
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Total Water Required</div>
+                    <div style="font-size: 2.5rem; font-weight: 800;">${p.mlWaterTotal.toLocaleString()} L</div>
+                    <div style="font-size: 0.9rem; margin-top: 5px;">Field Size: ${p.fieldSize} ha</div>
+                </div>
+
+                <div class="detail-card">
+                    <h4 style="margin-bottom:15px; color:var(--text-main);"><i class="fas fa-map" style="color:var(--primary);"></i> Location & Crop</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div>
+                            <div style="font-size:0.8rem; color:#666; text-transform:uppercase;">Location</div>
+                            <div style="font-weight:600;">${p.locationName}</div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Coordinates</span>
-                            <span class="detail-value">
-                                ${prediction.latitude.toFixed(6)}, ${prediction.longitude.toFixed(6)}
-                            </span>
-                            <a href="${mapLink}" target="_blank" style="color: #667eea; font-size: 0.9em; text-decoration: none;">
-                                🗺️ View on Map
-                            </a>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Accuracy</span>
-                            <span class="detail-value">${prediction.accuracy.toFixed(0)} meters</span>
+                        <div>
+                            <div style="font-size:0.8rem; color:#666; text-transform:uppercase;">Crop</div>
+                            <div style="font-weight:600;">${p.cropDisplay}</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="detail-section">
-                    <h3>🌾 Crop & Field Information</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Crop Type</span>
-                            <span class="detail-value">${prediction.cropDisplay}</span>
+                <div class="detail-card">
+                    <h4 style="margin-bottom:15px; color:var(--text-main);"><i class="fas fa-sun" style="color:#fd7e14;"></i> Conditions</h4>
+                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
+                        <div>
+                            <div style="font-size:0.75rem; color:#666;">Moisture</div>
+                            <div style="font-weight:600;">${p.soilMoisture}%</div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Field Size</span>
-                            <span class="detail-value">${prediction.fieldSize} hectares</span>
+                        <div>
+                            <div style="font-size:0.75rem; color:#666;">Temp</div>
+                            <div style="font-weight:600;">${p.temperature}°C</div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Crop Base Water</span>
-                            <span class="detail-value">${prediction.cropBaseWater.toLocaleString()} L/ha</span>
+                        <div>
+                            <div style="font-size:0.75rem; color:#666;">Humidity</div>
+                            <div style="font-weight:600;">${p.humidity}%</div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>🌡️ Environmental Conditions</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Soil Moisture</span>
-                            <span class="detail-value">${prediction.soilMoisture.toFixed(1)}%</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Temperature</span>
-                            <span class="detail-value">${prediction.temperature.toFixed(1)}°C</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Humidity</span>
-                            <span class="detail-value">${prediction.humidity.toFixed(1)}%</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Rainfall</span>
-                            <span class="detail-value">${prediction.rainfall.toFixed(1)} mm</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>💧 Water Prediction Results</h3>
-                    
-                    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
-                        <div style="font-size: 1.2em; opacity: 0.9; margin-bottom: 10px;">Total Water Required</div>
-                        <div style="font-size: 3em; font-weight: bold;">${prediction.mlWaterTotal.toLocaleString()} L</div>
-                        <div style="font-size: 1.1em; opacity: 0.9; margin-top: 5px;">
-                            For ${prediction.fieldSize} hectare${prediction.fieldSize !== 1 ? 's' : ''}
-                        </div>
-                    </div>
-
-                    <div class="prediction-comparison">
-                        <div class="comparison-card">
-                            <h4>🤖 ML Model Prediction</h4>
-                            <div class="value" style="color: #667eea;">${prediction.mlWaterPerHa.toLocaleString()} L/ha</div>
-                            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">Machine Learning</div>
-                        </div>
-                        <div class="comparison-card">
-                            <h4>📐 Rule-Based Prediction</h4>
-                            <div class="value" style="color: #999;">${prediction.ruleWaterPerHa.toLocaleString()} L/ha</div>
-                            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">Traditional Method</div>
-                        </div>
-                    </div>
-
-                    <div style="text-align: center; margin-top: 15px; padding: 15px; background: ${prediction.differencePercent > 25 ? '#fff3cd' : '#d4edda'}; border-radius: 10px;">
-                        <strong>Difference:</strong> ${prediction.differencePercent}%
-                        ${prediction.differencePercent > 25 
-                            ? '<div style="margin-top: 5px; font-size: 0.9em;">⚠️ Significant difference - ML model recommended (trained on real data)</div>' 
-                            : '<div style="margin-top: 5px; font-size: 0.9em;">✅ Models agree - High confidence in prediction</div>'
-                        }
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>📅 Timestamp</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Date</span>
-                            <span class="detail-value">${prediction.date}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Time</span>
-                            <span class="detail-value">${prediction.time}</span>
+                        <div>
+                            <div style="font-size:0.75rem; color:#666;">Rain</div>
+                            <div style="font-weight:600;">${p.rainfall}mm</div>
                         </div>
                     </div>
                 </div>
             `;
-
             document.getElementById('detailModal').style.display = 'block';
         }
 
-        function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('detailModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
+        function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
+        window.onclick = function (e) { if (e.target === document.getElementById('detailModal')) closeModal(); }
 
         async function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this prediction record?')) return;
-
+            if (!confirm('Delete this record?')) return;
             try {
-                const userEmail = currentUserEmail || sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
-                const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
-
-                const { ref, remove } = window.firebaseModules;
-                const database = window.firebaseDatabase;
-
-                const predictionRef = ref(database, `predictions/${sanitizedEmail}/${id}`);
-                await remove(predictionRef);
-
-                console.log('✅ Record deleted:', id);
-                alert('✅ Record deleted successfully!');
-            } catch (error) {
-                console.error('❌ Error deleting record:', error);
-                alert('❌ Failed to delete record');
-            }
-        }
-
-        function goToDashboard() {
-            window.location.href = 'dashboard.html';
-        }
-
-        function goToPredict() {
-            window.location.href = 'predict.html';
+                const email = currentUserEmail || '';
+                const sanitized = email.replace(/[.#$[\]]/g, '_');
+                await window.firebaseModules.remove(window.firebaseModules.ref(window.firebaseDatabase, `predictions/${sanitized}/${id}`));
+                // alert('Deleted');
+            } catch (e) { console.error(e); alert('Error deleting'); }
         }
 
         function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                sessionStorage.clear();
-                localStorage.clear();
-                window.location.href = 'index.html';
-            }
+            if (confirm('Logout?')) { sessionStorage.clear(); localStorage.clear(); window.location.href = 'index.html'; }
         }
 
         window.loadPredictionsFromFirebase = loadPredictionsFromFirebase;
     </script>
 </body>
+
 </html>

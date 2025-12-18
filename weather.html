@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Forecast - Smart Irrigation System</title>
+    <title>Weather Forecast - AquaWise</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0043a8;
+            --secondary: #6c757d;
+            --success: #198754;
+            --info: #0dcaf0;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --background-overlay: rgba(0, 0, 0, 0.4);
+            --card-glass: rgba(255, 255, 255, 0.92);
+            --text-main: #1a1a1a;
+            --text-light: #666;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,217 +36,253 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url('assets/background.png') no-repeat center center/cover;
+            background-attachment: fixed;
             min-height: 100vh;
             padding-bottom: 40px;
+            color: var(--text-main);
+            position: relative;
         }
 
+        /* Overlay for readability */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        /* Navigation Bar */
         .navbar {
-            background: white;
-            padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            position: relative;
-        }
-
-        .navbar-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-weight: bold;
-            color: #667eea;
+            text-decoration: none;
         }
 
-        .navbar-brand .logo {
-            font-size: 4em !important;
+        .logo-img {
+            height: 45px;
+            width: auto;
         }
 
-        .navbar-brand span:not(.logo) {
-            font-size: 2.5em !important;
+        .navbar-brand span {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
-            padding: 8px 20px;
-            background: #f5f5f5;
-            border-radius: 25px;
+            padding: 5px 20px 5px 5px;
+            background: #f2f2f0;
+            border-radius: 50px;
             font-weight: 600;
             color: #333;
-            border: 2px solid #e0e0e0;
-            margin-top: 5px;
+            border: none;
         }
 
         .user-avatar {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-        }
-
-        .nav-buttons {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            display: flex;
-            gap: 10px;
+            font-size: 1rem;
         }
 
         .nav-btn {
-            background: #667eea;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #e7f1ff;
+            color: var(--primary);
         }
 
         .nav-btn:hover {
-            background: #5568d3;
+            background: #cfe2ff;
             transform: translateY(-2px);
         }
 
         .logout-btn {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            background: #ffebeb;
+            color: var(--danger);
         }
 
         .logout-btn:hover {
-            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            background: #f8d7da;
         }
 
+        /* Container & Header */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
 
         .page-header {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
             text-align: center;
+            margin-bottom: 40px;
+            background: var(--card-glass);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .page-header h1 {
-            color: #667eea;
-            font-size: 2.5em;
+            color: var(--primary-dark);
             margin-bottom: 10px;
-        }
-
-        .page-header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .refresh-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-            transition: all 0.3s;
-        }
-
-        .refresh-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        /* Alert Banners */
-        .alert-banner {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
 
-        .alert-banner.warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 2px solid #ffc107;
+        .page-header p {
+            font-size: 1.1em;
+            color: var(--text-light);
         }
 
-        .alert-banner.danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #dc3545;
+        .refresh-btn {
+            margin-top: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .alert-banner.success {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #28a745;
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+            transform: translateY(-2px);
         }
 
-        .current-weather {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        /* Weather Section Glassmorphism */
+        .current-weather,
+        .forecast-section,
+        .irrigation-schedule,
+        .irrigation-advice {
+            background: var(--card-glass);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
             margin-bottom: 30px;
-            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease;
         }
 
+        .current-weather:hover,
+        .forecast-section:hover,
+        .irrigation-schedule:hover,
+        .irrigation-advice:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(13, 110, 253, 0.1);
+            padding-bottom: 15px;
+        }
+
+        /* Current Weather Specifics */
         .location {
-            font-size: 1.5em;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 5px;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
         }
 
         .location-details {
             font-size: 0.9em;
-            color: #999;
-            margin-bottom: 20px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
         }
 
         .weather-icon {
-            font-size: 6em;
-            margin: 20px 0;
+            font-size: 5em;
+            margin: 15px 0;
+            color: var(--warning);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .temperature {
             font-size: 4em;
-            font-weight: bold;
-            color: #333;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'Outfit', sans-serif;
             margin-bottom: 10px;
         }
 
         .weather-description {
-            font-size: 1.5em;
-            color: #666;
+            font-size: 1.4em;
             text-transform: capitalize;
+            color: var(--text-light);
             margin-bottom: 30px;
+            font-weight: 500;
         }
 
         .weather-details {
@@ -267,7 +327,7 @@
             color: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
             text-align: center;
         }
@@ -292,7 +352,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
         }
 
@@ -320,7 +380,7 @@
 
         .forecast-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-color: #667eea;
         }
 
@@ -370,7 +430,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
         }
 
@@ -431,7 +491,7 @@
             color: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
         .irrigation-advice h2 {
@@ -446,7 +506,7 @@
         }
 
         .advice-card {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
             border-left: 4px solid white;
@@ -479,7 +539,7 @@
         }
 
         .spinner {
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid white;
             border-radius: 50%;
             width: 50px;
@@ -489,12 +549,17 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 768px) {
-            .nav-buttons {
+            .navbar-actions {
                 position: static;
                 margin-top: 15px;
             }
@@ -517,29 +582,34 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
-        <div class="navbar-center">
-            <div class="navbar-brand">
-                <span class="logo">🌾</span>
-                <span>Smart Irrigation System</span>
-            </div>
+        <a href="#" class="navbar-brand">
+            <!-- Using text/icon logo for consistency with this page's style, or image if preferred -->
+            <span class="logo"><i class="fas fa-seedling"></i></span>
+            <span>AquaWise</span>
+        </a>
+        <div class="navbar-actions">
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userName">Loading...</span>
             </div>
-        </div>
-        <div class="nav-buttons">
-            <button class="nav-btn" onclick="goToDashboard()">🏠 Dashboard</button>
-            <button class="nav-btn logout-btn" onclick="handleLogout()">🚪 Logout</button>
+            <button class="nav-btn" onclick="goToDashboard()">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+            <button class="nav-btn logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </nav>
 
     <div class="container">
         <div class="page-header">
-            <h1>🌤️ Weather Forecast & Irrigation Planning</h1>
+            <h1><i class="fas fa-cloud-sun"></i> Weather Forecast & Irrigation Planning</h1>
             <p>Real-time weather data for smart water management</p>
-            <button class="refresh-btn" onclick="refreshWeatherData()">🔄 Refresh Location & Weather</button>
+            <button class="refresh-btn" onclick="refreshWeatherData()"><i class="fas fa-sync-alt"></i> Refresh Location
+                & Weather</button>
         </div>
 
         <div class="loading" id="loading">
@@ -553,7 +623,7 @@
 
             <!-- Water Savings Calculator -->
             <div class="water-savings" id="waterSavings" style="display: none;">
-                <h2>💰 Predicted Water Savings from Rain</h2>
+                <h2><i class="fas fa-hand-holding-water"></i> Predicted Water Savings from Rain</h2>
                 <div class="savings-value" id="savingsValue">0 L</div>
                 <div class="savings-text" id="savingsText">Expected rainfall will naturally irrigate your crops</div>
             </div>
@@ -565,38 +635,38 @@
                     <div id="coordinates">Lat: --, Lon: --</div>
                     <div id="accuracy">Accuracy: --</div>
                 </div>
-                <div class="weather-icon" id="weatherIcon">☀️</div>
+                <div class="weather-icon" id="weatherIcon"><i class="fas fa-sun"></i></div>
                 <div class="temperature" id="temperature">--°C</div>
                 <div class="weather-description" id="description">Loading...</div>
 
                 <div class="weather-details">
                     <div class="detail-box">
-                        <div class="detail-icon">💧</div>
+                        <div class="detail-icon"><i class="fas fa-tint"></i></div>
                         <div class="detail-value" id="humidity">--%</div>
                         <div class="detail-label">Humidity</div>
                     </div>
                     <div class="detail-box">
-                        <div class="detail-icon">💨</div>
+                        <div class="detail-icon"><i class="fas fa-wind"></i></div>
                         <div class="detail-value" id="windSpeed">-- km/h</div>
                         <div class="detail-label">Wind Speed</div>
                     </div>
                     <div class="detail-box">
-                        <div class="detail-icon">🌡️</div>
+                        <div class="detail-icon"><i class="fas fa-thermometer-half"></i></div>
                         <div class="detail-value" id="feelsLike">--°C</div>
                         <div class="detail-label">Feels Like</div>
                     </div>
                     <div class="detail-box">
-                        <div class="detail-icon">🔽</div>
+                        <div class="detail-icon"><i class="fas fa-tachometer-alt"></i></div>
                         <div class="detail-value" id="pressure">-- hPa</div>
                         <div class="detail-label">Pressure</div>
                     </div>
                     <div class="detail-box">
-                        <div class="detail-icon">🌅</div>
+                        <div class="detail-icon"><i class="fas fa-sun"></i></div>
                         <div class="detail-value" id="sunrise">--:--</div>
                         <div class="detail-label">Sunrise</div>
                     </div>
                     <div class="detail-box">
-                        <div class="detail-icon">🌇</div>
+                        <div class="detail-icon"><i class="fas fa-moon"></i></div>
                         <div class="detail-value" id="sunset">--:--</div>
                         <div class="detail-label">Sunset</div>
                     </div>
@@ -605,7 +675,7 @@
 
             <!-- 5-Day Forecast -->
             <div class="forecast-section">
-                <h2>📅 7-Day Weather Forecast</h2>
+                <h2><i class="fas fa-calendar-alt"></i> 7-Day Weather Forecast</h2>
                 <div class="forecast-grid" id="forecastGrid">
                     <!-- Forecast cards will be inserted here -->
                 </div>
@@ -613,7 +683,7 @@
 
             <!-- 7-Day Irrigation Schedule -->
             <div class="irrigation-schedule">
-                <h2>📋 7-Day Irrigation Schedule</h2>
+                <h2><i class="fas fa-clipboard-list"></i> 7-Day Irrigation Schedule</h2>
                 <div class="schedule-grid" id="scheduleGrid">
                     <!-- Schedule cards will be inserted here -->
                 </div>
@@ -621,7 +691,7 @@
 
             <!-- Irrigation Advice -->
             <div class="irrigation-advice">
-                <h2>💡 Smart Irrigation Recommendations</h2>
+                <h2><i class="fas fa-lightbulb"></i> Smart Irrigation Recommendations</h2>
                 <div class="advice-grid" id="adviceGrid">
                     <!-- Advice cards will be inserted here -->
                 </div>
@@ -633,13 +703,13 @@
         const WEATHER_API_KEY = '7941d1d68e6c2211e4eac4a66bab0097';
         const DEFAULT_LAT = 4.1996; // Tapah, Perak
         const DEFAULT_LON = 101.2570;
-        
+
         let userLat = null;
         let userLon = null;
         let userAccuracy = null;
         let locationName = 'Unknown Location';
 
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             checkAuth();
             loadWeatherData();
         });
@@ -688,13 +758,13 @@
                     (position) => {
                         attempts++;
                         const currentAccuracy = position.coords.accuracy;
-                        
+
                         console.log(`📍 Location attempt ${attempts}: Accuracy ${currentAccuracy.toFixed(0)}m`);
                         console.log(`   Lat: ${position.coords.latitude.toFixed(6)}, Lon: ${position.coords.longitude.toFixed(6)}`);
 
                         // Accept if accuracy meets threshold OR if we've tried enough times
-                        const shouldAccept = currentAccuracy <= ACCURACY_THRESHOLD || 
-                                           (attempts >= maxAttempts && currentAccuracy <= LAPTOP_ACCURACY_THRESHOLD);
+                        const shouldAccept = currentAccuracy <= ACCURACY_THRESHOLD ||
+                            (attempts >= maxAttempts && currentAccuracy <= LAPTOP_ACCURACY_THRESHOLD);
 
                         if (shouldAccept && currentAccuracy < bestAccuracy) {
                             userLat = position.coords.latitude;
@@ -720,13 +790,13 @@
                     (error) => {
                         console.error('❌ Geolocation Error:', error.code, error.message);
                         navigator.geolocation.clearWatch(watchId);
-                        
+
                         // Use default location
                         userLat = DEFAULT_LAT;
                         userLon = DEFAULT_LON;
                         userAccuracy = 1000;
                         locationName = 'Tapah, Perak, Malaysia (Default - Location Access Denied)';
-                        
+
                         if (error.code === error.PERMISSION_DENIED) {
                             console.log('❌ Location permission denied by user');
                         } else if (error.code === error.TIMEOUT) {
@@ -734,7 +804,7 @@
                         } else if (error.code === error.POSITION_UNAVAILABLE) {
                             console.log('❌ Location unavailable');
                         }
-                        
+
                         resolve();
                     },
                     {
@@ -748,7 +818,7 @@
                 setTimeout(() => {
                     if (!userLat || userAccuracy === null) {
                         navigator.geolocation.clearWatch(watchId);
-                        
+
                         if (bestAccuracy < Infinity && bestAccuracy <= LAPTOP_ACCURACY_THRESHOLD) {
                             // Use the best location we got
                             console.log(`⏰ Timeout reached, using best available location (${bestAccuracy.toFixed(0)}m)`);
@@ -770,11 +840,11 @@
         async function loadWeatherData() {
             try {
                 document.getElementById('loading').innerHTML = '<div class="spinner"></div><p>Detecting your location...</p>';
-                
+
                 await getUserLocation();
-                
+
                 document.getElementById('loading').innerHTML = '<div class="spinner"></div><p>Fetching weather data...</p>';
-                
+
                 // Fetch weather data
                 const weatherData = await fetchWeatherData();
                 const forecastData = await fetchForecastData();
@@ -809,7 +879,7 @@
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error('Weather API failed');
             const data = await response.json();
-            
+
             // Get location name
             if (data.name) {
                 locationName = `${data.name}, ${data.sys.country}`;
@@ -825,7 +895,7 @@
                     locationName = `Lat: ${userLat.toFixed(4)}, Lon: ${userLon.toFixed(4)}`;
                 }
             }
-            
+
             return data;
         }
 
@@ -839,11 +909,11 @@
         function displayLocationInfo() {
             document.getElementById('location').textContent = locationName;
             document.getElementById('coordinates').textContent = `📍 Lat: ${userLat.toFixed(6)}, Lon: ${userLon.toFixed(6)}`;
-            
+
             // Show accuracy with visual indicator
             let accuracyText = `Accuracy: ±${userAccuracy.toFixed(0)} meters`;
             let accuracyColor = '#28a745'; // Green
-            
+
             if (userAccuracy <= 50) {
                 accuracyText += ' 🎯 (Excellent)';
                 accuracyColor = '#28a745';
@@ -857,7 +927,7 @@
                 accuracyText += ' 📍 (Default Location)';
                 accuracyColor = '#dc3545';
             }
-            
+
             const accuracyElement = document.getElementById('accuracy');
             accuracyElement.textContent = accuracyText;
             accuracyElement.style.color = accuracyColor;
@@ -881,17 +951,17 @@
             // Weather icon
             const iconCode = data.weather[0].main.toLowerCase();
             const icons = {
-                'clear': '☀️',
-                'clouds': '☁️',
-                'rain': '🌧️',
-                'drizzle': '🌦️',
-                'thunderstorm': '⛈️',
-                'snow': '❄️',
-                'mist': '🌫️',
-                'fog': '🌫️',
-                'haze': '🌫️'
+                'clear': '<i class="fas fa-sun text-warning"></i>',
+                'clouds': '<i class="fas fa-cloud text-secondary"></i>',
+                'rain': '<i class="fas fa-cloud-showers-heavy text-info"></i>',
+                'drizzle': '<i class="fas fa-cloud-rain text-info"></i>',
+                'thunderstorm': '<i class="fas fa-bolt text-warning"></i>',
+                'snow': '<i class="fas fa-snowflake text-info"></i>',
+                'mist': '<i class="fas fa-smog text-secondary"></i>',
+                'fog': '<i class="fas fa-smog text-secondary"></i>',
+                'haze': '<i class="fas fa-smog text-secondary"></i>'
             };
-            document.getElementById('weatherIcon').textContent = icons[iconCode] || '🌤️';
+            document.getElementById('weatherIcon').innerHTML = icons[iconCode] || '<i class="fas fa-cloud-sun"></i>';
         }
 
         function displayForecast(data) {
@@ -905,28 +975,28 @@
                 const date = new Date(forecast.dt * 1000);
                 const dayName = index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
+
                 const iconCode = forecast.weather[0].main.toLowerCase();
                 const icons = {
-                    'clear': '☀️',
-                    'clouds': '☁️',
-                    'rain': '🌧️',
-                    'drizzle': '🌦️',
-                    'thunderstorm': '⛈️',
-                    'snow': '❄️',
-                    'mist': '🌫️'
+                    'clear': '<i class="fas fa-sun text-warning"></i>',
+                    'clouds': '<i class="fas fa-cloud text-secondary"></i>',
+                    'rain': '<i class="fas fa-cloud-showers-heavy text-info"></i>',
+                    'drizzle': '<i class="fas fa-cloud-rain text-info"></i>',
+                    'thunderstorm': '<i class="fas fa-bolt text-warning"></i>',
+                    'snow': '<i class="fas fa-snowflake text-info"></i>',
+                    'mist': '<i class="fas fa-smog text-secondary"></i>'
                 };
 
                 // Calculate rain amount
                 const rainAmount = forecast.rain ? (forecast.rain['3h'] || 0) : 0;
-                const rainHTML = rainAmount > 0 ? `<div class="forecast-rain">🌧️ ${rainAmount.toFixed(1)} mm</div>` : '';
+                const rainHTML = rainAmount > 0 ? `<div class="forecast-rain"><i class="fas fa-umbrella"></i> ${rainAmount.toFixed(1)} mm</div>` : '';
 
                 const card = document.createElement('div');
                 card.className = 'forecast-card';
                 card.innerHTML = `
                     <div class="forecast-day">${dayName}</div>
                     <div class="forecast-date">${dateStr}</div>
-                    <div class="forecast-icon">${icons[iconCode] || '🌤️'}</div>
+                    <div class="forecast-icon">${icons[iconCode] || '<i class="fas fa-cloud-sun"></i>'}</div>
                     <div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div>
                     <div class="forecast-desc">${forecast.weather[0].description}</div>
                     ${rainHTML}
@@ -945,7 +1015,7 @@
                 const date = new Date(forecast.dt * 1000);
                 const dayName = index === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'long' });
                 const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
+
                 const temp = forecast.main.temp;
                 const rainAmount = forecast.rain ? (forecast.rain['3h'] || 0) : 0;
                 const humidity = forecast.main.humidity;
@@ -953,27 +1023,27 @@
                 let action, reason, cardClass;
 
                 if (rainAmount > 5) {
-                    action = '✅ Skip Irrigation';
+                    action = '<i class="fas fa-check-circle"></i> Skip Irrigation';
                     reason = `${rainAmount.toFixed(1)}mm rain expected - natural watering`;
                     cardClass = 'skip';
                 } else if (rainAmount > 2) {
-                    action = '⚠️ Reduce by 50%';
+                    action = '<i class="fas fa-exclamation-triangle"></i> Reduce by 50%';
                     reason = `Light rain (${rainAmount.toFixed(1)}mm) will supplement`;
                     cardClass = 'caution';
                 } else if (temp > 35) {
-                    action = '🔥 Increase Irrigation';
+                    action = '<i class="fas fa-fire"></i> Increase Irrigation';
                     reason = `High temp (${temp.toFixed(0)}°C) - more evaporation`;
                     cardClass = 'irrigate';
                 } else if (humidity < 40) {
-                    action = '💧 Normal + 20%';
+                    action = '<i class="fas fa-tint"></i> Normal + 20%';
                     reason = `Low humidity (${humidity}%) - faster drying`;
                     cardClass = 'irrigate';
                 } else if (temp < 20) {
-                    action = '⚠️ Reduce by 30%';
+                    action = '<i class="fas fa-leaf"></i> Reduce by 30%';
                     reason = `Cool weather (${temp.toFixed(0)}°C) - less evaporation`;
                     cardClass = 'caution';
                 } else {
-                    action = '✅ Normal Irrigation';
+                    action = '<i class="fas fa-check"></i> Normal Irrigation';
                     reason = 'Conditions are optimal';
                     cardClass = 'schedule-card';
                 }
@@ -999,17 +1069,17 @@
             // Current Temperature Advice
             if (current.main.temp > 35) {
                 advice.push({
-                    title: '🌡️ High Temperature Alert',
+                    title: '<i class="fas fa-thermometer-full"></i> High Temperature Alert',
                     text: `Current temperature is ${current.main.temp.toFixed(1)}°C. Increase irrigation by 30% and water during early morning (6-8 AM) or evening (6-8 PM) to minimize evaporation losses.`
                 });
             } else if (current.main.temp < 15) {
                 advice.push({
-                    title: '❄️ Cool Weather',
+                    title: '<i class="fas fa-snowflake"></i> Cool Weather',
                     text: `Temperature is ${current.main.temp.toFixed(1)}°C. Reduce watering by 20-30% as plants require less water in cooler conditions and evaporation is minimal.`
                 });
             } else {
                 advice.push({
-                    title: '✅ Optimal Temperature',
+                    title: '<i class="fas fa-check-circle"></i> Optimal Temperature',
                     text: `Temperature is ${current.main.temp.toFixed(1)}°C - ideal for most crops. Maintain your regular irrigation schedule.`
                 });
             }
@@ -1017,12 +1087,12 @@
             // Humidity Advice
             if (current.main.humidity > 80) {
                 advice.push({
-                    title: '💧 High Humidity',
+                    title: '<i class="fas fa-tint"></i> High Humidity',
                     text: `Humidity at ${current.main.humidity}%. Soil retains moisture better in humid conditions. Reduce irrigation by 10-15% to prevent waterlogging and fungal diseases.`
                 });
             } else if (current.main.humidity < 40) {
                 advice.push({
-                    title: '💨 Low Humidity Warning',
+                    title: '<i class="fas fa-wind"></i> Low Humidity Warning',
                     text: `Humidity only ${current.main.humidity}%. Plants lose water faster through transpiration. Increase watering by 15-20% and consider mulching to retain soil moisture.`
                 });
             }
@@ -1035,12 +1105,12 @@
             if (rainInForecast.length > 0) {
                 const totalRain = rainInForecast.reduce((sum, item) => sum + (item.rain['3h'] || 0), 0);
                 advice.push({
-                    title: '🌧️ Rain Expected',
+                    title: '<i class="fas fa-cloud-showers-heavy"></i> Rain Expected',
                     text: `${totalRain.toFixed(1)}mm of rain forecasted in the next 48 hours. Delay irrigation and let nature water your crops naturally. This will save water and reduce costs.`
                 });
             } else {
                 advice.push({
-                    title: '☀️ No Rain Forecasted',
+                    title: '<i class="fas fa-sun"></i> No Rain Forecasted',
                     text: 'No significant rainfall expected in the next 7 days. Ensure consistent irrigation schedule to maintain optimal soil moisture for crop growth.'
                 });
             }
@@ -1048,7 +1118,7 @@
             // Wind Advisory
             if (current.wind.speed > 5) {
                 advice.push({
-                    title: '💨 Windy Conditions',
+                    title: '<i class="fas fa-wind"></i> Windy Conditions',
                     text: `Wind speed: ${(current.wind.speed * 3.6).toFixed(1)} km/h. Strong winds increase water loss through drift and evaporation. Use drip irrigation or water early morning when winds are calmer.`
                 });
             }
@@ -1060,29 +1130,29 @@
 
             if (hour >= sunrise && hour <= sunrise + 2) {
                 advice.push({
-                    title: '⏰ Perfect Timing - Morning Golden Hour',
+                    title: '<i class="fas fa-clock"></i> Perfect Timing - Morning Golden Hour',
                     text: `It's currently ${hour}:00 - the BEST time to irrigate! Morning watering (6-8 AM) allows plants to absorb water before heat peaks, minimizing evaporation by up to 40%.`
                 });
             } else if (hour >= sunset - 2 && hour <= sunset) {
                 advice.push({
-                    title: '⏰ Good Timing - Evening Window',
+                    title: '<i class="fas fa-clock"></i> Good Timing - Evening Window',
                     text: `It's ${hour}:00 - a good time to irrigate. Evening watering (5-7 PM) is effective but ensure leaves dry before nightfall to prevent fungal diseases.`
                 });
             } else if (hour >= 11 && hour <= 15) {
                 advice.push({
-                    title: '⚠️ Avoid Midday Irrigation',
+                    title: '<i class="fas fa-exclamation-circle"></i> Avoid Midday Irrigation',
                     text: `It's ${hour}:00 - the WORST time to water! Midday irrigation loses 50-70% water to evaporation. Wait until evening (after 5 PM) or tomorrow morning (6-8 AM).`
                 });
             } else {
                 advice.push({
-                    title: '⏰ Optimal Irrigation Windows',
+                    title: '<i class="fas fa-clock"></i> Optimal Irrigation Windows',
                     text: `Best times to irrigate: Early morning (6-8 AM) for maximum absorption, or Evening (5-7 PM) to minimize evaporation. Avoid watering between 11 AM - 3 PM.`
                 });
             }
 
             // Crop-Specific Advice
             advice.push({
-                title: '🌾 General Crop Care',
+                title: '<i class="fas fa-seedling"></i> General Crop Care',
                 text: 'Monitor soil moisture at root depth (6-12 inches). Most crops need 25-50mm water per week. Adjust based on crop type, growth stage, and weather conditions.'
             });
 
@@ -1126,7 +1196,7 @@
             if (current.main.temp > 40) {
                 alertBanner.innerHTML = `
                     <div class="alert-banner danger">
-                        <span style="font-size: 1.5em;">🔥</span>
+                        <span style="font-size: 1.5em;"><i class="fas fa-fire"></i></span>
                         <div>
                             <strong>EXTREME HEAT WARNING!</strong> Temperature exceeds 40°C. 
                             Increase irrigation immediately and provide shade for sensitive crops.
@@ -1136,7 +1206,7 @@
             } else if (current.main.temp < 5) {
                 alertBanner.innerHTML = `
                     <div class="alert-banner danger">
-                        <span style="font-size: 1.5em;">❄️</span>
+                        <span style="font-size: 1.5em;"><i class="fas fa-snowflake"></i></span>
                         <div>
                             <strong>FROST WARNING!</strong> Temperature near freezing. 
                             Protect sensitive crops and consider covering plants overnight.
@@ -1146,14 +1216,14 @@
             }
 
             // Heavy rain alert
-            const heavyRain = forecast.list.slice(0, 8).some(item => 
+            const heavyRain = forecast.list.slice(0, 8).some(item =>
                 item.rain && item.rain['3h'] > 15
             );
 
             if (heavyRain) {
                 alertBanner.innerHTML += `
                     <div class="alert-banner warning">
-                        <span style="font-size: 1.5em;">⛈️</span>
+                        <span style="font-size: 1.5em;"><i class="fas fa-cloud-showers-heavy"></i></span>
                         <div>
                             <strong>HEAVY RAIN ALERT!</strong> Significant rainfall expected in next 24 hours. 
                             Skip all irrigation to prevent waterlogging and soil erosion.
@@ -1163,12 +1233,12 @@
             }
 
             // Perfect conditions alert
-            if (current.main.temp >= 20 && current.main.temp <= 30 && 
+            if (current.main.temp >= 20 && current.main.temp <= 30 &&
                 current.main.humidity >= 50 && current.main.humidity <= 70 &&
                 !heavyRain) {
                 alertBanner.innerHTML += `
                     <div class="alert-banner success">
-                        <span style="font-size: 1.5em;">✅</span>
+                        <span style="font-size: 1.5em;"><i class="fas fa-check-circle"></i></span>
                         <div>
                             <strong>IDEAL CONDITIONS!</strong> Temperature and humidity are perfect for crop growth. 
                             Maintain regular irrigation schedule for optimal yields.
@@ -1183,18 +1253,18 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('loading').innerHTML = `
                 <div class="spinner"></div>
-                <p>🔄 Refreshing your location and weather data...</p>
+                <p><i class="fas fa-sync-alt fa-spin"></i> Refreshing your location and weather data...</p>
                 <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
                     This may take a few seconds for high accuracy
                 </p>
             `;
-            
+
             // Reset location variables to force fresh detection
             userLat = null;
             userLon = null;
             userAccuracy = null;
             locationName = 'Unknown Location';
-            
+
             await loadWeatherData();
         }
 
@@ -1211,4 +1281,5 @@
         }
     </script>
 </body>
+
 </html>

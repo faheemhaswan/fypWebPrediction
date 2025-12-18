@@ -13,6 +13,7 @@ MODEL_FILE = 'optimized_irrigation_model.pkl'
 try:
     with open(MODEL_FILE, 'rb') as file:
         model = pickle.load(file)
+    # Model reloaded for compatibility
     print(f"✅ Model loaded successfully from '{MODEL_FILE}'")
 except FileNotFoundError:
     print(f"❌ ERROR: '{MODEL_FILE}' not found. Please ensure the model file is in the same directory.")

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,7 @@
         .navbar {
             background: white;
             padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,25 +60,26 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            padding: 8px 20px;
-            background: #f5f5f5;
-            border-radius: 25px;
+            padding: 5px 20px 5px 5px;
+            background: #f2f2f0;
+            border-radius: 50px;
             font-weight: 600;
             color: #333;
-            border: 2px solid #e0e0e0;
+            border: none;
             margin-top: 5px;
         }
 
         .user-avatar {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 38px;
+            height: 38px;
+            background: #0d6efd;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1rem;
         }
 
         .nav-buttons {
@@ -89,27 +91,34 @@
         }
 
         .nav-btn {
-            background: #667eea;
+            background: #e7f1ff;
             border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
+            color: #0d6efd;
+            padding: 10px 24px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
         }
 
         .nav-btn:hover {
-            background: #5568d3;
+            background: #cfe2ff;
+            color: #0d6efd;
             transform: translateY(-2px);
         }
 
         .logout-btn {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            background: #ffebeb;
+            color: #dc3545;
         }
 
         .logout-btn:hover {
-            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            background: #f8d7da;
+            color: #dc3545;
         }
 
         .container {
@@ -122,7 +131,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             margin-bottom: 30px;
             text-align: center;
         }
@@ -147,7 +156,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
         .settings-card h2 {
@@ -176,7 +185,7 @@
             color: white;
             font-size: 3em;
             font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         .profile-info {
@@ -212,7 +221,8 @@
             font-weight: 600;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -221,7 +231,8 @@
             transition: all 0.3s;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -385,8 +396,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -415,6 +431,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
         <div class="navbar-center">
@@ -444,7 +461,7 @@
             <div class="settings-card">
                 <h2>👤 Profile Information</h2>
                 <div class="success-message" id="successMessage">Profile updated successfully!</div>
-                
+
                 <div class="profile-section">
                     <div class="profile-avatar-large" id="avatarLarge">U</div>
                     <div class="profile-info">
@@ -512,7 +529,8 @@
 
                     <div class="form-group">
                         <label for="defaultFieldSize">Default Field Size (ha)</label>
-                        <input type="number" id="defaultFieldSize" step="0.1" min="0.1" placeholder="e.g., 1.5" onchange="savePreferences()">
+                        <input type="number" id="defaultFieldSize" step="0.1" min="0.1" placeholder="e.g., 1.5"
+                            onchange="savePreferences()">
                     </div>
 
                     <div class="form-group">
@@ -539,7 +557,7 @@
             <!-- Notification Preferences -->
             <div class="settings-card">
                 <h2>🔔 Notification Preferences</h2>
-                
+
                 <div class="setting-item">
                     <div class="setting-info">
                         <h3>Email Notifications</h3>
@@ -553,7 +571,8 @@
                         <h3>Weather Alerts</h3>
                         <p>Get notified about significant weather changes</p>
                     </div>
-                    <div class="toggle-switch active" id="toggle-weather" onclick="toggleSetting(this, 'weather')"></div>
+                    <div class="toggle-switch active" id="toggle-weather" onclick="toggleSetting(this, 'weather')">
+                    </div>
                 </div>
 
                 <div class="setting-item">
@@ -569,14 +588,15 @@
                         <h3>Low Soil Moisture Alerts</h3>
                         <p>Alert when soil moisture drops below 30%</p>
                     </div>
-                    <div class="toggle-switch active" id="toggle-moisture" onclick="toggleSetting(this, 'moisture')"></div>
+                    <div class="toggle-switch active" id="toggle-moisture" onclick="toggleSetting(this, 'moisture')">
+                    </div>
                 </div>
             </div>
 
             <!-- Data Management -->
             <div class="settings-card">
                 <h2>💾 Data Management</h2>
-                
+
                 <div class="setting-item">
                     <div class="setting-info">
                         <h3>Export Prediction History</h3>
@@ -610,7 +630,7 @@
             <!-- Danger Zone -->
             <div class="settings-card">
                 <h2>⚠️ Danger Zone</h2>
-                
+
                 <div class="setting-item">
                     <div class="setting-info">
                         <h3>Clear All Predictions</h3>
@@ -658,7 +678,7 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
-        
+
         window.firebaseDatabase = database;
         window.firebaseAuth = auth;
         window.firebaseModules = { ref, onValue, remove, set, get, deleteUser };
@@ -670,7 +690,7 @@
     <script>
         let userPredictions = [];
 
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             checkAuth();
             loadAccountStats();
             loadUserSettings();
@@ -692,13 +712,13 @@
         function displayUserInfo(name, email) {
             const userName = name || email || 'User';
             const userEmail = email || 'No email';
-            
+
             document.getElementById('userName').textContent = userName;
             document.getElementById('profileName').textContent = userName;
             document.getElementById('profileEmail').textContent = userEmail;
             document.getElementById('displayName').value = userName;
             document.getElementById('email').value = userEmail;
-            
+
             const initial = userName.charAt(0).toUpperCase();
             document.getElementById('userAvatar').textContent = initial;
             document.getElementById('avatarLarge').textContent = initial;
@@ -723,18 +743,18 @@
             const { ref, onValue } = window.firebaseModules;
             const database = window.firebaseDatabase;
             const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
-            
+
             onValue(predictionsRef, (snapshot) => {
                 let totalPredictions = 0;
                 let totalWater = 0;
                 let totalArea = 0;
                 userPredictions = [];
-                
+
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
                         userPredictions.push({ id: childSnapshot.key, ...data });
-                        
+
                         totalPredictions++;
                         totalWater += data.predictions?.ml_model?.total_water_liters || 0;
                         totalArea += data.field?.size_hectares || 0;
@@ -770,7 +790,7 @@
                 const snapshot = await get(settingsRef);
                 if (snapshot.exists()) {
                     const settings = snapshot.val();
-                    
+
                     // Load preferences
                     if (settings.preferences) {
                         document.getElementById('defaultCrop').value = settings.preferences.defaultCrop || '';
@@ -823,7 +843,7 @@
             };
 
             const settingsRef = ref(database, `user_settings/${sanitizedEmail}/preferences`);
-            
+
             try {
                 await set(settingsRef, preferences);
                 console.log('✅ Preferences saved');
@@ -853,7 +873,7 @@
             };
 
             const settingsRef = ref(database, `user_settings/${sanitizedEmail}/notifications`);
-            
+
             try {
                 await set(settingsRef, notifications);
                 console.log('✅ Notification settings saved');
@@ -865,7 +885,7 @@
         function updateProfile(event) {
             event.preventDefault();
             const newName = document.getElementById('displayName').value.trim();
-            
+
             if (!newName) {
                 alert('Please enter a valid name');
                 return;
@@ -873,7 +893,7 @@
 
             sessionStorage.setItem('userName', newName);
             localStorage.setItem('userName', newName);
-            
+
             displayUserInfo(newName, document.getElementById('email').value);
             showSuccess('Profile updated successfully!');
         }
@@ -926,7 +946,7 @@
                     pred.predictions?.difference_percent || '',
                     pred.location?.accuracy_meters || ''
                 ].join(',');
-                
+
                 csv += row + '\n';
             });
 
@@ -934,12 +954,12 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             const timestamp = new Date().toISOString().split('T')[0];
             link.setAttribute('href', url);
             link.setAttribute('download', `irrigation_predictions_${timestamp}.csv`);
             link.style.visibility = 'hidden';
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -973,12 +993,12 @@
             const blob = new Blob([json], { type: 'application/json' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             const timestamp = new Date().toISOString().split('T')[0];
             link.setAttribute('href', url);
             link.setAttribute('download', `irrigation_backup_${timestamp}.json`);
             link.style.visibility = 'hidden';
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1012,7 +1032,7 @@
                         const { ref, remove } = window.firebaseModules;
                         const database = window.firebaseDatabase;
                         const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
-                        
+
                         await remove(settingsRef);
                         console.log('✅ Settings reset in Firebase');
                     }
@@ -1040,12 +1060,12 @@
                 const { ref, remove } = window.firebaseModules;
                 const database = window.firebaseDatabase;
                 const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
-                
+
                 await remove(predictionsRef);
-                
+
                 console.log('✅ All predictions deleted');
                 alert('✅ All predictions have been deleted!');
-                
+
                 // Reload stats
                 loadAccountStats();
             } catch (error) {
@@ -1054,76 +1074,76 @@
             }
         }
 
-    async function deleteAccount() {
-        const confirmed = confirm('⚠️ WARNING: This will permanently delete your account and ALL data.\n\nAre you ABSOLUTELY sure?');
-        if (!confirmed) return;
+        async function deleteAccount() {
+            const confirmed = confirm('⚠️ WARNING: This will permanently delete your account and ALL data.\n\nAre you ABSOLUTELY sure?');
+            if (!confirmed) return;
 
-        const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
-        const typedName = prompt(`Type your username "${userName}" to confirm account deletion:`);
-        
-        if (typedName !== userName) {
-            alert('❌ Username does not match. Account deletion cancelled.');
-            return;
-        }
+            const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const typedName = prompt(`Type your username "${userName}" to confirm account deletion:`);
 
-        try {
-            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
-            if (!userEmail) {
-                alert('❌ No user email found.');
+            if (typedName !== userName) {
+                alert('❌ Username does not match. Account deletion cancelled.');
                 return;
             }
 
-            const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
-            const { ref, remove, deleteUser } = window.firebaseModules;
-            const database = window.firebaseDatabase;
-            const auth = window.firebaseAuth;
-            
-            console.log('🗑️ Starting account deletion process...');
-            
-            // Step 1: Delete predictions from database
-            const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
-            await remove(predictionsRef);
-            console.log('✅ Predictions deleted');
-            
-            // Step 2: Delete settings from database
-            const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
-            await remove(settingsRef);
-            console.log('✅ Settings deleted');
+            try {
+                const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+                if (!userEmail) {
+                    alert('❌ No user email found.');
+                    return;
+                }
 
-            // Step 3: Delete Firebase Authentication account
-            const currentUser = auth.currentUser;
-            if (currentUser) {
-                await deleteUser(currentUser);
-                console.log('✅ Firebase Auth account deleted');
-            } else {
-                console.log('⚠️ No authenticated user found in Firebase Auth');
-            }
+                const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+                const { ref, remove, deleteUser } = window.firebaseModules;
+                const database = window.firebaseDatabase;
+                const auth = window.firebaseAuth;
 
-            // Step 4: Clear local storage
-            sessionStorage.clear();
-            localStorage.clear();
-            
-            console.log('✅ Account deletion complete');
-            alert('✅ Account deleted successfully. You will be redirected to login.');
-            window.location.href = 'index.html';
-            
-        } catch (error) {
-            console.error('❌ Error deleting account:', error);
-            
-            // Provide specific error messages
-            if (error.code === 'auth/requires-recent-login') {
-                alert('❌ For security reasons, please log out and log back in, then try deleting your account again.');
-            } else if (error.code === 'auth/no-current-user') {
-                // If no Firebase Auth user, just delete the data
-                alert('⚠️ Your data has been deleted, but no Firebase Authentication account was found. You may need to contact support if you have login issues.');
+                console.log('🗑️ Starting account deletion process...');
+
+                // Step 1: Delete predictions from database
+                const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
+                await remove(predictionsRef);
+                console.log('✅ Predictions deleted');
+
+                // Step 2: Delete settings from database
+                const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
+                await remove(settingsRef);
+                console.log('✅ Settings deleted');
+
+                // Step 3: Delete Firebase Authentication account
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    await deleteUser(currentUser);
+                    console.log('✅ Firebase Auth account deleted');
+                } else {
+                    console.log('⚠️ No authenticated user found in Firebase Auth');
+                }
+
+                // Step 4: Clear local storage
                 sessionStorage.clear();
                 localStorage.clear();
+
+                console.log('✅ Account deletion complete');
+                alert('✅ Account deleted successfully. You will be redirected to login.');
                 window.location.href = 'index.html';
-            } else {
-                alert('❌ Failed to delete account: ' + error.message);
+
+            } catch (error) {
+                console.error('❌ Error deleting account:', error);
+
+                // Provide specific error messages
+                if (error.code === 'auth/requires-recent-login') {
+                    alert('❌ For security reasons, please log out and log back in, then try deleting your account again.');
+                } else if (error.code === 'auth/no-current-user') {
+                    // If no Firebase Auth user, just delete the data
+                    alert('⚠️ Your data has been deleted, but no Firebase Authentication account was found. You may need to contact support if you have login issues.');
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                } else {
+                    alert('❌ Failed to delete account: ' + error.message);
+                }
             }
         }
-    }
 
         function goToDashboard() {
             window.location.href = 'dashboard.html';
@@ -1138,4 +1158,5 @@
         }
     </script>
 </body>
+
 </html>
