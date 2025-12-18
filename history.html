@@ -11,10 +11,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/aquawise_logo.png">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
         /* --- AquaWise Standard Design System (Matches Dashboard) --- */
         :root {
             --primary: #0d6efd;
@@ -1001,6 +1007,7 @@
 
         window.loadPredictionsFromFirebase = loadPredictionsFromFirebase;
     </script>
+    <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
 </body>
 
 </html>

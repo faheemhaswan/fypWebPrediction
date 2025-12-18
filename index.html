@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/aquawise_logo.png">
 
     <style>
         * {
@@ -21,6 +22,9 @@
         }
 
         body {
+            opacity: 0;
+            /* Smooth transition start state */
+            transition: opacity 0.5s ease-in-out;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: url('assets/background.png') no-repeat center center/cover;
             min-height: 100vh;
@@ -719,6 +723,7 @@
     <script>
         // Check if user is already logged in
         window.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => document.body.style.opacity = '1', 50);
             const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
             if (userId) {
                 // User is already logged in, redirect to dashboard
