@@ -1354,7 +1354,13 @@
 
             } catch (error) {
                 console.error('Prediction Error:', error);
-                alert(`Error: ${error.message}\n\nCheck connection to API.`);
+
+                // Friendly error message for "Failed to fetch"
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    alert('⚠️ Backend Connection Failed!\n\nPlease make sure the Python server is running.\n\n👉 Solution: Double-click "run_backend.bat" in your project folder.');
+                } else {
+                    alert(`Error: ${error.message}\n\nCheck connection to API.`);
+                }
 
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = false;
