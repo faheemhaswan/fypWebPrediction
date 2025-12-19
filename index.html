@@ -1006,7 +1006,7 @@
 
                 storage.setItem('userId', userCredential.user.uid);
                 storage.setItem('userEmail', userCredential.user.email);
-                storage.setItem('userName', userCredential.user.displayName || 'User');
+                storage.setItem('userName', userCredential.user.displayName || userCredential.user.email.split('@')[0]);
 
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';

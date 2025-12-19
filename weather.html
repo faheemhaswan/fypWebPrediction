@@ -607,16 +607,48 @@
 </head>
 
 <body>
+    <script>
+        (function () {
+            const name = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const email = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (name) {
+                setTimeout(() => {
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = name.replace(/["\ [\]]/g, '');
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = name.charAt(0).toUpperCase();
+                }, 0);
+            } else if (email) {
+                setTimeout(() => {
+                    const n = email.split('@')[0];
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = n;
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = n.charAt(0).toUpperCase();
+                }, 0);
+            }
+        })();
+    </script>
     <nav class="navbar">
         <a href="#" class="navbar-brand">
             <img src="assets/aquawise_logo.png" alt="AquaWise Logo" class="logo-img">
             <span>AquaWise</span>
         </a>
-        <div class="navbar-actions">
+        <div class="navbar-actions" style="display: flex; align-items: center; gap: 15px;">
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
-                <span id="userName">Loading...</span>
+                <span id="userName"></span>
             </div>
+
+            <a href="dashboard.html" class="nav-btn-home"
+                style="text-decoration: none; color: #666; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-home"></i> Home
+            </a>
+
+            <button onclick="handleLogout()" class="nav-btn-logout"
+                style="border: none; background: transparent; color: #dc3545; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </nav>
 
@@ -751,105 +783,126 @@
         }
 
         async function getUserLocation() {
-            return new Promise((resolve) => {
+            return new Promise(async (resolve) => {
+                // 1. CHECK IF GEOLOCATION IS SUPPORTED
                 if (!navigator.geolocation) {
-                    console.log('❌ Geolocation not supported, using default location');
+                    alert('⚠️ GPS Not Supported\\n\\nYour browser does not support location services.\\n\\nPlease use the \"Pick on Map\" button to select your location manually.');
                     userLat = DEFAULT_LAT;
                     userLon = DEFAULT_LON;
-                    userAccuracy = 1000;
-                    locationName = 'Tapah, Perak, Malaysia (Default)';
+                    userAccuracy = 10000; // Very high to indicate it's fake
+                    locationName = '⚠️ DEFAULT LOCATION (GPS Not Available)';
                     resolve();
                     return;
                 }
 
-                const ACCURACY_THRESHOLD = 50; // High accuracy target
-                const LAPTOP_ACCURACY_THRESHOLD = 200; // Acceptable for laptops
+                // 2. CHECK PERMISSION STATE (Modern browsers only)
+                try {
+                    if (navigator.permissions) {
+                        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+                        if (permissionStatus.state === 'denied') {
+                            alert('🚫 Location Permission Denied\\n\\nYou have blocked location access for this website.\\n\\nTo enable:\\n1. Click the 🔒 lock icon in your browser address bar\\n2. Allow location access\\n3. Refresh the page\\n\\nOR use \"Pick on Map\" to select manually.');
+                            userLat = DEFAULT_LAT;
+                            userLon = DEFAULT_LON;
+                            userAccuracy = 10000;
+                            locationName = '⚠️ DEFAULT LOCATION (Permission Denied)';
+                            resolve();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Permission API not available, continuing...');
+                }
+
+                // 3. AGGRESSIVE GPS DETECTION
+                const ACCURACY_THRESHOLD = 50; // Accept anything under 50m
+                const ACCEPTABLE_THRESHOLD = 500; // Will accept up to 500m if GPS struggles
+                let bestPosition = null;
                 let bestAccuracy = Infinity;
                 let attempts = 0;
-                const maxAttempts = 3;
+                let gpsLocked = false;
 
-                console.log('📍 Starting high-accuracy location detection...');
+                console.log('🛰️ Starting GPS location detection (60s timeout)...');
 
                 const watchId = navigator.geolocation.watchPosition(
                     (position) => {
                         attempts++;
-                        const currentAccuracy = position.coords.accuracy;
+                        const acc = position.coords.accuracy;
 
-                        console.log(`📍 Location attempt ${attempts}: Accuracy ${currentAccuracy.toFixed(0)}m`);
-                        console.log(`   Lat: ${position.coords.latitude.toFixed(6)}, Lon: ${position.coords.longitude.toFixed(6)}`);
+                        console.log(`GPS Attempt ${attempts}: Accuracy = ${acc.toFixed(0)}m`);
 
-                        // Accept if accuracy meets threshold OR if we've tried enough times
-                        const shouldAccept = currentAccuracy <= ACCURACY_THRESHOLD ||
-                            (attempts >= maxAttempts && currentAccuracy <= LAPTOP_ACCURACY_THRESHOLD);
-
-                        if (shouldAccept && currentAccuracy < bestAccuracy) {
+                        // Always keep the best position we've seen
+                        if (acc < bestAccuracy) {
+                            bestAccuracy = acc;
+                            bestPosition = position;
                             userLat = position.coords.latitude;
                             userLon = position.coords.longitude;
-                            userAccuracy = currentAccuracy;
-                            bestAccuracy = currentAccuracy;
+                            userAccuracy = acc;
+                        }
 
-                            console.log(`✅ Location accepted: ${userLat.toFixed(6)}, ${userLon.toFixed(6)} (${userAccuracy.toFixed(0)}m)`);
-
-                            if (currentAccuracy <= ACCURACY_THRESHOLD) {
-                                console.log('🎯 High accuracy achieved!');
-                                navigator.geolocation.clearWatch(watchId);
-                                resolve();
-                            } else if (attempts >= maxAttempts) {
-                                console.log('✅ Acceptable accuracy after multiple attempts');
-                                navigator.geolocation.clearWatch(watchId);
-                                resolve();
-                            }
-                        } else {
-                            console.log(`⏳ Refining location... (current: ${currentAccuracy.toFixed(0)}m, target: ${ACCURACY_THRESHOLD}m)`);
+                        // If we get excellent accuracy, stop immediately
+                        if (acc <= ACCURACY_THRESHOLD && !gpsLocked) {
+                            gpsLocked = true;
+                            console.log('✅ Excellent GPS lock achieved!');
+                            navigator.geolocation.clearWatch(watchId);
+                            resolve();
                         }
                     },
                     (error) => {
                         console.error('❌ Geolocation Error:', error.code, error.message);
                         navigator.geolocation.clearWatch(watchId);
 
-                        // Use default location
-                        userLat = DEFAULT_LAT;
-                        userLon = DEFAULT_LON;
-                        userAccuracy = 1000;
-                        locationName = 'Tapah, Perak, Malaysia (Default - Location Access Denied)';
-
-                        if (error.code === error.PERMISSION_DENIED) {
-                            console.log('❌ Location permission denied by user');
-                        } else if (error.code === error.TIMEOUT) {
-                            console.log('⏱️ Location timeout');
-                        } else if (error.code === error.POSITION_UNAVAILABLE) {
-                            console.log('❌ Location unavailable');
+                        let errorMsg = '';
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = '🚫 Location Permission Denied\\n\\nPlease allow location access in your browser settings.\\n\\nOR click \"Pick on Map\" to select your location manually.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = '📡 GPS Signal Unavailable\\n\\nYour device cannot determine your location.\\n\\nTry:\\n• Moving near a window\\n• Enabling GPS on your device\\n• Using \"Pick on Map\" instead';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = '⏱️ GPS Timeout\\n\\nLocation detection took too long.\\n\\nPlease use \"Pick on Map\" to select your location.';
+                                break;
                         }
 
+                        if (errorMsg) alert(errorMsg);
+
+                        userLat = DEFAULT_LAT;
+                        userLon = DEFAULT_LON;
+                        userAccuracy = 10000;
+                        locationName = '⚠️ DEFAULT LOCATION (GPS Error - Use \"Pick on Map\")';
                         resolve();
                     },
                     {
                         enableHighAccuracy: true,
-                        timeout: 15000, // 15 seconds per attempt
-                        maximumAge: 0 // Don't use cached location
+                        timeout: 60000, // 60 seconds - give GPS plenty of time
+                        maximumAge: 0   // Don't use cached location
                     }
                 );
 
-                // Fallback timeout: Accept best location after 20 seconds
+                // OUTER TIMEOUT: Wait up to 60 seconds for GPS lock
                 setTimeout(() => {
-                    if (!userLat || userAccuracy === null) {
+                    if (!gpsLocked) {
                         navigator.geolocation.clearWatch(watchId);
 
-                        if (bestAccuracy < Infinity && bestAccuracy <= LAPTOP_ACCURACY_THRESHOLD) {
-                            // Use the best location we got
-                            console.log(`⏰ Timeout reached, using best available location (${bestAccuracy.toFixed(0)}m)`);
+                        // If we got SOMETHING reasonable, use it
+                        if (bestAccuracy < ACCEPTABLE_THRESHOLD && bestPosition) {
+                            console.log(`⚠️ Using best available position: ${bestAccuracy.toFixed(0)}m accuracy`);
+                            userLat = bestPosition.coords.latitude;
+                            userLon = bestPosition.coords.longitude;
+                            userAccuracy = bestAccuracy;
                             resolve();
                         } else {
-                            // Use default location
-                            console.log('⏰ Timeout reached, using default location');
+                            // GPS completely failed
+                            console.error('❌ GPS failed to get acceptable accuracy');
+                            alert('⚠️ GPS Detection Failed\\n\\nCould not detect your exact location.\\n\\nShowing default location.\\n\\n✅ Please use \"Pick on Map\" to select your actual location for accurate weather data.');
                             userLat = DEFAULT_LAT;
                             userLon = DEFAULT_LON;
-                            userAccuracy = 1000;
-                            locationName = 'Tapah, Perak, Malaysia (Default - Timeout)';
+                            userAccuracy = 10000;
+                            locationName = '⚠️ DEFAULT LOCATION (GPS Failed - Use \"Pick on Map\")';
                             resolve();
                         }
                     }
-                }, 20000);
+                }, 60000); // 60 second total timeout
             });
         }
 
@@ -1283,6 +1336,16 @@
 
             await loadWeatherData();
         }
+
+        // Logout function
+        function handleLogout() {
+            sessionStorage.clear();
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            window.location.href = 'index.html';
+        }
+        window.handleLogout = handleLogout;
     </script>
     <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
 </body>
