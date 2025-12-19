@@ -490,26 +490,26 @@
             <div class="success-message" id="loginSuccess"></div>
 
             <form onsubmit="handleLogin(event)">
-                <h2>Welcome Back!</h2>
-                <p class="subtitle">Login to access your smart irrigation dashboard</p>
+                <div class="login-header">
+                    <h2>Welcome Back!</h2>
+                </div>
 
                 <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
                     <div class="form-field" id="loginEmailField">
+                        <label for="loginEmail">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
                         <input type="email" id="loginEmail" placeholder="Email Address" required>
-                        <span class="field-message error">Please enter a valid email address</span>
-                        <span class="field-message success">Email looks good!</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="loginPassword">Password</label>
                     <div style="position: relative;">
                         <div class="form-field" id="loginPasswordField">
-                            <input type="password" id="loginPassword" placeholder="Password" required
-                                style="padding-right: 80px;">
-                            <span class="field-message error">Password is required</span>
-                            <span class="field-message success">Password entered</span>
+                            <label for="loginPassword">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input type="password" id="loginPassword" placeholder="Password" required>
                         </div>
                         <button type="button" onclick="togglePassword('loginPassword', 'toggleLoginPass')"
                             id="toggleLoginPass" class="password-toggle-btn">Show</button>
