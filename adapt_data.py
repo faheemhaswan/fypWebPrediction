@@ -165,14 +165,46 @@ r2_optimized = r2_score(Y_test, Y_pred_optimized)
 
 print("\n✅ Grid Search Complete.")
 print(f"Best Hyperparameters Found: {grid_search.best_params_}")
-print("-" * 50)
-print("### Optimized Model Evaluation ###")
-print(f"Best Model (Random Forest) Mean Absolute Error (MAE): {mae_optimized:,.2f} liters")
-print(f"Best Model R-squared (R²): {r2_optimized:.4f}")
-print("-" * 50)
+print("\n" + "=" * 70)
+print("🎯 MODEL PERFORMANCE REPORT".center(70))
+print("=" * 70)
+print(f"\n📊 Dataset Information:")
+print(f"   • Total Samples: {len(df):,}")
+print(f"   • Training Set: {len(X_train):,} samples ({len(X_train)/len(df)*100:.1f}%)")
+print(f"   • Test Set: {len(X_test):,} samples ({len(X_test)/len(df)*100:.1f}%)")
+print(f"   • Features Used: {X.shape[1]}")
+
+print(f"\n🌟 Model Accuracy Metrics:")
+print(f"   ┌─────────────────────────────────────────────┐")
+print(f"   │  Model Accuracy (R²):  {r2_optimized*100:5.2f}%          │")
+print(f"   │  Average Error (MAE):  {mae_optimized:6.2f} liters    │")
+print(f"   └─────────────────────────────────────────────┘")
+
+# Interpretation
+if r2_optimized >= 0.95:
+    quality = "🏆 EXCELLENT"
+    interpretation = "Your model is highly accurate!"
+elif r2_optimized >= 0.85:
+    quality = "✅ VERY GOOD"
+    interpretation = "Your model performs well."
+elif r2_optimized >= 0.70:
+    quality = "👍 GOOD"
+    interpretation = "Your model is acceptable."
+else:
+    quality = "⚠️  NEEDS IMPROVEMENT"
+    interpretation = "Consider more training data."
+
+print(f"\n📈 Model Quality: {quality}")
+print(f"   {interpretation}")
+print(f"\n💡 What This Means:")
+print(f"   • On average, predictions are within ±{mae_optimized:.0f} liters of actual values")
+print(f"   • The model explains {r2_optimized*100:.2f}% of the variation in water requirements")
+
+print("\n" + "=" * 70)
 
 # E. Save the Model (Next Logical Step)
 with open(MODEL_OUTPUT_FILE, 'wb') as file:
     pickle.dump(best_model, file)
-print(f"Model saved successfully to '{MODEL_OUTPUT_FILE}'.")
-print("This model can now be loaded for real-time predictions.")
+print(f"✅ Model saved successfully to '{MODEL_OUTPUT_FILE}'")
+print(f"🚀 Model is ready for deployment and real-time predictions!")
+print("=" * 70 + "\n")
