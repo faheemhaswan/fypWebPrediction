@@ -263,6 +263,13 @@
     color: #999999;
     margin-top: 6px;
     font-weight: 300;
+    line-height: 1.8;
+}
+
+.footer-developer {
+    font-size: 11px;
+    color: #aaaaaa;
+    font-style: italic;
 }
 
 /* Confirmation Modal */
