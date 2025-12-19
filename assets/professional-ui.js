@@ -263,17 +263,7 @@ function showConfirmation(options) {
             if (e.target === overlay) {
                 cleanup();
                 resolve(false);
-            }
-        };
-    });
-}
-
-errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
-    } else if (errorDiv) {
-    errorDiv.remove();
-}
-
-return isValid;
+            });
 }
 
 // Input Prompt Dialog
