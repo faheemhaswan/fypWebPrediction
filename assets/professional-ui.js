@@ -263,7 +263,9 @@ function showConfirmation(options) {
             if (e.target === overlay) {
                 cleanup();
                 resolve(false);
-            });
+            }
+        };
+    });
 }
 
 // Input Prompt Dialog
