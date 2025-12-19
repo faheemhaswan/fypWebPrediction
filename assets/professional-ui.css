@@ -229,9 +229,9 @@
 
 /* Professional Footer */
 .app-footer {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 24px 20px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 30px 20px;
     margin-top: 60px;
     text-align: center;
 }
@@ -239,19 +239,20 @@
 .footer-simple {
     max-width: 600px;
     margin: 0 auto;
+    text-align: center;
 }
 
-.footer-logo {
-    height: 32px;
-    width: auto;
-    margin-bottom: 10px;
-    filter: brightness(0) invert(1);
-    /* Make logo white */
+.footer-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
 }
 
 .footer-tagline {
     font-size: 14px;
-    color: white;
+    color: #666666;
     margin-bottom: 8px;
     line-height: 1.5;
     font-weight: 400;
@@ -259,9 +260,9 @@
 
 .footer-copyright {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    color: #999999;
     margin-top: 6px;
-    font-weight: 400;
+    font-weight: 300;
 }
 
 /* Confirmation Modal */
