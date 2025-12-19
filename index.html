@@ -490,16 +490,27 @@
             <div class="success-message" id="loginSuccess"></div>
 
             <form onsubmit="handleLogin(event)">
+                <h2>Welcome Back!</h2>
+                <p class="subtitle">Login to access your smart irrigation dashboard</p>
+
                 <div class="form-group">
                     <label for="loginEmail">Email Address</label>
-                    <input type="email" id="loginEmail" placeholder="youremail@example.com" required>
+                    <div class="form-field" id="loginEmailField">
+                        <input type="email" id="loginEmail" placeholder="Email Address" required>
+                        <span class="field-message error">Please enter a valid email address</span>
+                        <span class="field-message success">Email looks good!</span>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
                     <div style="position: relative;">
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required
-                            style="padding-right: 80px;">
+                        <div class="form-field" id="loginPasswordField">
+                            <input type="password" id="loginPassword" placeholder="Password" required
+                                style="padding-right: 80px;">
+                            <span class="field-message error">Password is required</span>
+                            <span class="field-message success">Password entered</span>
+                        </div>
                         <button type="button" onclick="togglePassword('loginPassword', 'toggleLoginPass')"
                             id="toggleLoginPass" class="password-toggle-btn">Show</button>
                     </div>
@@ -762,9 +773,36 @@
     </script>
 
     <script>
-        // Check if user is already logged in
-        window.addEventListener('DOMContentLoaded', function () {
-            setTimeout(() => document.body.style.opacity = '1', 50);
+        // PAGE INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '1';
+
+            // Add real-time validation to login form
+            const loginEmail = document.getElementById('loginEmail');
+            const loginPassword = document.getElementById('loginPassword');
+
+            if (loginEmail) {
+                loginEmail.addEventListener('input', () => {
+                    validateField(loginEmail, 'loginEmailField', (value) => {
+                        return value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    });
+                });
+                loginEmail.addEventListener('blur', () => {
+                    validateField(loginEmail, 'loginEmailField', (value) => {
+                        return value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    });
+                });
+            }
+
+            if (loginPassword) {
+                loginPassword.addEventListener('input', () => {
+                    validateField(loginPassword, 'loginPasswordField', (value) => {
+                        return value && value.length >= 6;
+                    });
+                });
+            }
+
+            // Check if user is already logged in
             const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
             if (userId) {
                 // User is already logged in, redirect to dashboard
