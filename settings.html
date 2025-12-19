@@ -700,7 +700,7 @@
                         <h3>Clear All Predictions</h3>
                         <p>Delete all your prediction history permanently</p>
                     </div>
-                    <button class="btn-primary btn-danger" onclick="clearAllData()"><i class="fas fa-trash"></i> Clear
+                    <button class="btn-primary btn-danger" onclick="deleteAllData()"><i class="fas fa-trash"></i> Clear
                         Data</button>
                 </div>
 
@@ -768,7 +768,7 @@
             const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
 
             if (!userName && !userEmail) {
-                alert('Please login first!');
+                Toast.warning('Please login first!');
                 window.location.href = 'index.html';
                 return;
             }
@@ -957,7 +957,7 @@
             const newName = document.getElementById('displayName').value.trim();
 
             if (!newName) {
-                alert('Please enter a valid name');
+                Toast.warning('Please enter a valid name');
                 return;
             }
 
@@ -989,7 +989,7 @@
 
         function exportToCSV() {
             if (userPredictions.length === 0) {
-                alert('No predictions to export!');
+                Toast.info('No predictions to export!');
                 return;
             }
 
@@ -1036,12 +1036,12 @@
             document.body.removeChild(link);
 
             console.log('✅ CSV exported successfully');
-            alert(`✅ Exported ${userPredictions.length} predictions to CSV!`);
+            Toast.success(`Exported ${userPredictions.length} predictions to CSV!`);
         }
 
         function backupData() {
             if (userPredictions.length === 0) {
-                alert('No data to backup!');
+                Toast.info('No data to backup!');
                 return;
             }
 
@@ -1075,12 +1075,21 @@
             document.body.removeChild(link);
 
             console.log('✅ Backup created successfully');
-            alert(`✅ Backup created with ${userPredictions.length} predictions!`);
+            Toast.success(`Backup created with ${userPredictions.length} predictions!`);
         }
 
         async function resetSettings() {
-            const confirmed = confirm('⚠️ Reset all settings to default values?');
+            const confirmed = await showConfirmation({
+                title: 'Reset Settings?',
+                message: 'This will restore all settings to their default values.',
+                confirmText: 'Reset',
+                cancelText: 'Cancel',
+                type: 'warning'
+            });
+
             if (!confirmed) return;
+
+            Loading.show('Resetting settings...');
 
             try {
                 // Reset UI to defaults
@@ -1109,24 +1118,38 @@
                     }
                 }
 
-                alert('✅ Settings reset to default values!');
+                Loading.hide();
+                Toast.success('Settings reset to default values!');
             } catch (error) {
                 console.error('❌ Error resetting settings:', error);
-                alert('❌ Failed to reset settings');
+                Loading.hide();
+                Toast.error('Failed to reset settings');
             }
         }
 
-        async function clearAllData() {
-            const confirmed = confirm('⚠️ Are you sure you want to delete ALL your predictions?\n\nThis action CANNOT be undone!');
+        async function deleteAllData() {
+            const confirmed = await showConfirmation({
+                title: 'Delete All Predictions?',
+                message: 'This will permanently delete ALL your prediction history. This action cannot be undone!',
+                confirmText: 'Continue',
+                cancelText: 'Cancel',
+                type: 'danger'
+            });
             if (!confirmed) return;
 
-            const doubleConfirm = confirm('⚠️ FINAL WARNING: All prediction history will be permanently deleted.\n\nType OK to confirm.');
+            const doubleConfirm = await showConfirmation({
+                title: 'FINAL WARNING',
+                message: 'All prediction history will be permanently deleted. Are you absolutely sure?',
+                confirmText: 'Delete Everything',
+                cancelText: 'Keep My Data',
+                type: 'danger'
+            });
             if (!doubleConfirm) return;
+
+            Loading.show('Deleting all predictions...');
 
             try {
                 const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
-                if (!userEmail) return;
-
                 const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
                 const { ref, remove } = window.firebaseModules;
                 const database = window.firebaseDatabase;
@@ -1134,33 +1157,42 @@
 
                 await remove(predictionsRef);
 
-                console.log('✅ All predictions deleted');
-                alert('✅ All predictions have been deleted!');
+                Loading.hide();
+                Toast.success('All predictions have been deleted!');
+                setTimeout(() => location.reload(), 1000);
 
-                // Reload stats
-                loadAccountStats();
             } catch (error) {
-                console.error('❌ Error deleting data:', error);
-                alert('❌ Failed to delete data: ' + error.message);
+                console.error('Error deleting data:', error);
+                Loading.hide();
+                Toast.error('Failed to delete data: ' + error.message);
             }
         }
 
         async function deleteAccount() {
-            const confirmed = confirm('⚠️ WARNING: This will permanently delete your account and ALL data.\n\nAre you ABSOLUTELY sure?');
+            const confirmed = await showConfirmation({
+                title: 'Delete Account?',
+                message: 'WARNING: This will permanently delete your account and ALL data including predictions, settings, and login credentials. This action cannot be undone!',
+                confirmText: 'I Understand, Delete My Account',
+                cancelText: 'Cancel',
+                type: 'danger'
+            });
             if (!confirmed) return;
 
             const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
-            const typedName = prompt(`Type your username "${userName}" to confirm account deletion:`);
+            const typedName = prompt(`⚠️ Type your username "${userName}" to confirm account deletion:`);
 
             if (typedName !== userName) {
-                alert('❌ Username does not match. Account deletion cancelled.');
+                Toast.warning('Username does not match. Account deletion cancelled.');
                 return;
             }
+
+            Loading.show('Deleting account...');
 
             try {
                 const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
                 if (!userEmail) {
-                    alert('❌ No user email found.');
+                    Loading.hide();
+                    Toast.error('No user email found.');
                     return;
                 }
 
@@ -1195,23 +1227,29 @@
                 localStorage.clear();
 
                 console.log('✅ Account deletion complete');
-                alert('✅ Account deleted successfully. You will be redirected to login.');
-                window.location.href = 'index.html';
+                Loading.hide();
+                Toast.success('Account deleted successfully. Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
 
             } catch (error) {
                 console.error('❌ Error deleting account:', error);
 
+                Loading.hide();
                 // Provide specific error messages
                 if (error.code === 'auth/requires-recent-login') {
-                    alert('❌ For security reasons, please log out and log back in, then try deleting your account again.');
+                    Toast.error('For security reasons, please log out and log back in, then try deleting your account again.');
                 } else if (error.code === 'auth/no-current-user') {
                     // If no Firebase Auth user, just delete the data
-                    alert('⚠️ Your data has been deleted, but no Firebase Authentication account was found. You may need to contact support if you have login issues.');
-                    sessionStorage.clear();
-                    localStorage.clear();
-                    window.location.href = 'index.html';
+                    Toast.warning('Your data has been deleted, but no Firebase Authentication account was found. You may need to contact support if you have login issues.');
+                    setTimeout(() => {
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        window.location.href = 'index.html';
+                    }, 2000);
                 } else {
-                    alert('❌ Failed to delete account: ' + error.message);
+                    Toast.error('Failed to delete account: ' + error.message);
                 }
             }
         }
