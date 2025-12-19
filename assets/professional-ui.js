@@ -233,6 +233,102 @@ function validateField(input, rules) {
     return isValid;
 }
 
+// Input Prompt Dialog
+function showPrompt(options) {
+    return new Promise((resolve) => {
+        const {
+            title = 'Input Required',
+            message = 'Please enter a value:',
+            placeholder = '',
+            confirmText = 'OK',
+            cancelText = 'Cancel',
+            inputType = 'text',
+            required = true
+        } = options;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="confirmation-modal">
+                <div class="modal-icon warning">
+                    ⚠️
+                </div>
+                <h3 class="modal-title">${title}</h3>
+                <p class="modal-text">${message}</p>
+                <input type="${inputType}" class="prompt-input" placeholder="${placeholder}" 
+                       style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; margin-bottom: 16px; outline: none; transition: border-color 0.2s;">
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-cancel">${cancelText}</button>
+                    <button class="modal-btn modal-btn-confirm">${confirmText}</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const input = overlay.querySelector('.prompt-input');
+        const cancelBtn = overlay.querySelector('.modal-btn-cancel');
+        const confirmBtn = overlay.querySelector('.modal-btn-confirm');
+
+        // Focus input
+        setTimeout(() => input.focus(), 100);
+
+        // Input validation styling
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                input.style.borderColor = '#10b981';
+            } else {
+                input.style.borderColor = '#e5e7eb';
+            }
+        });
+
+        const cleanup = () => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 200);
+        };
+
+        const handleConfirm = () => {
+            const value = input.value.trim();
+            if (required && !value) {
+                input.style.borderColor = '#ef4444';
+                input.focus();
+                return;
+            }
+            cleanup();
+            resolve(value || null);
+        };
+
+        cancelBtn.onclick = () => {
+            cleanup();
+            resolve(null);
+        };
+
+        confirmBtn.onclick = handleConfirm;
+
+        // Enter key submits
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleConfirm();
+            }
+        });
+
+        // Escape key cancels
+        overlay.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cleanup();
+                resolve(null);
+            }
+        });
+
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                cleanup();
+                resolve(null);
+            }
+        };
+    });
+}
+
 // Smooth scroll to element
 function smoothScrollTo(element) {
     if (typeof element === 'string') {
@@ -250,5 +346,6 @@ function smoothScrollTo(element) {
 window.Toast = Toast;
 window.Loading = Loading;
 window.showConfirmation = showConfirmation;
+window.showPrompt = showPrompt;
 window.validateField = validateField;
 window.smoothScrollTo = smoothScrollTo;

@@ -1179,9 +1179,15 @@
             if (!confirmed) return;
 
             const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
-            const typedName = prompt(`⚠️ Type your username "${userName}" to confirm account deletion:`);
+            const typedName = await showPrompt({
+                title: 'Confirm Account Deletion',
+                message: `Type your username "${userName}" to confirm:`,
+                placeholder: userName,
+                confirmText: 'Verify',
+                cancelText: 'Cancel'
+            });
 
-            if (typedName !== userName) {
+            if (!typedName || typedName !== userName) {
                 Toast.warning('Username does not match. Account deletion cancelled.');
                 return;
             }
