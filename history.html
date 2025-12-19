@@ -1003,7 +1003,7 @@
                 const sanitized = email.replace(/[.#$[\]]/g, '_');
                 await window.firebaseModules.remove(window.firebaseModules.ref(window.firebaseDatabase, `predictions/${sanitized}/${id}`));
                 // alert('Deleted');
-            } catch (e) { console.error(e); alert('Error deleting'); }
+            } catch (e) { console.error(e); Toast.error('Error deleting record'); }
         }
 
         window.loadPredictionsFromFirebase = loadPredictionsFromFirebase;

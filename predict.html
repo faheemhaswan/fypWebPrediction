@@ -1032,7 +1032,7 @@
             return new Promise(async (resolve) => {
                 // 1. CHECK IF GEOLOCATION IS SUPPORTED
                 if (!navigator.geolocation) {
-                    alert('⚠️ GPS Not Supported\n\nYour browser does not support location services.\n\nPlease use the "Pick on Map" button to select your location manually.');
+                    Toast.error('GPS Not Supported. Your browser does not support location services. Please use the "Pick on Map" button to select your location manually.');
                     userLat = DEFAULT_LAT;
                     userLon = DEFAULT_LON;
                     userAccuracy = 10000; // Very high to indicate it's fake
@@ -1046,7 +1046,7 @@
                     if (navigator.permissions) {
                         const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
                         if (permissionStatus.state === 'denied') {
-                            alert('🚫 Location Permission Denied\n\nYou have blocked location access for this website.\n\nTo enable:\n1. Click the 🔒 lock icon in your browser address bar\n2. Allow location access\n3. Refresh the page\n\nOR use "Pick on Map" to select manually.');
+                            Toast.warning('Location Permission Denied. You have blocked location access for this website. To enable: Click the lock icon in your browser address bar, allow location access, and refresh the page. OR use "Pick on Map" to select manually.');
                             userLat = DEFAULT_LAT;
                             userLon = DEFAULT_LON;
                             userAccuracy = 10000;
@@ -1110,7 +1110,7 @@
                                 break;
                         }
 
-                        if (errorMsg) alert(errorMsg);
+                        if (errorMsg) Toast.error(errorMsg);
 
                         userLat = DEFAULT_LAT;
                         userLon = DEFAULT_LON;
@@ -1140,7 +1140,7 @@
                         } else {
                             // GPS completely failed
                             console.error('❌ GPS failed to get acceptable accuracy');
-                            alert('⚠️ GPS Detection Failed\n\nCould not detect your exact location.\n\nShowing default location.\n\n✅ Please use "Pick on Map" to select your actual location for accurate weather data.');
+                            Toast.warning('GPS Detection Failed. Could not detect your exact location. Showing default location. Please use "Pick on Map" to select your actual location for accurate weather data.');
                             userLat = DEFAULT_LAT;
                             userLon = DEFAULT_LON;
                             userAccuracy = 10000;
@@ -1331,7 +1331,7 @@
             event.preventDefault();
 
             if (userLat === null || userLon === null) {
-                alert('Location data is required for prediction. Please wait for detection to complete.');
+                Toast.warning('Location data is required for prediction. Please wait for detection to complete.');
                 return;
             }
 
@@ -1343,7 +1343,7 @@
             const fieldSize = parseFloat(document.getElementById('fieldSize').value);
 
             if (!cropType || isNaN(soilMoisture) || isNaN(temperature) || isNaN(humidity) || isNaN(rainfall) || isNaN(fieldSize)) {
-                alert('Please ensure all required fields are filled with valid numbers.');
+                Toast.warning('Please ensure all required fields are filled with valid numbers.');
                 return;
             }
 
@@ -1471,9 +1471,9 @@
 
                 // Friendly error message for "Failed to fetch"
                 if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    alert('⚠️ Backend Connection Failed!\n\nPlease make sure the Python server is running.\n\n👉 Solution: Double-click "run_backend.bat" in your project folder.');
+                    Toast.error('Backend Connection Failed! Please make sure the Python server is running. Solution: Double-click "run_backend.bat" in your project folder.');
                 } else {
-                    alert(`Error: ${error.message}\n\nCheck connection to API.`);
+                    Toast.error(`Error: ${error.message}. Check connection to API.`);
                 }
 
                 const submitBtn = document.getElementById('submitBtn');

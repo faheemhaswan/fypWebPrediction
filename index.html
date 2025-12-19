@@ -969,7 +969,11 @@
 
                     if (data.success) {
                         closeModal('forgotPasswordModal');
-                        alert("✅ Password Reset Successfully! Please login with your new password.");
+                        Toast.success("Password reset successful! Please login with your new password.");
+                        setTimeout(() => {
+                            document.getElementById('loginEmail').value = verificationEmail;
+                            document.getElementById('loginEmail').focus();
+                        }, 500);
                     } else {
                         showError(3, data.error || "Reset Failed.");
                     }
