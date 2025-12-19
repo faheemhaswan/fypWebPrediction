@@ -4,8 +4,17 @@ import pickle
 import pandas as pd
 import os
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend-backend communication
+app = Flask(__name__, template_folder='.')
+# Strict CORS disabled for extensive dev compatibility
+CORS(app)
+
+# --- MANUAL CORS OVERRIDE (To Fix 404 on OPTIONS) ---
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 # --- Load the trained model ---
 MODEL_FILE = 'optimized_irrigation_model.pkl'
@@ -15,8 +24,10 @@ try:
         model = pickle.load(file)
     # Model reloaded for compatibility
     print(f"✅ Model loaded successfully from '{MODEL_FILE}'")
-except FileNotFoundError:
-    print(f"❌ ERROR: '{MODEL_FILE}' not found. Please ensure the model file is in the same directory.")
+except Exception as e:
+    print(f"❌ ERROR Loading Model: {e}")
+    print("⚠️  Use 'python train_model_advanced.py' to retrain the model for this environment.")
+    print("⚠️  Server continues running for OTP/Auth features.")
     model = None
 
 # --- Route: Serve the HTML page ---
@@ -85,6 +96,157 @@ def crop_info():
     }
     return jsonify(crop_rules)
 
+
+
+# ==========================================
+#  🔐 SECURITY & AUTHENTICATION (OTP + SMTP)
+# ==========================================
+import smtplib
+import random
+import string
+import time
+from email.message import EmailMessage
+import firebase_admin
+from firebase_admin import credentials, auth
+
+# --- CONFIGURATION (USER MUST FILL THIS) ---
+SMTP_EMAIL = "faheem.hswn@gmail.com"
+SMTP_PASSWORD = "zyoo arad mwpd lekm".replace(" ", "")  # Sanitize spaces
+# -------------------------------------------
+
+# Initialize Firebase Admin SDK
+try:
+    if not firebase_admin._apps:
+        # Use the specific filename provided by the user
+        cred = credentials.Certificate("smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json")
+        firebase_admin.initialize_app(cred)
+    print("✅ Firebase Admin SDK Initialized")
+except Exception as e:
+    print(f"⚠️ WARNING: Firebase Admin SDK failed to initialize. Password reset will not work.\nReason: {e}")
+
+# In-Memory OTP Storage: {email: {'otp': '123456', 'expires_at': timestamp}}
+otp_storage = {}
+
+def generate_otp():
+    return ''.join(random.choices(string.digits, k=6))
+
+def send_smtp_email(to_email, otp):
+    # Only mock if the config is still the default placeholder
+    if "your-email" in SMTP_EMAIL:
+        print(f"⚠️ [MOCK EMAIL] SMTP not configured. OTP for {to_email} is: {otp}")
+        return True # Pretend success for testing if not configured
+        
+    try:
+        msg = EmailMessage()
+        msg.set_content(f"Your AquaWise Verification Code is: {otp}\n\nThis code expires in 5 minutes.")
+        msg['Subject'] = 'AquaWise Password Reset Code'
+        msg['From'] = SMTP_EMAIL
+        msg['To'] = to_email
+
+        # Connect to Gmail SMTP
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(SMTP_EMAIL, SMTP_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        print(f"✅ OTP sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"❌ SMTP Error: {e}")
+        return False
+
+# 1. SEND OTP ENDPOINT
+@app.route('/api/send-otp', methods=['POST', 'OPTIONS'])
+def send_otp_route():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
+    data = request.json
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    otp = generate_otp()
+    otp_storage[email] = {
+        'otp': otp,
+        'expires_at': time.time() + 300 # 5 minutes
+    }
+    
+    success = send_smtp_email(email, otp)
+    if success:
+        return jsonify({'success': True, 'message': 'OTP sent successfully'})
+    else:
+        # If SMTP fails, we might still want to return error to frontend, 
+        # OR if it's mock mode, we returned True above.
+        return jsonify({'error': 'Failed to send email. Check server logs.'}), 500
+
+# 2. VERIFY OTP ENDPOINT
+@app.route('/api/verify-otp', methods=['POST', 'OPTIONS'])
+def verify_otp_route():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
+    data = request.json
+    email = data.get('email')
+    user_otp = data.get('otp')
+    
+    if not email or not user_otp:
+        return jsonify({'error': 'Email and OTP required'}), 400
+        
+    record = otp_storage.get(email)
+    
+    if not record:
+        return jsonify({'error': 'No OTP requested for this email'}), 400
+        
+    if time.time() > record['expires_at']:
+        del otp_storage[email]
+        return jsonify({'error': 'OTP has expired. Please request a new one.'}), 400
+        
+    if record['otp'] != user_otp:
+        return jsonify({'error': 'Invalid OTP'}), 400
+        
+    return jsonify({'success': True, 'message': 'OTP Verified'})
+
+# 3. RESET PASSWORD ENDPOINT
+@app.route('/api/reset-password', methods=['POST', 'OPTIONS'])
+def reset_password_route():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
+    data = request.json
+    email = data.get('email')
+    otp = data.get('otp')
+    new_password = data.get('new_password')
+    
+    if not email or not otp or not new_password:
+        return jsonify({'error': 'Missing fields'}), 400
+
+    # Double-check OTP (Security)
+    record = otp_storage.get(email)
+    if not record or record['otp'] != otp:
+         return jsonify({'error': 'Invalid or expired session. Please start over.'}), 400
+         
+    try:
+        # Get User UID from Email
+        user = auth.get_user_by_email(email)
+        
+        # Update Password via Admin SDK
+        auth.update_user(
+            user.uid,
+            password=new_password
+        )
+        
+        # Cleanup
+        del otp_storage[email]
+        
+        return jsonify({'success': True, 'message': 'Password has been reset successfully.'})
+        
+    except firebase_admin._auth_utils.UserNotFoundError:
+        return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        print(f"Reset Error: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     print("\n" + "="*50)
     print("🌱 Irrigation Prediction API Server")
@@ -92,4 +254,4 @@ if __name__ == '__main__':
     print("Server running at: http://localhost:5000")
     print("API Endpoint: http://localhost:5000/predict")
     print("="*50 + "\n")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)

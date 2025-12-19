@@ -655,22 +655,60 @@
     </div>
 
     <!-- Forgot Password Modal -->
-    <div id="forgotPasswordModal" class="modal-overlay" onclick="closeModal('forgotPasswordModal')">
+    </div>
+
+    <!-- Forgot Password Modal (3-Step OTP) -->
+    <div id="forgotPasswordModal" class="modal-overlay" data-backdrop="static">
         <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 450px;">
             <div class="modal-header">
                 <h2 class="modal-title" style="font-size: 1.3rem;">Reset Password</h2>
                 <button class="close-modal-btn" onclick="closeModal('forgotPasswordModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 20px;">Enter your email address to receive a secure password reset link.</p>
 
-                <form onsubmit="handleForgotPasswordSubmit(event)">
+                <!-- STEP 1: Email Input -->
+                <div id="fpStep1">
+                    <p style="margin-bottom: 20px;">Enter your email to receive a verification code.</p>
                     <div class="form-group">
-                        <label for="resetEmail">Email Address</label>
+                        <label>Email Address</label>
                         <input type="email" id="resetEmail" placeholder="youremail@example.com" required>
                     </div>
-                    <button type="submit" class="btn-primary">Send Reset Link</button>
-                </form>
+                    <div id="fpError1" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(1)" class="btn-primary" id="fpBtn1">Send Code</button>
+                </div>
+
+                <!-- STEP 2: OTP Input -->
+                <div id="fpStep2" style="display: none;">
+                    <p style="margin-bottom: 20px;">Enter the 6-digit code sent to <strong id="fpEmailDisplay"></strong>
+                    </p>
+                    <div class="form-group">
+                        <label>Verification Code</label>
+                        <input type="text" id="resetOtp" maxlength="6" placeholder="000000"
+                            style="letter-spacing: 5px; text-align: center; font-weight: bold; font-size: 1.2em;">
+                    </div>
+                    <div id="fpError2" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(2)" class="btn-primary" id="fpBtn2">Verify Code</button>
+                    <p style="margin-top: 10px; font-size: 0.9em; text-align: center;">
+                        <a href="#" onclick="handleForgotPasswordStep(1)" style="color: #666;">Resend Code</a>
+                    </p>
+                </div>
+
+                <!-- STEP 3: New Password -->
+                <div id="fpStep3" style="display: none;">
+                    <p style="margin-bottom: 20px;">Set your new password.</p>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="resetNewPass" placeholder="New Password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="resetConfirmPass" placeholder="Confirm Password">
+                    </div>
+                    <div id="fpError3" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(3)" class="btn-primary" id="fpBtn3">Reset
+                        Password</button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -821,16 +859,123 @@
             openModal('forgotPasswordModal');
         }
 
-        // Handle Forgot Password Submit
-        function handleForgotPasswordSubmit(event) {
-            event.preventDefault();
-            const email = document.getElementById('resetEmail').value;
+        // Handle Forgot Password Steps (API Calls)
+        async function handleForgotPasswordStep(step) {
+            const API_URL = "http://localhost:5000/api";
 
-            // Close modal
-            closeModal('forgotPasswordModal');
+            // Helper to show/hide errors
+            const showError = (stepId, msg) => {
+                const el = document.getElementById(`fpError${stepId}`);
+                if (el) { el.textContent = msg; el.classList.add('show'); }
+            };
+            const clearError = (stepId) => {
+                const el = document.getElementById(`fpError${stepId}`);
+                if (el) { el.textContent = ''; el.classList.remove('show'); }
+            };
+            const setLoading = (stepId, isLoading) => {
+                const btn = document.getElementById(`fpBtn${stepId}`);
+                if (btn) btn.disabled = isLoading;
+                if (btn && isLoading) btn.textContent = "Processing...";
+                else if (btn) {
+                    if (stepId === 1) btn.textContent = "Send Code";
+                    if (stepId === 2) btn.textContent = "Verify Code";
+                    if (stepId === 3) btn.textContent = "Reset Password";
+                }
+            };
 
-            // Show mock success message
-            showSuccess('loginSuccess', `If an account exists for ${email}, a password reset link has been sent. Please check your inbox.`);
+            // STEP 1: Send OTP
+            if (step === 1) {
+                const email = document.getElementById('resetEmail').value;
+                if (!isValidEmail(email)) return showError(1, "Invalid email address.");
+
+                clearError(1);
+                setLoading(1, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/send-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        document.getElementById('fpEmailDisplay').textContent = email;
+                        document.getElementById('fpStep1').style.display = 'none';
+                        document.getElementById('fpStep2').style.display = 'block';
+                    } else {
+                        showError(1, data.error || "Failed to send OTP.");
+                    }
+                } catch (e) {
+                    showError(1, "Server connection failed. Is run_backend.bat running?");
+                } finally {
+                    setLoading(1, false);
+                }
+            }
+
+            // STEP 2: Verify OTP
+            else if (step === 2) {
+                const email = document.getElementById('resetEmail').value;
+                const otp = document.getElementById('resetOtp').value;
+                if (otp.length !== 6) return showError(2, "Enter a valid 6-digit code.");
+
+                clearError(2);
+                setLoading(2, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/verify-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, otp })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        document.getElementById('fpStep2').style.display = 'none';
+                        document.getElementById('fpStep3').style.display = 'block';
+                    } else {
+                        showError(2, data.error || "Invalid Code.");
+                    }
+                } catch (e) {
+                    showError(2, "Server error.");
+                } finally {
+                    setLoading(2, false);
+                }
+            }
+
+            // STEP 3: Reset Password
+            else if (step === 3) {
+                const email = document.getElementById('resetEmail').value;
+                const otp = document.getElementById('resetOtp').value;
+                const newPass = document.getElementById('resetNewPass').value;
+                const confirmPass = document.getElementById('resetConfirmPass').value;
+
+                if (newPass.length < 6) return showError(3, "Password must be at least 6 chars.");
+                if (newPass !== confirmPass) return showError(3, "Passwords do not match.");
+
+                clearError(3);
+                setLoading(3, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, otp, new_password: newPass })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        closeModal('forgotPasswordModal');
+                        alert("✅ Password Reset Successfully! Please login with your new password.");
+                    } else {
+                        showError(3, data.error || "Reset Failed.");
+                    }
+                } catch (e) {
+                    showError(3, "Server error.");
+                } finally {
+                    setLoading(3, false);
+                }
+            }
         }
 
         // Handle Login 
@@ -1051,6 +1196,7 @@
         window.handleLogin = handleLogin;
         window.handleSignup = handleSignup;
         window.handleForgotPassword = handleForgotPassword;
+        window.handleForgotPasswordStep = handleForgotPasswordStep;
         window.checkPasswordStrength = checkPasswordStrength;
         window.isValidEmail = isValidEmail;
         window.togglePassword = togglePassword;
