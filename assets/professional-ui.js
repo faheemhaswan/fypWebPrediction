@@ -268,59 +268,12 @@ function showConfirmation(options) {
     });
 }
 
-// Form Validation Helper
-function validateField(input, rules) {
-    const value = input.value.trim();
-    let isValid = true;
-    let errorMessage = '';
-
-    // Required
-    if (rules.required && !value) {
-        isValid = false;
-        errorMessage = 'This field is required';
-    }
-
-    // Email
-    if (rules.email && value) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-            isValid = false;
-            errorMessage = 'Please enter a valid email';
-        }
-    }
-
-    // Min length
-    if (rules.minLength && value.length < rules.minLength) {
-        isValid = false;
-        errorMessage = `Minimum ${rules.minLength} characters required`;
-    }
-
-    // Pattern
-    if (rules.pattern && value) {
-        if (!rules.pattern.test(value)) {
-            isValid = false;
-            errorMessage = rules.patternMessage || 'Invalid format';
-        }
-    }
-
-    // Update UI
-    input.classList.remove('valid', 'invalid');
-    input.classList.add(isValid ? 'valid' : 'invalid');
-
-    // Show/hide error message
-    let errorDiv = input.parentElement.querySelector('.field-error');
-    if (!isValid && errorMessage) {
-        if (!errorDiv) {
-            errorDiv = document.createElement('div');
-            errorDiv.className = 'field-error';
-            input.parentElement.appendChild(errorDiv);
-        }
-        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
+errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
     } else if (errorDiv) {
-        errorDiv.remove();
-    }
+    errorDiv.remove();
+}
 
-    return isValid;
+return isValid;
 }
 
 // Input Prompt Dialog
@@ -438,5 +391,4 @@ window.Loading = Loading;
 window.ProgressSteps = ProgressSteps;
 window.showConfirmation = showConfirmation;
 window.showPrompt = showPrompt;
-window.validateField = validateField;
 window.smoothScrollTo = smoothScrollTo;
