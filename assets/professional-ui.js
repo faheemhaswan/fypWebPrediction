@@ -115,6 +115,96 @@ const Loading = {
     }
 };
 
+// Multi-Step Progress Bar
+const ProgressSteps = {
+    overlay: null,
+    currentStep: 0,
+    steps: [],
+
+    show(steps) {
+        if (this.overlay) return;
+
+        this.steps = steps;
+        this.currentStep = 0;
+
+        this.overlay = document.createElement('div');
+        this.overlay.className = 'spinner-overlay';
+        this.overlay.innerHTML = `
+            <div class="progress-container">
+                <div class="progress-steps" id="progress-steps"></div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="progress-message" id="progress-message"></div>
+            </div>
+        `;
+
+        document.body.appendChild(this.overlay);
+        document.body.style.overflow = 'hidden';
+
+        this.renderSteps();
+        this.start();
+    },
+
+    renderSteps() {
+        const container = this.overlay.querySelector('#progress-steps');
+        container.innerHTML = this.steps.map((step, index) => `
+            <div class="progress-step ${index === 0 ? 'active' : ''}" data-step="${index}">
+                <div class="step-icon">${step.icon}</div>
+                <div class="step-label">${step.label}</div>
+            </div>
+        `).join('');
+    },
+
+    async start() {
+        for (let i = 0; i < this.steps.length; i++) {
+            await this.goToStep(i);
+            if (i < this.steps.length - 1) {
+                await this.delay(this.steps[i].duration || 800);
+            }
+        }
+    },
+
+    async goToStep(index) {
+        this.currentStep = index;
+        const step = this.steps[index];
+
+        // Update step classes
+        const stepElements = this.overlay.querySelectorAll('.progress-step');
+        stepElements.forEach((el, i) => {
+            el.classList.remove('active', 'completed');
+            if (i < index) el.classList.add('completed');
+            if (i === index) el.classList.add('active');
+        });
+
+        // Update progress bar
+        const progress = ((index + 1) / this.steps.length) * 100;
+        const progressBar = this.overlay.querySelector('#progress-bar');
+        progressBar.style.width = progress + '%';
+
+        // Update message
+        const messageEl = this.overlay.querySelector('#progress-message');
+        messageEl.textContent = step.label;
+    },
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+    hide() {
+        if (this.overlay) {
+            this.overlay.style.opacity = '0';
+            setTimeout(() => {
+                if (this.overlay) {
+                    this.overlay.remove();
+                    this.overlay = null;
+                    document.body.style.overflow = '';
+                }
+            }, 300);
+        }
+    }
+}
+
 // Confirmation Dialog
 function showConfirmation(options) {
     return new Promise((resolve) => {
@@ -345,6 +435,7 @@ function smoothScrollTo(element) {
 // Make functions globally available
 window.Toast = Toast;
 window.Loading = Loading;
+window.ProgressSteps = ProgressSteps;
 window.showConfirmation = showConfirmation;
 window.showPrompt = showPrompt;
 window.validateField = validateField;

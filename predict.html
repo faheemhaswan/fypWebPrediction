@@ -1361,7 +1361,13 @@
             try {
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing AI Prediction...';
+
+                // Show progress steps
+                ProgressSteps.show([
+                    { icon: '📊', label: 'Gathering Data', duration: 600 },
+                    { icon: '🤖', label: 'AI Analysis', duration: 1200 },
+                    { icon: '💧', label: 'Calculating Results', duration: 800 }
+                ]);
 
                 const response = await fetch(FLASK_API_URL, {
                     method: 'POST',
@@ -1371,8 +1377,9 @@
 
                 const result = await response.json();
 
+                // Hide progress and re-enable button  
+                ProgressSteps.hide();
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Prediction';
 
                 if (result.success) {
                     const mlPredictionPerHa = result.water_requirement_liters_per_hectare;
