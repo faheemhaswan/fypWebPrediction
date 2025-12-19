@@ -486,3 +486,92 @@
 .modal-btn-confirm:hover {
     background: #dc2626;
 }
+
+/* Loading Skeletons */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-container {
+    display: block;
+}
+
+.skeleton-container.hidden {
+    display: none;
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-text.medium {
+    width: 80%;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 40%;
+    margin-bottom: 16px;
+}
+
+.skeleton-card {
+    height: 120px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.skeleton-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-content {
+    flex: 1;
+}
+
+.fade-in-content {
+    animation: fadeInContent 0.4s ease-out;
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
