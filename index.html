@@ -490,27 +490,22 @@
             <div class="success-message" id="loginSuccess"></div>
 
             <form onsubmit="handleLogin(event)">
-                <div class="login-header">
-                    <h2>Welcome Back!</h2>
+                <h2>Welcome Back!</h2>
+
+                <div class="form-group">
+                    <label for="loginEmail">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="loginEmail" placeholder="Email Address" required>
                 </div>
 
                 <div class="form-group">
-                    <div class="form-field" id="loginEmailField">
-                        <label for="loginEmail">
-                            <i class="fas fa-envelope"></i> Email Address
-                        </label>
-                        <input type="email" id="loginEmail" placeholder="Email Address" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
+                    <label for="loginPassword">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
                     <div style="position: relative;">
-                        <div class="form-field" id="loginPasswordField">
-                            <label for="loginPassword">
-                                <i class="fas fa-lock"></i> Password
-                            </label>
-                            <input type="password" id="loginPassword" placeholder="Password" required>
-                        </div>
+                        <input type="password" id="loginPassword" placeholder="Password" required
+                            style="padding-right: 80px;">
                         <button type="button" onclick="togglePassword('loginPassword', 'toggleLoginPass')"
                             id="toggleLoginPass" class="password-toggle-btn">Show</button>
                     </div>
