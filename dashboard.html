@@ -842,30 +842,6 @@
             // Redirect to login
             window.location.href = 'index.html';
         }
-
-        // Logout function
-        async function handleLogout() {
-            const confirmed = await showConfirmation({
-                title: 'Logout Confirmation',
-                message: 'Are you sure you want to logout?',
-                confirmText: 'Yes, Logout',
-                cancelText: 'Cancel'
-            });
-
-            if (confirmed) {
-                // Clear all auth data
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
-                sessionStorage.clear();
-
-                Toast.success('Logged out successfully!');
-
-                // Redirect to login page
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 500);
-            }
-        }
     </script>
 
     <!-- FIREBASE SDK SECTION -->
