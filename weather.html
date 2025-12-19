@@ -801,7 +801,7 @@
                     if (navigator.permissions) {
                         const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
                         if (permissionStatus.state === 'denied') {
-                            Toast.warning('Location Permission Denied.<br><br>Please allow location access in your browser settings.<br><br>OR click "Pick on Map" to select your location manually.');
+                            Toast.warning('Location access denied. Please enable location in browser settings or use "Pick on Map".');
                             userLat = DEFAULT_LAT;
                             userLon = DEFAULT_LON;
                             userAccuracy = 10000;
