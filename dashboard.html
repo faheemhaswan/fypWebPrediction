@@ -833,23 +833,14 @@
             window.location.href = 'settings.html';
         }
 
-        async function handleLogout() {
-            const confirmed = await showConfirmation({
-                title: 'Logout?',
-                message: 'Are you sure you want to logout?',
-                confirmText: 'Logout',
-                cancelText: 'Stay',
-                type: 'warning'
-            });
+        // Simple logout function
+        function handleLogout() {
+            // Clear all session data
+            localStorage.clear();
+            sessionStorage.clear();
 
-            if (confirmed) {
-                sessionStorage.clear();
-                localStorage.clear();
-                Toast.success('Logged out successfully!');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 800);
-            }
+            // Redirect to login
+            window.location.href = 'index.html';
         }
 
         // Logout function
