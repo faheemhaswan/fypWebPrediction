@@ -231,7 +231,7 @@
 .app-footer {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 40px 20px;
+    padding: 24px 20px;
     margin-top: 60px;
     text-align: center;
 }
@@ -242,24 +242,26 @@
 }
 
 .footer-logo {
-    height: 50px;
+    height: 32px;
     width: auto;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     filter: brightness(0) invert(1);
     /* Make logo white */
 }
 
 .footer-tagline {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 12px;
-    line-height: 1.6;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-weight: 400;
 }
 
 .footer-copyright {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 6px;
+    font-weight: 400;
 }
 
 /* Confirmation Modal */
