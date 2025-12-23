@@ -208,44 +208,48 @@ def verify_otp_route():
     return jsonify({'success': True, 'message': 'OTP Verified'})
 
 # 3. RESET PASSWORD ENDPOINT
-@app.route('/api/reset-password', methods=['POST', 'OPTIONS'])
-def reset_password_route():
-    if request.method == 'OPTIONS':
-        return jsonify({'status': 'ok'}), 200
-
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
     data = request.json
     email = data.get('email')
     otp = data.get('otp')
     new_password = data.get('new_password')
     
     if not email or not otp or not new_password:
-        return jsonify({'error': 'Missing fields'}), 400
+        return jsonify({'error': 'Missing required fields'}), 400
 
-    # Double-check OTP (Security)
+    # Verify OTP is still valid
     record = otp_storage.get(email)
-    if not record or record['otp'] != otp:
-         return jsonify({'error': 'Invalid or expired session. Please start over.'}), 400
-         
+    if not record:
+        return jsonify({'error': 'Session expired. Please request a new code.'}), 400
+    
+    if record['otp'] != otp:
+        return jsonify({'error': 'Invalid verification code. Please try again.'}), 400
+          
     try:
-        # Get User UID from Email
+        # Get user from Firebase
+        print(f"Attempting password reset for: {email}")  # Debug log
         user = auth.get_user_by_email(email)
+        print(f"User found: {user.uid}")  # Debug log
         
-        # Update Password via Admin SDK
+        # Update password
         auth.update_user(
             user.uid,
             password=new_password
         )
         
-        # Cleanup
+        # Cleanup OTP
         del otp_storage[email]
         
-        return jsonify({'success': True, 'message': 'Password has been reset successfully.'})
+        print(f"Password reset successful for: {email}")  # Debug log
+        return jsonify({'success': True, 'message': 'Password reset successfully!'})
         
     except firebase_admin._auth_utils.UserNotFoundError:
-        return jsonify({'error': 'User not found'}), 404
+        print(f"Firebase user not found for email: {email}")  # Debug log
+        return jsonify({'error': 'Email not registered. Please sign up first.'}), 404
     except Exception as e:
-        print(f"Reset Error: {e}")
-        return jsonify({'error': str(e)}), 500
+        print(f"Password reset error for {email}: {str(e)}")  # Debug log
+        return jsonify({'error': f'Failed to reset password: {str(e)}'}), 500
 
 if __name__ == '__main__':
     print("\n" + "="*50)
