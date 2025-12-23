@@ -511,22 +511,31 @@
         }
 
         .irrigation-advice {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(99, 102, 241, 0.95) 100%);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
         }
 
         .irrigation-advice h2 {
-            margin-bottom: 20px;
-            font-size: 1.8em;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .irrigation-advice h2 i {
+            color: #FDE68A;
         }
 
         .advice-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .advice-card {
