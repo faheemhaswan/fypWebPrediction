@@ -1,4 +1,4 @@
-# AquaWise - Smart Irrigation System
+# AquaWise - Smart Irrigation Prediction System
 
 <div align="center">
 
