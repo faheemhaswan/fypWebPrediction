@@ -165,20 +165,29 @@ def send_otp_route():
     
     if not email:
         return jsonify({'error': 'Email is required'}), 400
-
-    otp = generate_otp()
-    otp_storage[email] = {
-        'otp': otp,
-        'expires_at': time.time() + 300 # 5 minutes
-    }
+    
+    # ✅ CHECK IF USER EXISTS BEFORE SENDING OTP
+    try:
+        user = auth.get_user_by_email(email)
+        print(f"User found for OTP request: {email} (UID: {user.uid})")
+    except firebase_admin._auth_utils.UserNotFoundError:
+        print(f"OTP request failed - email not registered: {email}")
+        return jsonify({'error': 'This email is not registered. Please sign up first!'}), 404
+    except Exception as e:
+        print(f"Error checking email: {str(e)}")
+        return jsonify({'error': 'Failed to verify email. Please try again.'}), 500
+    
+    # Generate OTP
+    otp = str(random.randint(100000, 999999))
+    otp_storage[email] = {'otp': otp, 'expires_at': time.time() + 300} # 5 minutes
     
     success = send_smtp_email(email, otp)
     if success:
-        return jsonify({'success': True, 'message': 'OTP sent successfully'})
+        print(f"✅ OTP sent to {email}")
+        return jsonify({'success': True, 'message': 'Verification code sent to your email!'})
     else:
-        # If SMTP fails, we might still want to return error to frontend, 
-        # OR if it's mock mode, we returned True above.
-        return jsonify({'error': 'Failed to send email. Check server logs.'}), 500
+        print(f"Email send failed: {e}") # 'e' from send_smtp_email is not available here, should be handled inside send_smtp_email or passed back.
+        return jsonify({'error': 'Failed to send email. Please try again.'}), 500
 
 # 2. VERIFY OTP ENDPOINT
 @app.route('/api/verify-otp', methods=['POST', 'OPTIONS'])
