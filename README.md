@@ -419,8 +419,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ for sustainable agriculture**
-
-⭐ Star this repository if you find it helpful!
+**MUHAMMAD FAHEEM BIN HASWANORRIZAM**
+CDCS2306B
+CSP650
 
 </div>
