@@ -707,11 +707,21 @@
                     <p style="margin-bottom: 20px;">Set your new password.</p>
                     <div class="form-group">
                         <label>New Password</label>
-                        <input type="password" id="resetNewPass" placeholder="New Password">
+                        <div style="position: relative;">
+                            <input type="password" id="resetNewPass" placeholder="New Password"
+                                style="padding-right: 80px;">
+                            <button type="button" onclick="togglePassword('resetNewPass', 'toggleResetNew')"
+                                id="toggleResetNew" class="password-toggle-btn">Show</button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Confirm Password</label>
-                        <input type="password" id="resetConfirmPass" placeholder="Confirm Password">
+                        <div style="position: relative;">
+                            <input type="password" id="resetConfirmPass" placeholder="Confirm Password"
+                                style="padding-right: 80px;">
+                            <button type="button" onclick="togglePassword('resetConfirmPass', 'toggleResetConfirm')"
+                                id="toggleResetConfirm" class="password-toggle-btn">Show</button>
+                        </div>
                     </div>
                     <div id="fpError3" class="error-message"></div>
                     <button onclick="handleForgotPasswordStep(3)" class="btn-primary" id="fpBtn3">Reset
