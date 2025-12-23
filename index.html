@@ -695,6 +695,11 @@
                         <input type="text" id="resetOtp" maxlength="6" placeholder="000000"
                             style="letter-spacing: 5px; text-align: center; font-weight: bold; font-size: 1.2em;">
                     </div>
+                    <div style="text-align: center; margin: 10px 0;">
+                        <small id="otpTimer" style="color: #666; font-weight: 500;">
+                            <i class="fas fa-clock"></i> Code expires in <span id="otpCountdown">5:00</span>
+                        </small>
+                    </div>
                     <div id="fpError2" class="error-message"></div>
                     <button onclick="handleForgotPasswordStep(2)" class="btn-primary" id="fpBtn2">Verify Code</button>
                     <p style="margin-top: 10px; font-size: 0.9em; text-align: center;">
