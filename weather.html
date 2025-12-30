@@ -591,6 +591,85 @@
             }
         }
 
+        /* Alert Banner Styles - Premium Design */
+        .alert-banner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 30px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.6;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideInDown 0.5s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        .alert-banner:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .alert-banner.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
+            color: white;
+            border-left: 5px solid #059669;
+        }
+
+        .alert-banner.danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%);
+            color: white;
+            border-left: 5px solid #dc2626;
+        }
+
+        .alert-banner.warning {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.95) 0%, rgba(245, 158, 11, 0.95) 100%);
+            color: #78350f;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .alert-banner strong {
+            font-weight: 700;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        .alert-banner i {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar-actions {
                 position: static;
