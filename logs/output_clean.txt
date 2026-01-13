@@ -1,0 +1,23 @@
+============================================================
+ GENERATING CORRELATION HEATMAP
+============================================================
+ Loading dataset from 'datasets/irrigation_dataset.csv'...
+   Shape: (700, 6)
+ Encoding 'crop_type'...
+ Calculating correlation matrix...
+Traceback (most recent call last):
+  File "C:\Users\fahee\OneDrive\Documents\degreeSem6\CSP600\fypProject\smart_irrigation_project\generate_heatmap.py", line 76, in <module>
+    generate_heatmap()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\fahee\OneDrive\Documents\degreeSem6\CSP600\fypProject\smart_irrigation_project\generate_heatmap.py", line 43, in generate_heatmap
+    corr = df_corr.corr()
+  File "C:\Users\fahee\AppData\Roaming\Python\Python314\site-packages\pandas\core\frame.py", line 11076, in corr
+    mat = data.to_numpy(dtype=float, na_value=np.nan, copy=False)
+  File "C:\Users\fahee\AppData\Roaming\Python\Python314\site-packages\pandas\core\frame.py", line 2002, in to_numpy
+    result = self._mgr.as_array(dtype=dtype, copy=copy, na_value=na_value)
+  File "C:\Users\fahee\AppData\Roaming\Python\Python314\site-packages\pandas\core\internals\managers.py", line 1713, in as_array
+    arr = self._interleave(dtype=dtype, na_value=na_value)
+  File "C:\Users\fahee\AppData\Roaming\Python\Python314\site-packages\pandas\core\internals\managers.py", line 1772, in _interleave
+    result[rl.indexer] = arr
+    ~~~~~~^^^^^^^^^^^^
+ValueError: could not convert string to float: 'soil_moisture'

@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Irrigation System - Login</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
+
+    <!-- Professional UI System -->
+    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            opacity: 0;
+            /* Smooth transition start state */
+            transition: opacity 0.5s ease-in-out;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Dark Overlay for better text contrast */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            /* Darkens the background image */
+            backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            /* High opacity for readability */
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 1;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        /* Subtle hover effect for the container */
+        .auth-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-section h1 {
+            font-family: 'Outfit', sans-serif;
+            color: #1a1a1a;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .logo-section p {
+            color: #666;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        /* Modern Tab Design */
+        .tab-buttons {
+            display: flex;
+            background: #f0f2f5;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #0d6efd;
+            /* Primary Blue */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        /* Premium Input Fields */
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e4e8;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            color: #1a1a1a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0d6efd;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+        }
+
+        input::placeholder {
+            color: #adb5bd;
+        }
+
+        /* Modern Gradient Button */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #e9ecef;
+            color: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Alerts */
+        .error-message,
+        .success-message {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            align-items: center;
+        }
+
+        .error-message {
+            background: #fdf2f2;
+            color: #dc3545;
+            border: 1px solid #fecaca;
+        }
+
+        .success-message {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .error-message.show {
+            display: flex;
+            animation: shake 0.4s ease;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-6px);
+            }
+
+            80% {
+                transform: translateX(6px);
+            }
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password a:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease, background 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak {
+            background: #dc3545;
+            width: 33%;
+        }
+
+        .strength-medium {
+            background: #ffc107;
+            width: 66%;
+        }
+
+        .strength-strong {
+            background: #198754;
+            width: 100%;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Password Toggle */
+        .password-toggle-btn {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85em;
+            padding: 4px 8px;
+            color: #666;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .password-toggle-btn:hover {
+            background: #f0f2f5;
+            color: #0d6efd;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s;
+            padding: 0 5px;
+        }
+
+        .close-modal-btn:hover {
+            color: #dc3545;
+        }
+
+        .modal-body {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-body h3 {
+            color: #1f2937;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-body p {
+            margin-bottom: 10px;
+        }
+
+        .modal-body ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="logo-section">
+            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise - Smart Irrigation Prediction" class="logo-icon"
+                style="width: 220px; height: auto; display: block; margin: 0 auto;">
+            <h1
+                style="margin-top: 15px; color: #1a1a1a; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 2.2em; letter-spacing: -0.5px;">
+                AquaWise</h1>
+            <p style="margin-top: 5px; color: #666; font-size: 1.1em; font-weight: 500;">Smart Water Usage Prediction
+            </p>
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <div id="loginForm" class="form-content active">
+            <div class="error-message" id="loginError"></div>
+            <div class="success-message" id="loginSuccess"></div>
+
+            <form onsubmit="handleLogin(event)">
+                <h2>Welcome Back!</h2>
+
+                <div class="form-group">
+                    <label for="loginEmail">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="loginEmail" placeholder="Email Address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div style="position: relative;">
+                        <input type="password" id="loginPassword" placeholder="Password" required
+                            style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('loginPassword', 'toggleLoginPass')"
+                            id="toggleLoginPass" class="password-toggle-btn">Show</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <label
+                        style="display: flex; align-items: center; font-weight: normal; font-size: 0.9em; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe" style="width: auto; margin-right: 8px;">
+                        <span>Remember me</span>
+                    </label>
+                    <div class="forgot-password" style="margin: 0;">
+                        <a href="#" onclick="handleForgotPassword(event)">Forgot Password ?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+            </form>
+        </div>
+
+        <div id="signupForm" class="form-content">
+            <div class="error-message" id="signupError"></div>
+            <div class="success-message" id="signupSuccess"></div>
+
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Your Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="youremail@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="signupPassword" placeholder="Create a strong password" required
+                            minlength="6" oninput="checkPasswordStrength(this.value)" style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('signupPassword', 'toggleSignupPass')"
+                            id="toggleSignupPass" class="password-toggle-btn">Show</button>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="password-strength" id="strengthText"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="signupConfirmPassword" placeholder="Re-enter your password" required
+                            style="padding-right: 80px;">
+                        <button type="button" onclick="togglePassword('signupConfirmPassword', 'toggleConfirmPass')"
+                            id="toggleConfirmPass" class="password-toggle-btn">Show</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label
+                        style="display: flex; align-items: flex-start; font-weight: normal; font-size: 0.9em; cursor: pointer;">
+                        <input type="checkbox" id="agreeTerms" required
+                            style="width: auto; margin-right: 8px; margin-top: 3px;">
+                        <span>I agree to the <a href="#" onclick="event.preventDefault(); openModal('termsModal')"
+                                style="color: #0d6efd; text-decoration: none; font-weight: 600;">Terms &
+                                Conditions</a> and <a href="#"
+                                onclick="event.preventDefault(); openModal('privacyModal')"
+                                style="color: #0d6efd; text-decoration: none; font-weight: 600;">Privacy
+                                Policy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary" id="signupBtn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal-overlay" onclick="closeModal('termsModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Terms & Conditions</h2>
+                <button class="close-modal-btn" onclick="closeModal('termsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>1. Introduction</h3>
+                <p>Welcome to <strong>AquaWise</strong>. By accessing or using our smart irrigation prediction platform,
+                    you agree to comply with these terms. These terms govern your use of our prediction algorithms,
+                    dashboard, and data services.</p>
+
+                <h3>2. Services Provided</h3>
+                <p>AquaWise provides AI-driven water usage estimates based on environmental data. You acknowledge that:
+                </p>
+                <ul>
+                    <li><strong>Estimations Only:</strong> Our predictions are suggestions based on standard crop models
+                        and available weather data.</li>
+                    <li><strong>User Responsibility:</strong> Final irrigation decisions remain the sole responsibility
+                        of the user/farmer. AquaWise is not liable for crop yield variations.</li>
+                    <li><strong>Availability:</strong> We strive for 99% uptime, but maintenance periods may occur.</li>
+                </ul>
+
+                <h3>3. User Obligations</h3>
+                <p>To ensure accurate predictions, you agree to:</p>
+                <ul>
+                    <li>Provide accurate data regarding crop type, soil conditions, and location.</li>
+                    <li>Maintain the security of your account credentials.</li>
+                    <li>Not attempt to reverse-engineer the prediction algorithms.</li>
+                </ul>
+
+                <h3>4. Intellectual Property</h3>
+                <p>All algorithms, designs, and content within AquaWise are the intellectual property of the AquaWise
+                    development team.</p>
+
+                <p style="margin-top: 20px; font-size: 0.9em; color: #888;">Last Updated: December 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="modal-overlay" onclick="closeModal('privacyModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Privacy Policy</h2>
+                <button class="close-modal-btn" onclick="closeModal('privacyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>1. Data Collection</h3>
+                <p>At AquaWise, we prioritize your data privacy. We collect:</p>
+                <ul>
+                    <li><strong>Personal Info:</strong> Name and email for account management.</li>
+                    <li><strong>Agricultural Data:</strong> Crop types, soil moisture readings, and field location.</li>
+                    <li><strong>Device Data:</strong> IP address and browser type for security purposes.</li>
+                </ul>
+
+                <h3>2. Data Usage</h3>
+                <p>Your data is used strictly to:</p>
+                <ul>
+                    <li>Calibrate the machine learning models for your specific field conditions.</li>
+                    <li>Provide historical usage reports and water saving analytics.</li>
+                    <li>Send critical alerts regarding extreme weather or system updates.</li>
+                </ul>
+
+                <h3>3. Third-Party Sharing</h3>
+                <p>We do <strong>not</strong> sell your data. We use trusted third-party services (Google Firebase)
+                    solely for data hosting and authentication.</p>
+
+                <h3>4. Location Privacy</h3>
+                <p>Precise location data is used exclusively to fetch hyper-local weather forecasts (rain, temperature,
+                    humidity) which are essential for the irrigation algorithm. This data is not tracked for any other
+                    purpose.</p>
+
+                <p style="margin-top: 20px; font-size: 0.9em; color: #888;">Last Updated: December 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    </div>
+
+    <!-- Forgot Password Modal (3-Step OTP) -->
+    <div id="forgotPasswordModal" class="modal-overlay" data-backdrop="static">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2 class="modal-title" style="font-size: 1.3rem;">Reset Password</h2>
+                <button class="close-modal-btn" onclick="closeModal('forgotPasswordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <!-- STEP 1: Email Input -->
+                <div id="fpStep1">
+                    <p style="margin-bottom: 20px;">Enter your email to receive a verification code.</p>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="resetEmail" placeholder="youremail@example.com" required>
+                    </div>
+                    <div id="fpError1" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(1)" class="btn-primary" id="fpBtn1">Send Code</button>
+                </div>
+
+                <!-- STEP 2: OTP Input -->
+                <div id="fpStep2" style="display: none;">
+                    <p style="margin-bottom: 20px;">Enter the 6-digit code sent to <strong id="fpEmailDisplay"></strong>
+                    </p>
+                    <div class="form-group">
+                        <label>Verification Code</label>
+                        <input type="text" id="resetOtp" maxlength="6" placeholder="000000"
+                            style="letter-spacing: 5px; text-align: center; font-weight: bold; font-size: 1.2em;">
+                    </div>
+                    <div id="fpError2" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(2)" class="btn-primary" id="fpBtn2">Verify Code</button>
+                    <p style="margin-top: 10px; font-size: 0.9em; text-align: center;">
+                        <a href="#" onclick="handleForgotPasswordStep(1)" style="color: #666;">Resend Code</a>
+                    </p>
+                </div>
+
+                <!-- STEP 3: New Password -->
+                <div id="fpStep3" style="display: none;">
+                    <p style="margin-bottom: 20px;">Set your new password.</p>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="resetNewPass" placeholder="New Password"
+                                style="padding-right: 80px;">
+                            <button type="button" onclick="togglePassword('resetNewPass', 'toggleResetNew')"
+                                id="toggleResetNew" class="password-toggle-btn">Show</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="resetConfirmPass" placeholder="Confirm Password"
+                                style="padding-right: 80px;">
+                            <button type="button" onclick="togglePassword('resetConfirmPass', 'toggleResetConfirm')"
+                                id="toggleResetConfirm" class="password-toggle-btn">Show</button>
+                        </div>
+                    </div>
+                    <div id="fpError3" class="error-message"></div>
+                    <button onclick="handleForgotPasswordStep(3)" class="btn-primary" id="fpBtn3">Reset
+                        Password</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail,
+            updateProfile
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import {
+            getDatabase,
+            ref,
+            set
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
+            authDomain: "smart-irrigation-system-3a5ff.firebaseapp.com",
+            projectId: "smart-irrigation-system-3a5ff",
+            storageBucket: "smart-irrigation-system-3a5ff.firebasestorage.app",
+            messagingSenderId: "778942848929",
+            appId: "1:778942848929:web:a793c928a1ea78b1a635e0",
+            measurementId: "G-ZQRXSSSVL7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // Make functions available globally
+        window.firebaseAuth = auth;
+        window.firebaseDatabase = database;
+        window.firebaseModules = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail,
+            updateProfile,
+            ref,
+            set
+        };
+    </script>
+
+    <script>
+        // PAGE INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '1';
+
+            // Add real-time validation to login form
+            const loginEmail = document.getElementById('loginEmail');
+            const loginPassword = document.getElementById('loginPassword');
+
+            if (loginEmail) {
+                loginEmail.addEventListener('input', () => {
+                    validateField(loginEmail, 'loginEmailField', (value) => {
+                        return value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    });
+                });
+                loginEmail.addEventListener('blur', () => {
+                    validateField(loginEmail, 'loginEmailField', (value) => {
+                        return value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    });
+                });
+            }
+
+            if (loginPassword) {
+                loginPassword.addEventListener('input', () => {
+                    validateField(loginPassword, 'loginPasswordField', (value) => {
+                        return value && value.length >= 6;
+                    });
+                });
+            }
+
+            // Check if user is already logged in
+            const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+            if (userId) {
+                // User is already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Tab switching
+        function switchTab(tab) {
+            const loginTab = document.querySelector('.tab-btn:first-child');
+            const signupTab = document.querySelector('.tab-btn:last-child');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+
+            // Clear messages
+            clearMessages();
+        }
+
+        // Password strength checker 
+        function checkPasswordStrength(password) {
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+            strengthFill.className = 'strength-fill';
+
+            if (strength <= 2) {
+                strengthFill.classList.add('strength-weak');
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#ff4444';
+            } else if (strength <= 4) {
+                strengthFill.classList.add('strength-medium');
+                strengthText.textContent = 'Good password';
+                strengthText.style.color = '#ffaa00';
+            } else {
+                strengthFill.classList.add('strength-strong');
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#00C851';
+            }
+        }
+
+        // Clear all messages
+        function clearMessages() {
+            document.querySelectorAll('.error-message, .success-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            clearMessages(); // Ensure no other messages are visible
+            if (!message) return;
+
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        // Show success message
+        function showSuccess(elementId, message) {
+            clearMessages(); // Ensure no other messages are visible
+            if (!message) return;
+
+            const successEl = document.getElementById(elementId);
+            successEl.textContent = message;
+            successEl.classList.add('show');
+        }
+
+        // Handle Forgot Password Click
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            const loginEmail = document.getElementById('loginEmail').value;
+            if (loginEmail) {
+                document.getElementById('resetEmail').value = loginEmail;
+            }
+            openModal('forgotPasswordModal');
+        }
+
+        // Handle Forgot Password Steps (API Calls)
+        async function handleForgotPasswordStep(step) {
+            const API_URL = "http://localhost:5000/api";
+
+            // Helper to show/hide errors
+            const showError = (stepId, msg) => {
+                const el = document.getElementById(`fpError${stepId}`);
+                if (el) { el.textContent = msg; el.classList.add('show'); }
+            };
+            const clearError = (stepId) => {
+                const el = document.getElementById(`fpError${stepId}`);
+                if (el) { el.textContent = ''; el.classList.remove('show'); }
+            };
+            const setLoading = (stepId, isLoading) => {
+                const btn = document.getElementById(`fpBtn${stepId}`);
+                if (btn) btn.disabled = isLoading;
+                if (btn && isLoading) btn.textContent = "Processing...";
+                else if (btn) {
+                    if (stepId === 1) btn.textContent = "Send Code";
+                    if (stepId === 2) btn.textContent = "Verify Code";
+                    if (stepId === 3) btn.textContent = "Reset Password";
+                }
+            };
+
+            // STEP 1: Send OTP
+            if (step === 1) {
+                const email = document.getElementById('resetEmail').value;
+                if (!isValidEmail(email)) return showError(1, "Invalid email address.");
+
+                clearError(1);
+                setLoading(1, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/send-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        document.getElementById('fpEmailDisplay').textContent = email;
+                        document.getElementById('fpStep1').style.display = 'none';
+                        document.getElementById('fpStep2').style.display = 'block';
+                    } else {
+                        showError(1, data.error || "Failed to send OTP.");
+                    }
+                } catch (e) {
+                    showError(1, "Server connection failed. Is run_backend.bat running?");
+                } finally {
+                    setLoading(1, false);
+                }
+            }
+
+            // STEP 2: Verify OTP
+            else if (step === 2) {
+                const email = document.getElementById('resetEmail').value;
+                const otp = document.getElementById('resetOtp').value;
+                if (otp.length !== 6) return showError(2, "Enter a valid 6-digit code.");
+
+                clearError(2);
+                setLoading(2, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/verify-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, otp })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        document.getElementById('fpStep2').style.display = 'none';
+                        document.getElementById('fpStep3').style.display = 'block';
+                    } else {
+                        showError(2, data.error || "Invalid Code.");
+                    }
+                } catch (e) {
+                    showError(2, "Server error.");
+                } finally {
+                    setLoading(2, false);
+                }
+            }
+
+            // STEP 3: Reset Password
+            else if (step === 3) {
+                const email = document.getElementById('resetEmail').value;
+                const otp = document.getElementById('resetOtp').value;
+                const newPass = document.getElementById('resetNewPass').value;
+                const confirmPass = document.getElementById('resetConfirmPass').value;
+
+                if (newPass.length < 6) return showError(3, "Password must be at least 6 chars.");
+                if (newPass !== confirmPass) return showError(3, "Passwords do not match.");
+
+                clearError(3);
+                setLoading(3, true);
+
+                try {
+                    const res = await fetch(`${API_URL}/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, otp, new_password: newPass })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        closeModal('forgotPasswordModal');
+                        Toast.success("Password reset successful! Please login with your new password.");
+                        setTimeout(() => {
+                            document.getElementById('loginEmail').value = verificationEmail;
+                            document.getElementById('loginEmail').focus();
+                        }, 500);
+                    } else {
+                        showError(3, data.error || "Reset Failed.");
+                    }
+                } catch (e) {
+                    showError(3, "Server error.");
+                } finally {
+                    setLoading(3, false);
+                }
+            }
+        }
+
+        // Handle Login 
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearMessages();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!email || !password || !isValidEmail(email)) {
+                showError('loginError', 'Please enter a valid email and password.');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Logging in... <span class="loading-spinner"></span>';
+
+            try {
+                const { signInWithEmailAndPassword } = window.firebaseModules;
+                const userCredential = await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+
+                showSuccess('loginSuccess', 'Login successful! Redirecting to dashboard...');
+
+                const rememberMe = document.getElementById('rememberMe').checked;
+                const storage = rememberMe ? localStorage : sessionStorage;
+
+                storage.setItem('userId', userCredential.user.uid);
+                storage.setItem('userEmail', userCredential.user.email);
+                storage.setItem('userName', userCredential.user.displayName || userCredential.user.email.split('@')[0]);
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'Login failed. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'Account does not exist. Please Sign Up.';
+                        break;
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please check your credentials.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed login attempts. Please try again later.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network error. Please check your internet connection.';
+                        break;
+                    default:
+                        errorMessage = `Error: ${error.message}`;
+                }
+
+                showError('loginError', errorMessage);
+            } finally {
+                if (!document.getElementById('loginSuccess').classList.contains('show')) {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                }
+            }
+        }
+
+        // Handle Signup (FINAL, SMOOTH TRANSITION FIX)
+        async function handleSignup(event) {
+            event.preventDefault();
+            clearMessages();
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const signupBtn = document.getElementById('signupBtn');
+
+            // Specific Validation Checks
+            if (!name) {
+                showError('signupError', 'Please enter your full name.');
+                return;
+            }
+            if (!isValidEmail(email)) {
+                showError('signupError', 'Please enter a valid email address.');
+                return;
+            }
+            if (password.length < 6) {
+                showError('signupError', 'Password must be at least 6 characters long.');
+                return;
+            }
+            if (password !== confirmPassword) {
+                showError('signupError', 'Passwords do not match. Please check capitalization.');
+                return;
+            }
+
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = 'Creating Account... <span class="loading-spinner"></span>';
+
+            try {
+                const { createUserWithEmailAndPassword, updateProfile, ref, set } = window.firebaseModules;
+
+                // 1. AWAIT ONLY THE CRITICAL ACCOUNT CREATION
+                const userCredential = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+                const user = userCredential.user;
+
+                // 2. START NON-ESSENTIAL DB/PROFILE WRITES IN BACKGROUND (NO AWAIT)
+                // This ensures the page doesn't hang waiting for the database to write.
+                updateProfile(user, { displayName: name }).catch(e => console.error("Background profile update failed:", e));
+                set(ref(window.firebaseDatabase, 'users/' + user.uid), {
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString(),
+                    role: 'farmer',
+                    lastLogin: new Date().toISOString()
+                }).catch(e => console.error("Background DB write failed:", e));
+
+                // 3. Reset button state and show IMMEDIATE success message on the signup tab
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+                showSuccess('signupSuccess', 'Account registered successfully!');
+
+                // 4. Introduce a 1-second delay for the user to read the success message
+                setTimeout(() => {
+                    // Clear signup form
+                    document.getElementById('signupName').value = '';
+                    document.getElementById('signupEmail').value = '';
+                    document.getElementById('signupPassword').value = '';
+                    document.getElementById('signupConfirmPassword').value = '';
+                    document.getElementById('strengthFill').className = 'strength-fill';
+                    document.getElementById('strengthText').textContent = '';
+
+                    // Switch to login tab
+                    switchTab('login');
+
+                    // Show follow-up message on the login tab
+                    showSuccess('loginSuccess', 'Success! Please login with your new credentials.');
+
+                    // Pre-fill email and set focus
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').focus();
+                }, 1000); // 1-second delay for smooth transition
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                let errorMessage = 'Signup failed. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'This email is already registered. Please login or use a different email.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password is too weak (min 6 characters).';
+                        break;
+                    default:
+                        errorMessage = `Error: ${error.message}`;
+                }
+
+                showError('signupError', errorMessage);
+
+                // Reset button state immediately on error
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        }
+
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = 'Hide';
+                button.setAttribute('title', 'Hide password');
+            } else {
+                input.type = 'password';
+                button.textContent = 'Show';
+                button.setAttribute('title', 'Show password');
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === "Escape") {
+                document.querySelectorAll('.modal-overlay.show').forEach(modal => {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+
+        // Make functions available globally
+        window.switchTab = switchTab;
+        window.handleLogin = handleLogin;
+        window.handleSignup = handleSignup;
+        window.handleForgotPassword = handleForgotPassword;
+        window.handleForgotPasswordStep = handleForgotPasswordStep;
+        window.checkPasswordStrength = checkPasswordStrength;
+        window.isValidEmail = isValidEmail;
+        window.togglePassword = togglePassword;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+    </script>
+
+    <!-- Professional UI JavaScript -->
+    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js\') }}"></script>
+</body>
+
+</html>

@@ -47,7 +47,10 @@ print("\n📊 Training model with 1000 synthetic samples...")
 model.fit(X, y)
 
 # Save the model
-MODEL_FILE = 'optimized_irrigation_model.pkl'
+# Save the model
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILE = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl')
 with open(MODEL_FILE, 'wb') as f:
     pickle.dump(model, f)
 

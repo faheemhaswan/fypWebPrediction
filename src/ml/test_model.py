@@ -1,7 +1,9 @@
 """Test script to verify model loads in Flask context"""
 import pickle
 
-MODEL_FILE = 'optimized_irrigation_model.pkl'
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILE = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl')
 
 print("Testing model load...")
 try:

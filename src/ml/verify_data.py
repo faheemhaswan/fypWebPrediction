@@ -8,7 +8,10 @@ print("==============================================")
 
 # 1. Load Dataset
 try:
-    df = pd.read_csv('datasets/irrigation_dataset.csv')
+    import os
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATASET_PATH = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
+    df = pd.read_csv(DATASET_PATH)
     print(f"✅ Dataset Loaded: {len(df)} samples")
     
     # Rename columns to match training if needed (adapt_data.py did this)
@@ -87,7 +90,8 @@ except Exception as e:
 
 # 2. Load Model
 try:
-    with open('optimized_irrigation_model.pkl', 'rb') as f:
+    MODEL_PATH = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl')
+    with open(MODEL_PATH, 'rb') as f:
         model = pickle.load(f)
     print("✅ Model Loaded")
 except Exception as e:

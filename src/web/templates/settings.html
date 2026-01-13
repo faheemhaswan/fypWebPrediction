@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings & Profile - AquaWise</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
+    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0043a8;
+            --secondary: #6c757d;
+            --success: #198754;
+            --info: #0dcaf0;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --background-overlay: rgba(0, 0, 0, 0.4);
+            --card-glass: rgba(255, 255, 255, 0.92);
+            --text-main: #1a1a1a;
+            --text-light: #666;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding-bottom: 40px;
+            color: var(--text-main);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        /* Standard Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 45px;
+            width: auto;
+        }
+
+        .navbar-brand span {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 20px 5px 5px;
+            background: #f2f2f0;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #333;
+            border: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #e7f1ff;
+            color: var(--primary);
+        }
+
+        .nav-btn:hover {
+            background: #cfe2ff;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: #ffebeb;
+            color: var(--danger);
+        }
+
+        .logout-btn:hover {
+            background: #f8d7da;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--card-glass);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .page-header h1 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.1em;
+            color: var(--text-light);
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 30px;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .settings-card h2 {
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(13, 110, 253, 0.1);
+            font-size: 1.5em;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(13, 110, 253, 0.25);
+        }
+
+        .profile-name {
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .profile-email {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .profile-joined {
+            color: #999;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s;
+            color: var(--text-main);
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+            background: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-danger {
+            background: #fff;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .setting-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .setting-item .btn-primary,
+        .setting-item .btn-danger,
+        .setting-item select {
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .setting-item:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-info h3 {
+            font-size: 1.1em;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .setting-info p {
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            background: #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            left: 31px;
+        }
+
+        /* Stats Box */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-box:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
+        }
+
+        .stat-box-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 5px;
+        }
+
+        .stat-box-label {
+            color: var(--text-light);
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid #c3e6cb;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-actions {
+                position: static;
+                margin-top: 15px;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        (function () {
+            const name = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const email = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (name) {
+                setTimeout(() => {
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = name.replace(/["\[\]]/g, '');
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = name.charAt(0).toUpperCase();
+                }, 0);
+            } else if (email) {
+                setTimeout(() => {
+                    const n = email.split('@')[0];
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = n;
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = n.charAt(0).toUpperCase();
+                }, 0);
+            }
+        })();
+    </script>
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand" style="cursor: pointer;">
+            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise Logo" class="logo-img">
+            <span>AquaWise</span>
+        </a>
+        <div class="navbar-actions" style="display: flex; align-items: center; gap: 15px;">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName"></span>
+            </div>
+
+            <a href="dashboard.html" class="nav-btn-home"
+                style="text-decoration: none; color: #666; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-home"></i> Home
+            </a>
+
+            <button onclick="handleLogout()" class="nav-btn-logout"
+                style="border: none; background: transparent; color: #dc3545; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-cog"></i> Settings & Profile</h1>
+            <p>Manage your account settings and preferences</p>
+        </div>
+
+        <div class="settings-grid">
+            <!-- Profile Information -->
+            <div class="settings-card">
+                <h2><i class="fas fa-user-circle"></i> Profile Information</h2>
+                <div class="success-message" id="successMessage">Profile updated successfully!</div>
+
+                <div class="profile-section">
+                    <div class="profile-avatar-large" id="avatarLarge">U</div>
+                    <div class="profile-info">
+                        <div class="profile-name" id="profileName">User Name</div>
+                        <div class="profile-email" id="profileEmail">user@example.com</div>
+                        <div class="profile-joined">Member since: <span id="joinedDate">2025</span></div>
+                    </div>
+                </div>
+
+                <form id="profileForm" onsubmit="updateProfile(event)">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" placeholder="Your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" disabled>
+                    </div>
+
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Account Statistics -->
+            <div class="settings-card">
+                <h2><i class="fas fa-chart-bar"></i> Account Statistics</h2>
+                <div class="stats-summary">
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="statPredictions">0</div>
+                        <div class="stat-box-label">Total Predictions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="statWater">0L</div>
+                        <div class="stat-box-label">Water Managed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="statArea">0 ha</div>
+                        <div class="stat-box-label">Total Area</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-value" id="statAvgEfficiency">0 L/ha</div>
+                        <div class="stat-box-label">Avg Efficiency</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Preferences -->
+            <div class="settings-card">
+                <h2><i class="fas fa-sliders-h"></i> System Preferences</h2>
+                <div class="preference-grid">
+                    <div class="form-group">
+                        <label for="defaultCrop">Default Crop Type</label>
+                        <select id="defaultCrop" onchange="savePreferences()">
+                            <option value="">None</option>
+                            <option value="rice">Rice</option>
+                            <option value="maize">Maize</option>
+                            <option value="pomegranate">Pomegranate</option>
+                            <option value="banana">Banana</option>
+                            <option value="mango">Mango</option>
+                            <option value="watermelon">Watermelon</option>
+                            <option value="papaya">Papaya</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="defaultFieldSize">Default Field Size (ha)</label>
+                        <input type="number" id="defaultFieldSize" step="0.1" min="0.1" placeholder="e.g., 1.5"
+                            onchange="savePreferences()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="refreshInterval">Auto-Refresh Interval</label>
+                        <select id="refreshInterval" onchange="savePreferences()">
+                            <option value="0">Manual Only</option>
+                            <option value="300000" selected>5 Minutes</option>
+                            <option value="600000">10 Minutes</option>
+                            <option value="1800000">30 Minutes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="accuracyThreshold">Location Accuracy Target</label>
+                        <select id="accuracyThreshold" onchange="savePreferences()">
+                            <option value="50" selected>High (≤50m)</option>
+                            <option value="100">Good (≤100m)</option>
+                            <option value="500">Acceptable (≤500m)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preferences -->
+            <div class="settings-card">
+                <h2><i class="fas fa-bell"></i> Notification Preferences</h2>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Email Notifications</h3>
+                        <p>Receive prediction updates via email</p>
+                    </div>
+                    <div class="toggle-switch active" id="toggle-email" onclick="toggleSetting(this, 'email')"></div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Weather Alerts</h3>
+                        <p>Get notified about significant weather changes</p>
+                    </div>
+                    <div class="toggle-switch active" id="toggle-weather" onclick="toggleSetting(this, 'weather')">
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Irrigation Reminders</h3>
+                        <p>Daily reminders for irrigation schedule</p>
+                    </div>
+                    <div class="toggle-switch" id="toggle-irrigation" onclick="toggleSetting(this, 'irrigation')"></div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Low Soil Moisture Alerts</h3>
+                        <p>Alert when soil moisture drops below 30%</p>
+                    </div>
+                    <div class="toggle-switch active" id="toggle-moisture" onclick="toggleSetting(this, 'moisture')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="settings-card">
+                <h2><i class="fas fa-database"></i> Data Management</h2>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Export Prediction History</h3>
+                        <p>Download all your predictions as CSV file</p>
+                    </div>
+                    <button class="btn-primary" onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Export
+                        CSV</button>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Backup Data</h3>
+                        <p>Download complete backup of your account data</p>
+                    </div>
+                    <button class="btn-primary" onclick="backupData()"><i class="fas fa-download"></i> Download
+                        Backup</button>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Data Retention</h3>
+                        <p>Keep predictions for: <strong id="retentionDisplay">Forever</strong></p>
+                    </div>
+                    <select onchange="updateRetention(this.value)" style="width: auto; padding: 8px;">
+                        <option value="forever">Forever</option>
+                        <option value="365">1 Year</option>
+                        <option value="180">6 Months</option>
+                        <option value="90">3 Months</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="settings-card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Clear All Predictions</h3>
+                        <p>Delete all your prediction history permanently</p>
+                    </div>
+                    <button class="btn-primary btn-danger" onclick="deleteAllData()"><i class="fas fa-trash"></i> Clear
+                        Data</button>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Reset Settings</h3>
+                        <p>Reset all preferences to default values</p>
+                    </div>
+                    <button class="btn-primary btn-danger" onclick="resetSettings()"><i class="fas fa-undo"></i> Reset
+                        Settings</button>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Delete Account</h3>
+                        <p>Permanently delete your account and all data</p>
+                    </div>
+                    <button class="btn-primary btn-danger" onclick="deleteAccount()"><i class="fas fa-user-times"></i>
+                        Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, onValue, remove, set, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getAuth, deleteUser } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
+            authDomain: "smart-irrigation-system-3a5ff.firebaseapp.com",
+            databaseURL: "https://smart-irrigation-system-3a5ff-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smart-irrigation-system-3a5ff",
+            storageBucket: "smart-irrigation-system-3a5ff.appspot.com",
+            messagingSenderId: "778942848929",
+            appId: "1:778942848929:web:a793c928a1ea78b1a635e0",
+            measurementId: "G-ZQRXSSSVL7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        window.firebaseDatabase = database;
+        window.firebaseAuth = auth;
+        window.firebaseModules = { ref, onValue, remove, set, get, deleteUser };
+        window.firebaseReady = true;
+
+        console.log('✅ Firebase initialized for settings');
+    </script>
+
+    <script>
+        let userPredictions = [];
+
+        window.addEventListener('DOMContentLoaded', function () {
+            checkAuth();
+            loadAccountStats();
+            loadUserSettings();
+        });
+
+        function checkAuth() {
+            const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+
+            if (!userName && !userEmail) {
+                Toast.warning('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            displayUserInfo(userName, userEmail);
+        }
+
+        function displayUserInfo(name, email) {
+            const userName = name || email || 'User';
+            const userEmail = email || 'No email';
+
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('profileName').textContent = userName;
+            document.getElementById('profileEmail').textContent = userEmail;
+            document.getElementById('displayName').value = userName;
+            document.getElementById('email').value = userEmail;
+
+            const initial = userName.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = initial;
+            document.getElementById('avatarLarge').textContent = initial;
+
+            const joinedDate = new Date().getFullYear();
+            document.getElementById('joinedDate').textContent = joinedDate;
+        }
+
+        function loadAccountStats() {
+            if (!window.firebaseReady) {
+                console.log('⏳ Waiting for Firebase...');
+                setTimeout(loadAccountStats, 500);
+                return;
+            }
+
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (!userEmail) return;
+
+            const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+            console.log('📊 Loading stats for:', sanitizedEmail);
+
+            const { ref, onValue } = window.firebaseModules;
+            const database = window.firebaseDatabase;
+            const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
+
+            onValue(predictionsRef, (snapshot) => {
+                let totalPredictions = 0;
+                let totalWater = 0;
+                let totalArea = 0;
+                userPredictions = [];
+
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        userPredictions.push({ id: childSnapshot.key, ...data });
+
+                        totalPredictions++;
+                        // Fix: Updated paths to match predict.html structure
+                        totalWater += (data.prediction_outputs?.total_water_required_liters ||
+                            data.predictions?.ml_model?.total_water_liters || 0); // Fallback for old data
+                        totalArea += (data.input_parameters?.field_size_hectares ||
+                            data.field?.size_hectares || 0); // Fallback for old data
+                    });
+                }
+
+                const avgEfficiency = totalArea > 0 ? Math.round(totalWater / totalArea) : 0;
+
+                document.getElementById('statPredictions').textContent = totalPredictions;
+                document.getElementById('statWater').textContent = totalWater.toLocaleString() + 'L';
+                document.getElementById('statArea').textContent = totalArea.toFixed(1) + ' ha';
+                document.getElementById('statAvgEfficiency').textContent = avgEfficiency.toLocaleString() + ' L/ha';
+
+                console.log('✅ Stats loaded:', { totalPredictions, totalWater, totalArea });
+            });
+        }
+
+        async function loadUserSettings() {
+            if (!window.firebaseReady) {
+                setTimeout(loadUserSettings, 500);
+                return;
+            }
+
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (!userEmail) return;
+
+            const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+            const { ref, get } = window.firebaseModules;
+            const database = window.firebaseDatabase;
+            const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
+
+            try {
+                const snapshot = await get(settingsRef);
+                if (snapshot.exists()) {
+                    const settings = snapshot.val();
+
+                    // Load preferences
+                    if (settings.preferences) {
+                        document.getElementById('defaultCrop').value = settings.preferences.defaultCrop || '';
+                        document.getElementById('defaultFieldSize').value = settings.preferences.defaultFieldSize || '';
+                        document.getElementById('refreshInterval').value = settings.preferences.refreshInterval || '300000';
+                        document.getElementById('accuracyThreshold').value = settings.preferences.accuracyThreshold || '50';
+                    }
+
+                    // Load notification settings
+                    if (settings.notifications) {
+                        setToggleState('toggle-email', settings.notifications.email);
+                        setToggleState('toggle-weather', settings.notifications.weather);
+                        setToggleState('toggle-irrigation', settings.notifications.irrigation);
+                        setToggleState('toggle-moisture', settings.notifications.moisture);
+                    }
+
+                    console.log('✅ Settings loaded from Firebase');
+                }
+            } catch (error) {
+                console.error('❌ Error loading settings:', error);
+            }
+        }
+
+        function setToggleState(id, isActive) {
+            const toggle = document.getElementById(id);
+            if (toggle) {
+                if (isActive) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            }
+        }
+
+        async function savePreferences() {
+            if (!window.firebaseReady) return;
+
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (!userEmail) return;
+
+            const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+            const { ref, set } = window.firebaseModules;
+            const database = window.firebaseDatabase;
+
+            const preferences = {
+                defaultCrop: document.getElementById('defaultCrop').value,
+                defaultFieldSize: document.getElementById('defaultFieldSize').value,
+                refreshInterval: document.getElementById('refreshInterval').value,
+                accuracyThreshold: document.getElementById('accuracyThreshold').value
+            };
+
+            const settingsRef = ref(database, `user_settings/${sanitizedEmail}/preferences`);
+
+            try {
+                await set(settingsRef, preferences);
+                console.log('✅ Preferences saved');
+                showSuccess('Preferences saved successfully!');
+            } catch (error) {
+                console.error('❌ Error saving preferences:', error);
+            }
+        }
+
+        async function toggleSetting(element, settingName) {
+            element.classList.toggle('active');
+
+            if (!window.firebaseReady) return;
+
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (!userEmail) return;
+
+            const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+            const { ref, set } = window.firebaseModules;
+            const database = window.firebaseDatabase;
+
+            const notifications = {
+                email: document.getElementById('toggle-email').classList.contains('active'),
+                weather: document.getElementById('toggle-weather').classList.contains('active'),
+                irrigation: document.getElementById('toggle-irrigation').classList.contains('active'),
+                moisture: document.getElementById('toggle-moisture').classList.contains('active')
+            };
+
+            const settingsRef = ref(database, `user_settings/${sanitizedEmail}/notifications`);
+
+            try {
+                await set(settingsRef, notifications);
+                console.log('✅ Notification settings saved');
+            } catch (error) {
+                console.error('❌ Error saving notifications:', error);
+            }
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            const newName = document.getElementById('displayName').value.trim();
+
+            if (!newName) {
+                Toast.warning('Please enter a valid name');
+                return;
+            }
+
+            sessionStorage.setItem('userName', newName);
+            localStorage.setItem('userName', newName);
+
+            displayUserInfo(newName, document.getElementById('email').value);
+            showSuccess('Profile updated successfully!');
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = message;
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+        }
+
+        function updateRetention(value) {
+            const display = document.getElementById('retentionDisplay');
+            const options = {
+                'forever': 'Forever',
+                '365': '1 Year',
+                '180': '6 Months',
+                '90': '3 Months'
+            };
+            display.textContent = options[value] || 'Forever';
+            console.log('Data retention set to:', options[value]);
+        }
+
+        function exportToCSV() {
+            if (userPredictions.length === 0) {
+                Toast.info('No predictions to export!');
+                return;
+            }
+
+            console.log('📥 Exporting', userPredictions.length, 'predictions to CSV');
+
+            // CSV Headers
+            let csv = 'Date,Time,Location,Crop,Field Size (ha),Soil Moisture (%),Temperature (°C),Humidity (%),Rainfall (mm),ML Water (L),ML Per Hectare (L/ha),Rule-Based (L/ha),Difference (%),Accuracy (m)\n';
+
+            // Add data rows
+            // Add data rows
+            userPredictions.forEach(pred => {
+                const row = [
+                    pred.meta?.date_formatted || pred.date || '',
+                    pred.meta?.time_formatted || pred.time || '',
+                    (pred.location_data?.location_name || pred.location?.name || '').replace(/,/g, ';'), // Replace commas
+                    pred.input_parameters?.crop_type || pred.crop?.type_display || '',
+                    pred.input_parameters?.field_size_hectares || pred.field?.size_hectares || '',
+                    pred.input_parameters?.soil_moisture_percentage || pred.environmental_data?.soil_moisture_percent || '',
+                    pred.input_parameters?.temperature_celsius || pred.environmental_data?.temperature_celsius || '',
+                    pred.input_parameters?.humidity_percentage || pred.environmental_data?.humidity_percent || '',
+                    pred.input_parameters?.rainfall_mm || pred.environmental_data?.rainfall_mm || '',
+                    pred.prediction_outputs?.total_water_required_liters || pred.predictions?.ml_model?.total_water_liters || '',
+                    pred.prediction_outputs?.ml_model_water_per_ha || pred.predictions?.ml_model?.water_per_hectare_liters || '',
+                    pred.prediction_outputs?.rule_based_water_per_ha || pred.predictions?.rule_based?.water_per_hectare_liters || '',
+                    pred.prediction_outputs?.model_divergence_percent || pred.predictions?.difference_percent || '',
+                    pred.location_data?.accuracy_meters || pred.location?.accuracy_meters || ''
+                ].join(',');
+
+                csv += row + '\n';
+            });
+
+            // Create download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute('download', `irrigation_predictions_${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            console.log('✅ CSV exported successfully');
+            Toast.success(`Exported ${userPredictions.length} predictions to CSV!`);
+        }
+
+        function backupData() {
+            if (userPredictions.length === 0) {
+                Toast.info('No data to backup!');
+                return;
+            }
+
+            console.log('💾 Creating backup of', userPredictions.length, 'predictions');
+
+            const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+
+            const backup = {
+                export_date: new Date().toISOString(),
+                user: {
+                    name: userName,
+                    email: userEmail
+                },
+                total_predictions: userPredictions.length,
+                predictions: userPredictions
+            };
+
+            const json = JSON.stringify(backup, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute('download', `irrigation_backup_${timestamp}.json`);
+            link.style.visibility = 'hidden';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            console.log('✅ Backup created successfully');
+            Toast.success(`Backup created with ${userPredictions.length} predictions!`);
+        }
+
+        async function resetSettings() {
+            const confirmed = await showConfirmation({
+                title: 'Reset Settings?',
+                message: 'This will restore all settings to their default values.',
+                confirmText: 'Reset',
+                cancelText: 'Cancel',
+                type: 'warning'
+            });
+
+            if (!confirmed) return;
+
+            Loading.show('Resetting settings...');
+
+            try {
+                // Reset UI to defaults
+                document.getElementById('defaultCrop').value = '';
+                document.getElementById('defaultFieldSize').value = '';
+                document.getElementById('refreshInterval').value = '300000';
+                document.getElementById('accuracyThreshold').value = '50';
+
+                // Reset toggles
+                setToggleState('toggle-email', true);
+                setToggleState('toggle-weather', true);
+                setToggleState('toggle-irrigation', false);
+                setToggleState('toggle-moisture', true);
+
+                // Save to Firebase
+                if (window.firebaseReady) {
+                    const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+                    if (userEmail) {
+                        const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+                        const { ref, remove } = window.firebaseModules;
+                        const database = window.firebaseDatabase;
+                        const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
+
+                        await remove(settingsRef);
+                        console.log('✅ Settings reset in Firebase');
+                    }
+                }
+
+                Loading.hide();
+                Toast.success('Settings reset to default values!');
+            } catch (error) {
+                console.error('❌ Error resetting settings:', error);
+                Loading.hide();
+                Toast.error('Failed to reset settings');
+            }
+        }
+
+        async function deleteAllData() {
+            const confirmed = await showConfirmation({
+                title: 'Delete All Predictions?',
+                message: 'This will permanently delete ALL your prediction history. This action cannot be undone!',
+                confirmText: 'Continue',
+                cancelText: 'Cancel',
+                type: 'danger'
+            });
+            if (!confirmed) return;
+
+            const doubleConfirm = await showConfirmation({
+                title: 'FINAL WARNING',
+                message: 'All prediction history will be permanently deleted. Are you absolutely sure?',
+                confirmText: 'Delete Everything',
+                cancelText: 'Keep My Data',
+                type: 'danger'
+            });
+            if (!doubleConfirm) return;
+
+            Loading.show('Deleting all predictions...');
+
+            try {
+                const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+                const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+                const { ref, remove } = window.firebaseModules;
+                const database = window.firebaseDatabase;
+                const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
+
+                await remove(predictionsRef);
+
+                Loading.hide();
+                Toast.success('All predictions have been deleted!');
+                setTimeout(() => location.reload(), 1000);
+
+            } catch (error) {
+                console.error('Error deleting data:', error);
+                Loading.hide();
+                Toast.error('Failed to delete data: ' + error.message);
+            }
+        }
+
+        async function deleteAccount() {
+            const confirmed = await showConfirmation({
+                title: 'Delete Account?',
+                message: 'WARNING: This will permanently delete your account and ALL data including predictions, settings, and login credentials. This action cannot be undone!',
+                confirmText: 'I Understand, Delete My Account',
+                cancelText: 'Cancel',
+                type: 'danger'
+            });
+            if (!confirmed) return;
+
+            const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const typedName = await showPrompt({
+                title: 'Confirm Account Deletion',
+                message: `Type your username "${userName}" to confirm:`,
+                placeholder: userName,
+                confirmText: 'Verify',
+                cancelText: 'Cancel'
+            });
+
+            if (!typedName || typedName !== userName) {
+                Toast.warning('Username does not match. Account deletion cancelled.');
+                return;
+            }
+
+            Loading.show('Deleting account...');
+
+            try {
+                const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+                if (!userEmail) {
+                    Loading.hide();
+                    Toast.error('No user email found.');
+                    return;
+                }
+
+                const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+                const { ref, remove, deleteUser } = window.firebaseModules;
+                const database = window.firebaseDatabase;
+                const auth = window.firebaseAuth;
+
+                console.log('🗑️ Starting account deletion process...');
+
+                // Step 1: Delete predictions from database
+                const predictionsRef = ref(database, `predictions/${sanitizedEmail}`);
+                await remove(predictionsRef);
+                console.log('✅ Predictions deleted');
+
+                // Step 2: Delete settings from database
+                const settingsRef = ref(database, `user_settings/${sanitizedEmail}`);
+                await remove(settingsRef);
+                console.log('✅ Settings deleted');
+
+                // Step 3: Delete Firebase Authentication account
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    await deleteUser(currentUser);
+                    console.log('✅ Firebase Auth account deleted');
+                } else {
+                    console.log('⚠️ No authenticated user found in Firebase Auth');
+                }
+
+                // Step 4: Clear local storage
+                sessionStorage.clear();
+                localStorage.clear();
+
+                console.log('✅ Account deletion complete');
+                Loading.hide();
+                Toast.success('Account deleted successfully. Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('❌ Error deleting account:', error);
+
+                Loading.hide();
+                // Provide specific error messages
+                if (error.code === 'auth/requires-recent-login') {
+                    Toast.error('For security reasons, please log out and log back in, then try deleting your account again.');
+                } else if (error.code === 'auth/no-current-user') {
+                    // If no Firebase Auth user, just delete the data
+                    Toast.warning('Your data has been deleted, but no Firebase Authentication account was found. You may need to contact support if you have login issues.');
+                    setTimeout(() => {
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    Toast.error('Failed to delete account: ' + error.message);
+                }
+            }
+        }
+        function handleLogout() {
+            sessionStorage.clear();
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
+    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js\') }}"></script>
+
+    <!-- Professional Footer -->
+    <footer class="app-footer">
+        <div class="footer-simple">
+            <h3 class="footer-title">AquaWise</h3>
+            <p class="footer-tagline">Smart Irrigation System powered by Machine Learning</p>
+            <p class="footer-copyright">
+                © 2025 AquaWise | Version 1.0<br>
+                <span class="footer-developer">Built by Muhammad Faheem bin Haswanorrizam</span>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>

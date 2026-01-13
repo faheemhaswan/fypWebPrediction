@@ -1,0 +1,12 @@
+============================================================
+Traceback (most recent call last):
+  File "C:\Users\fahee\OneDrive\Documents\degreeSem6\CSP600\fypProject\smart_irrigation_project\generate_scatter.py", line 131, in <module>
+    generate_scatter_plot()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\fahee\OneDrive\Documents\degreeSem6\CSP600\fypProject\smart_irrigation_project\generate_scatter.py", line 16, in generate_scatter_plot
+    print("\U0001f4ca GENERATING PREDICTION VS ACTUAL SCATTER PLOT")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4ca' in position 0: character maps to <undefined>

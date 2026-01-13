@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaWise - ML Prediction</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
+
+    <!-- Professional UI System -->
+    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet JS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Firebase Imports (Module) -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, push, set } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
+            authDomain: "smart-irrigation-system-3a5ff.firebaseapp.com",
+            databaseURL: "https://smart-irrigation-system-3a5ff-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smart-irrigation-system-3a5ff",
+            storageBucket: "smart-irrigation-system-3a5ff.appspot.com",
+            messagingSenderId: "778942848929",
+            appId: "1:778942848929:web:a793c928a1ea78b1a635e0",
+            measurementId: "G-ZQRXSSSVL7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.firebaseDatabase = database;
+        window.firebaseModules = { ref, push, set };
+        window.firebaseReady = true;
+    </script>
+
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0043a8;
+            --secondary: #6c757d;
+            --success: #198754;
+            --background-overlay: rgba(0, 0, 0, 0.4);
+            --card-glass: rgba(255, 255, 255, 0.92);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1a1a1a;
+            --text-light: #666;
+        }
+
+        /* Map Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.2em;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #dc3545;
+        }
+
+        .modal-body {
+            padding: 0;
+            height: 500px;
+            background: #eee;
+            position: relative;
+        }
+
+        #mapSelect {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            background: white;
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #e9ecef;
+        }
+
+        .btn-confirm {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-confirm:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding-bottom: 40px;
+            color: var(--text-main);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-overlay);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .navbar-brand span:not(.logo-img) {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 20px 5px 5px;
+            background: #f2f2f0;
+            border-radius: 50px;
+            margin-right: 15px;
+            color: #1a1a1a;
+            border: none;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: #0d6efd;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            background: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        .nav-btn:hover {
+            background: #cfe2ff;
+            color: #0d6efd;
+            box-shadow: none;
+        }
+
+        .logout-btn {
+            background: #ffebeb;
+            color: #dc3545;
+        }
+
+        .logout-btn:hover {
+            background: #f8d7da;
+            box-shadow: none;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: var(--card-glass);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header-content h1 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header-content p {
+            color: var(--text-light);
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+
+        .ml-badge {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+        }
+
+        .glass-card {
+            background: var(--card-glass);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+
+        .glass-card h2 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Sensor Display */
+        .sensor-box {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .location-info {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .location-label {
+            font-size: 0.85em;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .location-value {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .coords-value {
+            font-size: 0.9em;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .accuracy-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .sensor-reading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sensor-reading:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .sensor-label {
+            color: var(--text-light);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sensor-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e4e8;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+            background: white;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(13, 110, 253, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Section */
+        .prediction-result {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #198754 0%, #157347 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: slideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(25, 135, 84, 0.3);
+        }
+
+        .prediction-result.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .water-display {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px auto;
+            max-width: 600px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .water-amount {
+            font-size: 4em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .per-hectare {
+            font-size: 1.2em;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+
+        .comparison-item {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .comparison-item h4 {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .comparison-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .recommendations {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: left;
+            margin-top: 40px;
+        }
+
+        .recommendations h3 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .recommendations ul {
+            list-style: none;
+        }
+
+        .recommendations li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 1.05em;
+            display: flex;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .map-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 8px;
+            padding: 5px 10px;
+            background: rgba(13, 110, 253, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .map-link-btn:hover {
+            background: rgba(13, 110, 253, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .navbar-brand span:not(.logo-img) {
+                font-size: 1.2rem;
+            }
+
+            .header-content h1 {
+                font-size: 1.8em;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .water-amount {
+                font-size: 3em;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Instant Username Load (No Delay) -->
+    <script>
+        (function () {
+            const name = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const email = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+            if (name) {
+                setTimeout(() => {
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = name.replace(/["\[\]]/g, '');
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = name.charAt(0).toUpperCase();
+                }, 0);
+            } else if (email) {
+                setTimeout(() => {
+                    const n = email.split('@')[0];
+                    const el = document.getElementById('userName');
+                    if (el) el.textContent = n;
+                    const av = document.getElementById('userAvatar');
+                    if (av) av.textContent = n.charAt(0).toUpperCase();
+                }, 0);
+            }
+        })();
+    </script>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">
+            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise" class="logo-img">
+            <span>AquaWise</span>
+        </a>
+        <div class="navbar-actions" style="display: flex; align-items: center; gap: 15px;">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName"></span>
+            </div>
+
+            <a href="dashboard.html" class="nav-btn-home"
+                style="text-decoration: none; color: #666; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-home"></i> Home
+            </a>
+
+            <button onclick="handleLogout()" class="nav-btn-logout"
+                style="border: none; background: transparent; color: #dc3545; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; padding: 8px 12px; border-radius: 8px; transition: 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1>AI Crop Water Prediction</h1>
+                <p>Advanced machine learning model for precise irrigation planning</p>
+            </div>
+            <div class="ml-badge">
+                <i class="fas fa-bolt"></i> ML Powered v2.0
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left Column: Sensor & Location -->
+            <div class="glass-card">
+                <h2><i class="fas fa-satellite-dish" style="color: var(--primary);"></i> Live Environmental Data</h2>
+
+                <div class="sensor-box">
+                    <div class="location-info">
+                        <div class="location-label">Detected Position</div>
+                        <div class="location-value" id="locationDisplay">Initializing...</div>
+                        <div class="coords-value" id="coordsDisplay">
+                            <i class="fas fa-location-crosshairs"></i> Waiting for GPS...
+                        </div>
+                        <div id="accuracyDisplay" class="accuracy-badge" style="background: #e9ecef; color: #666;">
+                            Accuracy: --
+                        </div>
+                        <div id="mapLinkContainer"></div>
+                    </div>
+
+                    <div class="sensor-readings">
+                        <div class="sensor-reading">
+                            <span class="sensor-label"><i class="fas fa-droplet" style="color: #0dcaf0;"></i> Soil
+                                Moisture (Est.)</span>
+                            <span class="sensor-value" id="sensorMoisture">--</span>
+                        </div>
+                        <div class="sensor-reading">
+                            <span class="sensor-label"><i class="fas fa-temperature-half" style="color: #fd7e14;"></i>
+                                Temperature</span>
+                            <span class="sensor-value" id="sensorTemp">--</span>
+                        </div>
+                        <div class="sensor-reading">
+                            <span class="sensor-label"><i class="fas fa-wind" style="color: #6610f2;"></i>
+                                Humidity</span>
+                            <span class="sensor-value" id="sensorHumidity">--</span>
+                        </div>
+                        <div class="sensor-reading">
+                            <span class="sensor-label"><i class="fas fa-cloud-showers-heavy"
+                                    style="color: #0d6efd;"></i> Rainfall (24h)</span>
+                            <span class="sensor-value" id="sensorRainfall">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
+                    <button class="refresh-btn" onclick="refreshLocation()" style="margin-top: 0; flex: 1;">
+                        <i class="fas fa-sync-alt"></i> Auto-Detect
+                    </button>
+                    <button class="refresh-btn" onclick="openMapModal()"
+                        style="margin-top: 0; flex: 1; background: white; color: var(--primary); border: 2px solid var(--primary);">
+                        <i class="fas fa-map-marked-alt"></i> Pick on Map
+                    </button>
+                </div>
+
+                <p class="info-text" id="locationInfo"
+                    style="margin-top: 15px; font-size: 0.9em; color: var(--text-light); text-align: center; font-style: italic;">
+                    Click Auto-Detect or choose manually on map
+                </p>
+            </div>
+
+            <!-- Right Column: Prediction Form -->
+            <div class="glass-card">
+                <h2><i class="fas fa-seedling" style="color: var(--success);"></i> Crop Details</h2>
+                <form id="predictionForm" onsubmit="handlePrediction(event)">
+                    <div class="form-group">
+                        <label for="cropType">Select Crop Type</label>
+                        <select id="cropType" class="form-control" required>
+                            <option value="">-- Choose a crop --</option>
+                            <option value="rice">Rice</option>
+                            <option value="maize">Maize</option>
+                            <option value="pomegranate">Pomegranate</option>
+                            <option value="banana">Banana</option>
+                            <option value="mango">Mango</option>
+                            <option value="watermelon">Watermelon</option>
+                            <option value="papaya">Papaya</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="soilMoisture">Soil Moisture (%)</label>
+                            <input type="number" id="soilMoisture" class="form-control" min="0" max="100" step="0.1"
+                                required placeholder="e.g. 45.2">
+                        </div>
+                        <div class="form-group">
+                            <label for="temperature">Temperature (°C)</label>
+                            <input type="number" id="temperature" class="form-control" min="0" max="50" step="0.1"
+                                required placeholder="e.g. 28.5">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="humidity">Humidity (%)</label>
+                            <input type="number" id="humidity" class="form-control" min="0" max="100" step="0.1"
+                                required placeholder="e.g. 65.3">
+                        </div>
+                        <div class="form-group">
+                            <label for="rainfall">Rainfall (mm)</label>
+                            <input type="number" id="rainfall" class="form-control" min="0" max="500" step="0.1"
+                                required placeholder="e.g. 2.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fieldSize">Field Size (hectares)</label>
+                        <input type="number" id="fieldSize" class="form-control" min="0.1" step="0.01" required
+                            placeholder="e.g. 1.5">
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-wand-magic-sparkles"></i> Generate Prediction
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Card (Hidden by default) -->
+            <div class="prediction-result" id="predictionResult">
+                <div class="result-content">
+                    <h2 style="color: white; border: none; justify-content: center; margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Prediction Complete
+                    </h2>
+
+                    <div class="water-display">
+                        <div class="water-amount" id="waterAmount">0 L</div>
+                        <div class="per-hectare">Total Water Required <br><small style="opacity: 0.7">(Based on field
+                                size)</small></div>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <h4><i class="fas fa-robot"></i> ML Model Estimate</h4>
+                            <div class="comparison-value" id="mlPrediction">0 L/ha</div>
+                        </div>
+                        <div class="comparison-item">
+                            <h4><i class="fas fa-ruler-combined"></i> Standard Rule-Based</h4>
+                            <div class="comparison-value" id="rulePrediction">0 L/ha</div>
+                        </div>
+                    </div>
+
+                    <div class="recommendations">
+                        <h3><i class="fas fa-clipboard-list"></i> Smart Recommendations</h3>
+                        <ul id="recommendationList">
+                            <li><i class="fas fa-spinner fa-spin"></i> Analyzing data...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Selection Modal -->
+    <div class="modal-overlay" id="mapModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-map-location-dot" style="color: var(--primary);"></i> Select
+                    Location</h3>
+                <button class="modal-close" onclick="closeMapModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="mapSelect"></div>
+                <div
+                    style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 8px 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 0.9em; font-weight: 600; z-index: 1000; pointer-events: none;">
+                    Results will be fetched for this pinned location
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeMapModal()">Cancel</button>
+                <button class="btn-confirm" onclick="confirmMapLocation()">
+                    <i class="fas fa-check"></i> Use This Location
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const FLASK_API_URL = 'http://localhost:5000/predict';
+        const WEATHER_API_KEY = '7941d1d68e6c2211e4eac4a66bab0097';
+
+        const CROP_BASE_VALUES = {
+            'rice': 6500, 'maize': 5000, 'pomegranate': 4400,
+            'banana': 5100, 'mango': 4600, 'watermelon': 4700, 'papaya': 4850
+        };
+
+        // DEFAULT LOCATION: Only used as LAST RESORT
+        const DEFAULT_LAT = 4.1996;  // Tapah, Perak
+        const DEFAULT_LON = 101.2570;
+
+        let userLat = null;
+        let userLon = null;
+        let userAccuracy = null;
+        let locationName = 'Unknown Location';
+
+        window.addEventListener('DOMContentLoaded', function () {
+            // Auto-detect location on page load
+            refreshLocation();
+        });
+
+        // --- EXACT SAME LOCATION DETECTION AS WEATHER.HTML ---
+        // Initialize Firebase and update UI
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. FAST PATH: Check sessionStorage immediately
+            const storedName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+            const nameSpan = document.getElementById('userName');
+            const avatarDiv = document.getElementById('userAvatar');
+
+            if (storedName && nameSpan && avatarDiv) {
+                nameSpan.textContent = storedName.replace(/[\[\]"]/g, ''); // Clean up any quotes
+                avatarDiv.textContent = storedName.charAt(0).toUpperCase();
+            }
+
+            // 2. SLOW PATH: Wait for Firebase to confirm (background update)
+            const checkAuth = setInterval(() => {
+                if (window.firebaseAuth && window.firebaseModules) {
+                    clearInterval(checkAuth);
+                    const { onAuthStateChanged } = window.firebaseModules;
+                    onAuthStateChanged(window.firebaseAuth, (user) => {
+                        if (user) {
+                            // Update with fresh data from source of truth
+                            const realName = user.displayName || user.email.split('@')[0];
+                            if (nameSpan) nameSpan.textContent = realName;
+                            if (avatarDiv) avatarDiv.textContent = (realName).charAt(0).toUpperCase();
+
+                            // Update cache
+                            sessionStorage.setItem('userName', realName);
+                            sessionStorage.setItem('userEmail', user.email);
+                        } else {
+                            window.location.href = 'index.html'; // Redirect if not logged in
+                        }
+                    });
+                }
+            }, 500);
+        });
+
+        async function getUserLocation() {
+            return new Promise(async (resolve) => {
+                // 1. CHECK IF GEOLOCATION IS SUPPORTED
+                if (!navigator.geolocation) {
+                    Toast.error('GPS Not Supported. Your browser does not support location services. Please use the "Pick on Map" button to select your location manually.');
+                    userLat = DEFAULT_LAT;
+                    userLon = DEFAULT_LON;
+                    userAccuracy = 10000; // Very high to indicate it's fake
+                    locationName = '⚠️ DEFAULT LOCATION (GPS Not Available)';
+                    resolve();
+                    return;
+                }
+
+                // 2. CHECK PERMISSION STATE (Modern browsers only)
+                try {
+                    if (navigator.permissions) {
+                        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+                        if (permissionStatus.state === 'denied') {
+                            Toast.warning('Location access denied. Please enable location in browser settings or use "Pick on Map".');
+                            userLat = DEFAULT_LAT;
+                            userLon = DEFAULT_LON;
+                            userAccuracy = 10000;
+                            locationName = '⚠️ DEFAULT LOCATION (Permission Denied)';
+                            resolve();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Permission API not available, continuing...');
+                }
+
+                // 3. AGGRESSIVE GPS DETECTION
+                const ACCURACY_THRESHOLD = 50; // Accept anything under 50m
+                const ACCEPTABLE_THRESHOLD = 500; // Will accept up to 500m if GPS struggles
+                let bestPosition = null;
+                let bestAccuracy = Infinity;
+                let attempts = 0;
+                let gpsLocked = false;
+
+                console.log('🛰️ Starting GPS location detection (60s timeout)...');
+
+                const watchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        attempts++;
+                        const acc = position.coords.accuracy;
+
+                        console.log(`GPS Attempt ${attempts}: Accuracy = ${acc.toFixed(0)}m`);
+
+                        // Always keep the best position we've seen
+                        if (acc < bestAccuracy) {
+                            bestAccuracy = acc;
+                            bestPosition = position;
+                            userLat = position.coords.latitude;
+                            userLon = position.coords.longitude;
+                            userAccuracy = acc;
+                        }
+
+                        // If we get excellent accuracy, stop immediately
+                        if (acc <= ACCURACY_THRESHOLD && !gpsLocked) {
+                            gpsLocked = true;
+                            console.log('✅ Excellent GPS lock achieved!');
+                            navigator.geolocation.clearWatch(watchId);
+                            resolve();
+                        }
+                    },
+                    (error) => {
+                        console.error('❌ Geolocation Error:', error.code, error.message);
+                        navigator.geolocation.clearWatch(watchId);
+
+                        let errorMsg = '';
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = '🚫 Location Permission Denied\n\nPlease allow location access in your browser settings.\n\nOR click "Pick on Map" to select your location manually.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = '📡 GPS Signal Unavailable\n\nYour device cannot determine your location.\n\nTry:\n• Moving near a window\n• Enabling GPS on your device\n• Using "Pick on Map" instead';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = '⏱️ GPS Timeout\n\nLocation detection took too long.\n\nPlease use "Pick on Map" to select your location.';
+                                break;
+                        }
+
+                        if (errorMsg) Toast.error(errorMsg);
+
+                        userLat = DEFAULT_LAT;
+                        userLon = DEFAULT_LON;
+                        userAccuracy = 10000;
+                        locationName = '⚠️ DEFAULT LOCATION (GPS Error - Use "Pick on Map")';
+                        resolve();
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 60000, // 60 seconds - give GPS plenty of time
+                        maximumAge: 0   // Don't use cached location
+                    }
+                );
+
+                // OUTER TIMEOUT: Wait up to 60 seconds for GPS lock
+                setTimeout(() => {
+                    if (!gpsLocked) {
+                        navigator.geolocation.clearWatch(watchId);
+
+                        // If we got SOMETHING reasonable, use it
+                        if (bestAccuracy < ACCEPTABLE_THRESHOLD && bestPosition) {
+                            console.log(`⚠️ Using best available position: ${bestAccuracy.toFixed(0)}m accuracy`);
+                            userLat = bestPosition.coords.latitude;
+                            userLon = bestPosition.coords.longitude;
+                            userAccuracy = bestAccuracy;
+                            resolve();
+                        } else {
+                            // GPS completely failed
+                            console.error('❌ GPS failed to get acceptable accuracy');
+                            Toast.warning('GPS Detection Failed. Could not detect your exact location. Showing default location. Please use "Pick on Map" to select your actual location for accurate weather data.');
+                            userLat = DEFAULT_LAT;
+                            userLon = DEFAULT_LON;
+                            userAccuracy = 10000;
+                            locationName = '⚠️ DEFAULT LOCATION (GPS Failed - Use "Pick on Map")';
+                            resolve();
+                        }
+                    }
+                }, 60000); // 60 second total timeout
+            });
+        }
+
+        async function refreshLocation() {
+            const infoEl = document.getElementById('locationInfo');
+            infoEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Detecting your precise location...';
+            document.getElementById('locationDisplay').textContent = 'Detecting...';
+
+            await getUserLocation();
+            await updateSensorDisplay();
+        }
+
+        async function fetchWeatherData() {
+            if (userLat === null || userLon === null) {
+                return {
+                    moisture: '--',
+                    temperature: '--',
+                    humidity: '--',
+                    rainfall: '--',
+                    location: 'Location Required'
+                };
+            }
+
+            const geoApiUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${userLat}&lon=${userLon}&limit=1&appid=${WEATHER_API_KEY}`;
+            let locationNameTemp = `Lat: ${userLat.toFixed(4)}, Lon: ${userLon.toFixed(4)}`;
+
+            try {
+                const geoResponse = await fetch(geoApiUrl);
+                if (geoResponse.ok) {
+                    const geoData = await geoResponse.json();
+                    if (geoData && geoData.length > 0) {
+                        const city = geoData[0].name || '';
+                        const state = geoData[0].state || '';
+                        const country = geoData[0].country || '';
+
+                        if (city && state) {
+                            locationNameTemp = `${city}, ${state}`;
+                        } else if (city) {
+                            locationNameTemp = `${city}, ${country}`;
+                        } else if (state) {
+                            locationNameTemp = `${state}, ${country}`;
+                        } else {
+                            locationNameTemp = country;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Geo API error:", e);
+            }
+
+            // Fetch both current weather and forecast (same as weather.html)
+            const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${userLat}&lon=${userLon}&appid=${WEATHER_API_KEY}&units=metric`;
+            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${userLat}&lon=${userLon}&appid=${WEATHER_API_KEY}&units=metric`;
+
+            try {
+                const [currentResponse, forecastResponse] = await Promise.all([
+                    fetch(currentWeatherUrl),
+                    fetch(forecastUrl)
+                ]);
+
+                if (!currentResponse.ok) throw new Error('Weather API failed');
+
+                const currentData = await currentResponse.json();
+                const humidity = currentData.main.humidity;
+                const temperature = currentData.main.temp;
+
+                // Get TODAY'S forecast rainfall (same logic as weather.html)
+                let todayRainfall = 0;
+
+                if (forecastResponse.ok) {
+                    const forecastData = await forecastResponse.json();
+
+                    // Get today's forecast at noon (same as weather.html displayForecast)
+                    const todayForecast = forecastData.list.find(item => item.dt_txt.includes('12:00:00'));
+
+                    if (todayForecast && todayForecast.rain) {
+                        todayRainfall = todayForecast.rain['3h'] || 0;
+                    }
+
+                    // If no forecast at noon yet, get next available forecast with rain
+                    if (todayRainfall === 0) {
+                        const nextRainForecast = forecastData.list.slice(0, 3).find(item => item.rain);
+                        if (nextRainForecast && nextRainForecast.rain) {
+                            todayRainfall = nextRainForecast.rain['3h'] || 0;
+                        }
+                    }
+                }
+
+                // Calculate estimated soil moisture based on forecast rain
+                let moisture = (humidity * 0.7) + (todayRainfall * 2);
+                if (todayRainfall > 1) moisture = Math.min(90, moisture + 20);
+                if (temperature > 30) moisture = moisture * 0.9;
+
+                if (locationNameTemp.includes('Lat:') && currentData.name) {
+                    locationNameTemp = `${currentData.name}, ${currentData.sys.country}`;
+                }
+
+                locationName = locationNameTemp;
+
+                return {
+                    moisture: Math.min(100, Math.max(20, moisture)).toFixed(1),
+                    temperature: temperature.toFixed(1),
+                    humidity: humidity.toFixed(1),
+                    rainfall: todayRainfall.toFixed(1),
+                    location: locationName
+                };
+
+            } catch (error) {
+                console.warn("Weather API failed:", error);
+                return {
+                    moisture: '--',
+                    temperature: '--',
+                    humidity: '--',
+                    rainfall: '--',
+                    location: locationNameTemp
+                };
+            }
+        }
+
+        async function updateSensorDisplay() {
+            const data = await fetchWeatherData();
+
+            const locationDisplayElement = document.getElementById('locationDisplay');
+            const coordsDisplayElement = document.getElementById('coordsDisplay');
+            const accuracyDisplayElement = document.getElementById('accuracyDisplay');
+            const mapLinkContainer = document.getElementById('mapLinkContainer');
+            const infoEl = document.getElementById('locationInfo');
+
+            document.getElementById('sensorMoisture').textContent = data.moisture + (data.moisture !== '--' ? '%' : '');
+            document.getElementById('sensorTemp').textContent = data.temperature + (data.temperature !== '--' ? '°C' : '');
+            document.getElementById('sensorHumidity').textContent = data.humidity + (data.humidity !== '--' ? '%' : '');
+            document.getElementById('sensorRainfall').textContent = data.rainfall + (data.rainfall !== '--' ? ' mm' : '');
+
+            mapLinkContainer.innerHTML = '';
+            locationDisplayElement.textContent = data.location;
+            coordsDisplayElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> Lat: ${userLat.toFixed(6)}, Lon: ${userLon.toFixed(6)}`;
+
+            // Show accuracy with visual indicator
+            let accuracyText = `Accuracy: ±${userAccuracy.toFixed(0)}m`;
+            let badgeBg = '#d4edda';
+            let badgeColor = '#155724';
+
+            if (userAccuracy <= 50) {
+                accuracyText += ' (Excellent)';
+            } else if (userAccuracy <= 200) {
+                accuracyText += ' (Good)';
+                badgeBg = '#fff3cd';
+                badgeColor = '#856404';
+            } else {
+                accuracyText += ' (Approximate)';
+                badgeBg = '#f8d7da';
+                badgeColor = '#721c24';
+            }
+
+            accuracyDisplayElement.textContent = accuracyText;
+            accuracyDisplayElement.style.background = badgeBg;
+            accuracyDisplayElement.style.color = badgeColor;
+
+            if (userLat && userLon && data.moisture !== '--') {
+                infoEl.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success)"></i> Data updated for ${data.location}`;
+
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${userLat},${userLon}`;
+                const mapLink = document.createElement('a');
+                mapLink.href = mapUrl;
+                mapLink.target = '_blank';
+                mapLink.className = 'map-link-btn';
+                mapLink.innerHTML = '<i class="fas fa-map"></i> View Exact Spot';
+                mapLinkContainer.appendChild(mapLink);
+
+                document.getElementById('soilMoisture').value = data.moisture;
+                document.getElementById('temperature').value = data.temperature;
+                document.getElementById('humidity').value = data.humidity;
+                document.getElementById('rainfall').value = data.rainfall;
+            } else if (data.moisture === '--') {
+                infoEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="color: #ffc107"></i> Location found but weather data failed.`;
+            }
+        }
+
+        async function handlePrediction(event) {
+            event.preventDefault();
+
+            if (userLat === null || userLon === null) {
+                Toast.warning('Location data is required for prediction. Please wait for detection to complete.');
+                return;
+            }
+
+            const cropType = document.getElementById('cropType').value;
+            const soilMoisture = parseFloat(document.getElementById('soilMoisture').value);
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const humidity = parseFloat(document.getElementById('humidity').value);
+            const rainfall = parseFloat(document.getElementById('rainfall').value);
+            const fieldSize = parseFloat(document.getElementById('fieldSize').value);
+
+            if (!cropType || isNaN(soilMoisture) || isNaN(temperature) || isNaN(humidity) || isNaN(rainfall) || isNaN(fieldSize)) {
+                Toast.warning('Please ensure all required fields are filled with valid numbers.');
+                return;
+            }
+
+            const cropBase = CROP_BASE_VALUES[cropType] || 4000;
+
+            const data = {
+                crop_type: cropType,
+                soil_moisture_percent: soilMoisture,
+                temperature_celsius: temperature,
+                humidity_percent: humidity,
+                rainfall_mm: rainfall,
+                crop_water_base: cropBase
+            };
+
+            try {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+
+                // Show progress steps
+                ProgressSteps.show([
+                    { icon: '📊', label: 'Gathering Data', duration: 600 },
+                    { icon: '🤖', label: 'AI Analysis', duration: 1200 },
+                    { icon: '💧', label: 'Calculating Results', duration: 800 }
+                ]);
+
+                const response = await fetch(FLASK_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Hide progress and re-enable button  
+                ProgressSteps.hide();
+                submitBtn.disabled = false;
+
+                if (result.success) {
+                    const mlPredictionPerHa = result.water_requirement_liters_per_hectare;
+                    const rulePredictionPerHa = predictWithRules({ cropType, soilMoisture, temperature, humidity, rainfall });
+                    const totalWater = mlPredictionPerHa * fieldSize;
+
+                    document.getElementById('waterAmount').textContent = `${Math.round(totalWater).toLocaleString()} L`;
+                    document.getElementById('mlPrediction').textContent = `${Math.round(mlPredictionPerHa).toLocaleString()} L/ha`;
+                    document.getElementById('rulePrediction').textContent = `${Math.round(rulePredictionPerHa).toLocaleString()} L/ha`;
+
+                    const recommendations = generateRecommendations(
+                        { cropType, soilMoisture, temperature, humidity, rainfall, fieldSize },
+                        mlPredictionPerHa,
+                        rulePredictionPerHa
+                    );
+                    const recommendationList = document.getElementById('recommendationList');
+                    recommendationList.innerHTML = '';
+                    recommendations.forEach(rec => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<i class="fas fa-angle-right" style="color: var(--primary); margin-top: 4px;"></i> ${rec}`;
+                        recommendationList.appendChild(li);
+                    });
+
+                    const resultCard = document.getElementById('predictionResult');
+                    resultCard.classList.add('show');
+                    resultCard.scrollIntoView({ behavior: 'smooth' });
+
+                    // Log to Firebase - PROFESSIONAL STRUCTURE
+                    if (window.firebaseReady && window.firebaseDatabase && window.firebaseModules) {
+                        const { ref, set } = window.firebaseModules;
+                        const db = window.firebaseDatabase;
+
+                        const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail') || 'guest';
+                        const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Guest User';
+
+                        const sanitizedEmail = userEmail.replace(/[.#$[\]]/g, '_');
+                        const timestamp = new Date().toISOString();
+                        const predictionId = `pred_${Date.now()}`; // Shortened prefix
+
+                        const userPredictionsRef = ref(db, `predictions/${sanitizedEmail}/${predictionId}`);
+
+                        // Professional, sorted data structure
+                        const predictionLog = {
+                            // 1. Metadata
+                            meta: {
+                                prediction_id: predictionId,
+                                timestamp_iso: timestamp,
+                                date_formatted: new Date().toLocaleDateString('en-GB'), // DD/MM/YYYY format often preferred professionally
+                                time_formatted: new Date().toLocaleTimeString('en-US')
+                            },
+                            // 2. User Context
+                            user_context: {
+                                email: userEmail,
+                                name: userName
+                            },
+                            // 3. Location Data
+                            location_data: {
+                                location_name: locationName,
+                                latitude: parseFloat(userLat.toFixed(6)),
+                                longitude: parseFloat(userLon.toFixed(6)),
+                                accuracy_meters: parseFloat(userAccuracy.toFixed(0)),
+                                detection_method: userAccuracy > 1000 ? 'default_fallback' : (userAccuracy === 5 ? 'manual_pin' : 'auto_gps')
+                            },
+                            // 4. Input Parameters (Environmental & Crop)
+                            input_parameters: {
+                                crop_type: cropType,
+                                field_size_hectares: parseFloat(fieldSize.toFixed(2)),
+                                soil_moisture_percentage: parseFloat(soilMoisture.toFixed(1)),
+                                temperature_celsius: parseFloat(temperature.toFixed(1)),
+                                humidity_percentage: parseFloat(humidity.toFixed(1)),
+                                rainfall_mm: parseFloat(rainfall.toFixed(1))
+                            },
+                            // 5. Model Outputs
+                            prediction_outputs: {
+                                ml_model_water_per_ha: Math.round(mlPredictionPerHa),
+                                rule_based_water_per_ha: Math.round(rulePredictionPerHa),
+                                total_water_required_liters: Math.round(totalWater),
+                                model_divergence_percent: parseFloat(window.diffPercent)
+                            },
+                            // 6. Generated Insights (Strict Text, No Emojis)
+                            insights: {
+                                primary_recommendation: recommendations[0].replace(/<[^>]*>/g, ''), // Strip HTML tags
+                                warnings: recommendations.filter((_, i) => i > 0).map(r => r.replace(/<[^>]*>/g, ''))
+                            }
+                        };
+
+                        set(userPredictionsRef, predictionLog);
+                    }
+
+                } else {
+                    throw new Error(result.error || 'Prediction failed');
+                }
+
+            } catch (error) {
+                console.error('Prediction Error:', error);
+
+                // Friendly error message for "Failed to fetch"
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    Toast.error('Backend Connection Failed! Please make sure the Python server is running. Solution: Double-click "run_backend.bat" in your project folder.');
+                } else {
+                    Toast.error(`Error: ${error.message}. Check connection to API.`);
+                }
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Prediction';
+            }
+        }
+
+        function predictWithRules(data) {
+            // EXACT Logic from adapt_data.py (Reference Implementation)
+            const CROP_RULES_FULL = {
+                'rice': 6500, 'maize': 5000, 'pomegranate': 4400, 'banana': 5100,
+                'mango': 4600, 'watermelon': 4700, 'papaya': 4850
+            };
+
+            const cropBaseWater = CROP_RULES_FULL[data.cropType] || 4000;
+
+            // Additive Formula used in training
+            let waterPerHa = (
+                cropBaseWater +
+                (data.temperature * 15) -
+                (data.soilMoisture * 20) -
+                (data.rainfall * 50) +
+                (data.humidity * 10)
+            );
+
+            // Ensure bounds
+            return Math.max(500, Math.round(waterPerHa));
+        }
+
+        function generateRecommendations(data, mlPrediction, rulePrediction) {
+            const recommendations = [];
+            const avgPrediction = (mlPrediction + rulePrediction) / 2;
+            const difference = Math.abs(mlPrediction - rulePrediction);
+            window.diffPercent = ((difference / Math.max(1, avgPrediction)) * 100).toFixed(1);
+
+            if (window.diffPercent > 25) {
+                recommendations.push(`ML and Rule-based models differ by <strong>${window.diffPercent}%</strong>. Using ML prediction (trained on real data).`);
+            } else {
+                recommendations.push(`ML and Rule-based models agree (${window.diffPercent}% difference). <strong>High confidence</strong> in prediction.`);
+            }
+
+            if (data.soilMoisture > 70) {
+                recommendations.push('Soil moisture is high (>70%). Consider <strong>delaying irrigation</strong>.');
+            } else if (data.soilMoisture < 30) {
+                recommendations.push('Critical: Soil moisture below 30%. <strong>Immediate irrigation required</strong>.');
+            } else if (data.soilMoisture < 50) {
+                recommendations.push('Soil moisture moderate (30-50%). Plan irrigation soon.');
+            } else {
+                recommendations.push('Soil moisture optimal (50-70%).');
+            }
+
+            if (data.rainfall > 15) {
+                recommendations.push('Heavy rainfall detected (>15mm). <strong>Reduce or skip irrigation</strong>.');
+            } else if (data.rainfall > 5) {
+                recommendations.push('Light rain detected (>5mm). Consider reducing irrigation.');
+            }
+
+            return recommendations;
+        }
+
+
+        // --- Map Modal Logic ---
+        let mapInstance = null;
+        let mapMarker = null;
+        let selectedLat = null;
+        let selectedLon = null;
+
+        function openMapModal() {
+            const modal = document.getElementById('mapModal');
+            modal.classList.add('active');
+
+            // Initialize map if not already done, or if opened for first time
+            if (!mapInstance) {
+                // Default to current detected location or Malaysia Default
+                const initLat = userLat || DEFAULT_LAT;
+                const initLon = userLon || DEFAULT_LON;
+
+                mapInstance = L.map('mapSelect').setView([initLat, initLon], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(mapInstance);
+
+                mapMarker = L.marker([initLat, initLon], { draggable: true }).addTo(mapInstance);
+
+                selectedLat = initLat;
+                selectedLon = initLon;
+
+                // Update marker on drag
+                mapMarker.on('dragend', function (event) {
+                    const position = mapMarker.getLatLng();
+                    selectedLat = position.lat;
+                    selectedLon = position.lng;
+                    mapMarker.setLatLng(position, { draggable: true });
+                });
+
+                // Update marker on click
+                mapInstance.on('click', function (e) {
+                    selectedLat = e.latlng.lat;
+                    selectedLon = e.latlng.lng;
+                    mapMarker.setLatLng(e.latlng);
+                });
+            } else {
+                // If map exists, pan to current userLat/Lon if available
+                if (userLat && userLon) {
+                    mapInstance.setView([userLat, userLon], 15);
+                    mapMarker.setLatLng([userLat, userLon]);
+                    selectedLat = userLat;
+                    selectedLon = userLon;
+                }
+            }
+
+            // Fix for map rendering in hidden modal
+            setTimeout(() => {
+                mapInstance.invalidateSize();
+            }, 300);
+        }
+
+        function closeMapModal() {
+            const modal = document.getElementById('mapModal');
+            modal.classList.remove('active');
+        }
+
+        async function confirmMapLocation() {
+            if (selectedLat && selectedLon) {
+                userLat = selectedLat;
+                userLon = selectedLon;
+                userAccuracy = 5; // Manually selected = High accuracy
+
+                closeMapModal();
+
+                document.getElementById('locationInfo').textContent = '📍 Getting weather for selected location...';
+                document.getElementById('locationDisplay').textContent = 'Updating...';
+
+                await updateSensorDisplay();
+
+                // Add visual confirmation
+                document.getElementById('accuracyDisplay').innerHTML = 'Accuracy: Manual Selection (Exact)';
+                document.getElementById('accuracyDisplay').style.background = '#cff4fc';
+                document.getElementById('accuracyDisplay').style.color = '#055160';
+            }
+        }
+    </script>
+    <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
+
+    <!-- Professional UI JavaScript -->
+    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js?v=3\') }}"></script>
+
+    <!-- Professional Footer -->
+    <footer class="app-footer">
+        <div class="footer-simple">
+            <h3 class="footer-title">AquaWise</h3>
+            <p class="footer-tagline">Smart Irrigation System powered by Machine Learning</p>
+            <p class="footer-copyright">
+                © 2025 AquaWise | Version 1.0<br>
+                <span class="footer-developer">Built by Muhammad Faheem bin Haswanorrizam</span>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
