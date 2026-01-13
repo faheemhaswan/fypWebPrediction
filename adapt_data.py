@@ -9,12 +9,10 @@ from sklearn.metrics import mean_absolute_error, r2_score
 import pickle # Added for the next step: saving the model
 
 # --- Configuration ---
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_FILE = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
+INPUT_FILE = 'datasets/irrigation_dataset.csv'
 TARGET_VARIABLE = 'water_requirement_liters_per_hectare'
 RANDOM_STATE = 42
-MODEL_OUTPUT_FILE = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl') # File to save the trained model
+MODEL_OUTPUT_FILE = 'optimized_irrigation_model.pkl' # File to save the trained model
 # ---------------------
 
 print("### Starting Full Data Engineering and ML Pipeline ###")

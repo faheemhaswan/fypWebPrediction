@@ -11,10 +11,9 @@ import seaborn as sns
 print("3. Imported plotting libs", flush=True)
 
 OUTPUT_DIR = 'assets'
+OUTPUT_DIR = 'assets'
 OUTPUT_FILE = 'feature_importance.png'
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_FILE = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl')
+MODEL_FILE = 'optimized_irrigation_model.pkl'
 
 def generate_feature_importance():
     print("="*60, flush=True)

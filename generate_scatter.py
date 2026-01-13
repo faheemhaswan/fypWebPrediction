@@ -8,8 +8,9 @@ import os
 # Set style
 sns.set_theme(style="whitegrid")
 
+# Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIR = os.path.join(BASE_DIR, '../web/static/assets')
+OUTPUT_DIR = 'assets'
 OUTPUT_FILE = 'prediction_vs_actual.png'
 
 def generate_scatter_plot():
@@ -20,7 +21,7 @@ def generate_scatter_plot():
     # 1. Load Data (Same logic as verify_data.py)
     try:
         print(" Loading and preparing data...")
-        DATASET_PATH = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
+        DATASET_PATH = 'datasets/irrigation_dataset.csv'
         df = pd.read_csv(DATASET_PATH)
         
         # Handle double header or bad rows if present (like in heatmap generation)
@@ -80,7 +81,7 @@ def generate_scatter_plot():
     # 2. Load Model
     try:
         print(" Loading model...")
-        MODEL_PATH = os.path.join(BASE_DIR, 'models/optimized_irrigation_model.pkl')
+        MODEL_PATH = 'optimized_irrigation_model.pkl'
         with open(MODEL_PATH, 'rb') as f:
             model = pickle.load(f)
     except Exception as e:

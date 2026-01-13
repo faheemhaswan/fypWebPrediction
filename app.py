@@ -4,7 +4,7 @@ import pickle
 import pandas as pd
 import os
 
-app = Flask(__name__, template_folder='templates', static_folder='static')
+app = Flask(__name__, template_folder='.')
 # Strict CORS disabled for extensive dev compatibility
 CORS(app)
 
@@ -17,8 +17,7 @@ def after_request(response):
     return response
 
 # --- Load the trained model ---
-# Updated path relative to src/web/app.py
-MODEL_FILE = os.path.join(os.path.dirname(__file__), '../ml/models/optimized_irrigation_model.pkl')
+MODEL_FILE = 'optimized_irrigation_model.pkl'
 
 try:
     with open(MODEL_FILE, 'rb') as file:
@@ -138,9 +137,8 @@ SMTP_PASSWORD = "zyoo arad mwpd lekm".replace(" ", "")  # Sanitize spaces
 # Initialize Firebase Admin SDK
 try:
     if not firebase_admin._apps:
-        # Use the specific filename provided by the user, relative to this script
-        cred_path = os.path.join(os.path.dirname(__file__), "smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json")
-        cred = credentials.Certificate(cred_path)
+        # Use the specific filename provided by the user
+        cred = credentials.Certificate("smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json")
         firebase_admin.initialize_app(cred)
     print("✅ Firebase Admin SDK Initialized")
 except Exception as e:

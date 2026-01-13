@@ -10,9 +10,8 @@ sns.set_theme(style="white")
 
 # Configuration
 # Configuration
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
-OUTPUT_DIR = os.path.join(BASE_DIR, '../web/static/assets')
+DATASET_PATH = 'datasets/irrigation_dataset.csv'
+OUTPUT_DIR = 'assets'
 OUTPUT_FILE = 'correlation_heatmap.png'
 
 def generate_heatmap():

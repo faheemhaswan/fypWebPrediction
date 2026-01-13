@@ -25,9 +25,8 @@ print("🌾 SMART IRRIGATION - ML MODEL TRAINING")
 print("=" * 70)
 
 # Configuration
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
-MODEL_SAVE_PATH = os.path.join(BASE_DIR, 'models/model_advanced') # Save to models subdirectory
+DATASET_PATH = 'datasets/irrigation_dataset.csv'
+MODEL_SAVE_PATH = 'model_advanced' # <-- Save to a new folder
 RANDOM_SEED = 42
 
 # --- Step 1: Load Dataset ---

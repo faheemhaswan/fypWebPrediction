@@ -12,10 +12,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
+    <link rel="icon" type="image/png" href="assets/aquawise_logo.png">
 
     <!-- Professional UI System -->
-    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+    <link rel="stylesheet" href="assets/professional-ui.css">
 
     <style>
         * {
@@ -29,7 +29,7 @@
             /* Smooth transition start state */
             transition: opacity 0.5s ease-in-out;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            background: url('assets/background.png') no-repeat center center/cover;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -471,7 +471,7 @@
 <body>
     <div class="auth-container">
         <div class="logo-section">
-            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise - Smart Irrigation Prediction" class="logo-icon"
+            <img src="assets/aquawise_logo.png" alt="AquaWise - Smart Irrigation Prediction" class="logo-icon"
                 style="width: 220px; height: auto; display: block; margin: 0 auto;">
             <h1
                 style="margin-top: 15px; color: #1a1a1a; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 2.2em; letter-spacing: -0.5px;">
@@ -1255,7 +1255,7 @@
     </script>
 
     <!-- Professional UI JavaScript -->
-    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js\') }}"></script>
+    <script src="assets/professional-ui.js"></script>
 </body>
 
 </html>

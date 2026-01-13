@@ -11,8 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
-    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+    <link rel="icon" type="image/png" href="assets/aquawise_logo.png">
+    <link rel="stylesheet" href="assets/professional-ui.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -44,7 +44,7 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            background: url('assets/background.png') no-repeat center center/cover;
             background-attachment: fixed;
             min-height: 100vh;
             padding-bottom: 40px;
@@ -491,7 +491,7 @@
     </script>
     <nav class="navbar">
         <a href="dashboard.html" class="navbar-brand" style="cursor: pointer;">
-            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise Logo" class="logo-img">
+            <img src="assets/aquawise_logo.png" alt="AquaWise Logo" class="logo-img">
             <span>AquaWise</span>
         </a>
         <div class="navbar-actions" style="display: flex; align-items: center; gap: 15px;">
@@ -729,7 +729,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getDatabase, ref, onValue, remove, set, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-        import { getAuth, deleteUser } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getAuth, deleteUser, updateProfile } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYhoMMFuBz3f-T3RcaixPavO3QNTbL4TA",
@@ -748,7 +748,7 @@
 
         window.firebaseDatabase = database;
         window.firebaseAuth = auth;
-        window.firebaseModules = { ref, onValue, remove, set, get, deleteUser };
+        window.firebaseModules = { ref, onValue, remove, set, get, deleteUser, updateProfile };
         window.firebaseReady = true;
 
         console.log('✅ Firebase initialized for settings');
@@ -952,20 +952,52 @@
             }
         }
 
-        function updateProfile(event) {
+        async function updateProfile(event) {
             event.preventDefault();
             const newName = document.getElementById('displayName').value.trim();
+            const saveBtn = event.target.querySelector('button[type="submit"]');
 
             if (!newName) {
                 Toast.warning('Please enter a valid name');
                 return;
             }
 
-            sessionStorage.setItem('userName', newName);
-            localStorage.setItem('userName', newName);
+            if (!window.firebaseReady || !window.firebaseAuth.currentUser) {
+                console.error("Firebase not ready or user not logged in");
+                Toast.error("Connection error. Please try again.");
+                return;
+            }
 
-            displayUserInfo(newName, document.getElementById('email').value);
-            showSuccess('Profile updated successfully!');
+            try {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // 1. Update Firebase Auth Profile (Critical for persistent login name)
+                const { updateProfile: firebaseUpdateProfile, ref, set } = window.firebaseModules;
+                await firebaseUpdateProfile(window.firebaseAuth.currentUser, {
+                    displayName: newName
+                });
+
+                // 2. Update Realtime Database (for consistency)
+                const userId = window.firebaseAuth.currentUser.uid;
+                await set(ref(window.firebaseDatabase, 'users/' + userId + '/name'), newName);
+
+                // 3. Update Local Storage
+                sessionStorage.setItem('userName', newName);
+                localStorage.setItem('userName', newName);
+
+                // 4. Update UI
+                displayUserInfo(newName, document.getElementById('email').value);
+                showSuccess('Profile updated successfully!');
+                console.log('✅ Profile Name Updated Persistent to:', newName);
+
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                Toast.error("Failed to update profile: " + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            }
         }
 
         function showSuccess(message) {
@@ -1268,7 +1300,7 @@
         }
     </script>
     <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
-    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js\') }}"></script>
+    <script src="assets/professional-ui.js"></script>
 
     <!-- Professional Footer -->
     <footer class="app-footer">

@@ -12,14 +12,13 @@ import os
 
 # Configuration
 # Configuration
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, '../../data/datasets/irrigation_dataset.csv')
-RESULTS_FILE = os.path.join(BASE_DIR, '../../logs/model_comparison_results.txt')
-PLOT_FILE = os.path.join(BASE_DIR, '../web/static/assets/model_comparison.png')
+DATASET_PATH = 'datasets/irrigation_dataset.csv'
+RESULTS_FILE = 'model_comparison_results.txt'
+PLOT_FILE = 'assets/model_comparison.png'
 RANDOM_SEED = 42
 
 # Ensure assets directory exists
-# os.makedirs('assets', exist_ok=True) # Managed by static folder now
+os.makedirs('assets', exist_ok=True)
 
 print("=" * 70, flush=True)
 print(" MODEL PERFORMANCE COMPARISON", flush=True)

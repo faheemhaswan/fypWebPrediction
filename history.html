@@ -11,8 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}">
-    <link rel="stylesheet" href="{{ url_for(\'static\', filename=\'assets/professional-ui.css\') }}">
+    <link rel="icon" type="image/png" href="assets/aquawise_logo.png">
+    <link rel="stylesheet" href="assets/professional-ui.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -43,7 +43,7 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: url('{{ url_for('static', filename='assets/background.png') }}') no-repeat center center/cover;
+            background: url('assets/background.png') no-repeat center center/cover;
             background-attachment: fixed;
             min-height: 100vh;
             padding-bottom: 40px;
@@ -636,7 +636,7 @@
     <!-- Navbar -->
     <nav class="navbar">
         <a href="dashboard.html" class="navbar-brand">
-            <img src="{{ url_for(\'static\', filename=\'assets/aquawise_logo.png\') }}" alt="AquaWise" style="height: 40px;">
+            <img src="assets/aquawise_logo.png" alt="AquaWise" style="height: 40px;">
             <span>AquaWise</span>
         </a>
         <div class="navbar-actions" style="display: flex; align-items: center; gap: 15px;">
@@ -1019,7 +1019,7 @@
         window.handleLogout = handleLogout;
     </script>
     <script>window.addEventListener('load', () => document.body.style.opacity = '1');</script>
-    <script src="{{ url_for(\'static\', filename=\'assets/professional-ui.js\') }}"></script>
+    <script src="assets/professional-ui.js"></script>
 
     <!-- Professional Footer -->
     <footer class="app-footer">
