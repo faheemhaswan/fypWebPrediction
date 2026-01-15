@@ -272,6 +272,7 @@ smart_irrigation_project/
 │   └── adapted_data.csv
 │
 ├── model_advanced/                 # ML model files
+├── retrain_model.py                # Script to retrain/fix model locally
 │
 └── venv/                          # Virtual environment
 ```
@@ -309,13 +310,19 @@ const DEFAULT_LON = 101.2570; // Your longitude
 - **Features:** Temperature, Humidity, Rainfall, Soil Moisture, Crop Type, Growth Stage
 - **Output:** Water requirement in liters per hectare
 
-### Model Training
-To retrain the model:
+### Model Training / Retraining
+If you encounter version compatibility issues or want to retrain the model locally:
 ```bash
-python train_model_advanced.py
+python retrain_model.py
 ```
 
-The trained model is saved as `optimized_irrigation_model.pkl`
+This script will:
+1. Load the dataset
+2. Apply necessary scaling (to match Rule-Based units)
+3. Train a Random Forest model compatible with your local scikit-learn version
+4. Save the new `optimized_irrigation_model.pkl`
+
+The trained model is saved as `optimized_irrigation_model.pkl`.
 
 ---
 
@@ -362,7 +369,14 @@ The trained model is saved as `optimized_irrigation_model.pkl`
 ### Model prediction errors
 - Ensure `optimized_irrigation_model.pkl` exists
 - Check all input fields are filled correctly
+- Observe if the file size is ~1.7MB (if much smaller, retraining might be needed)
 - Verify numeric values are within valid ranges
+
+### "InconsistentVersionWarning" or Model Crash
+If the server crashes with a scikit-learn version mismatch error:
+1. Stop the server
+2. Run `python retrain_model.py`
+3. Restart the server
 
 ---
 
