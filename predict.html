@@ -201,7 +201,7 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: url('assets/background.png') no-repeat center center/cover;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364), url('assets/background.png') no-repeat center center/cover;
             background-attachment: fixed;
             min-height: 100vh;
             padding-bottom: 40px;
@@ -373,6 +373,36 @@
             display: grid;
             grid-template-columns: 1fr 1.2fr;
             gap: 30px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                /* Stack columns on mobile */
+                gap: 20px;
+            }
+
+            .glass-card {
+                padding: 20px;
+                /* Reduce padding on mobile */
+            }
+
+            .header-content h1 {
+                font-size: 2em;
+                /* Smaller title */
+            }
+
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .user-profile {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
 
         .glass-card {
@@ -970,7 +1000,8 @@
 
     <script>
         // --- Configuration ---
-        const FLASK_API_URL = 'http://localhost:5000/predict';
+        // Use relative path for production compatibility (Works on localhost AND Render)
+        const FLASK_API_URL = '/predict';
         const WEATHER_API_KEY = '7941d1d68e6c2211e4eac4a66bab0097';
 
         const CROP_BASE_VALUES = {
