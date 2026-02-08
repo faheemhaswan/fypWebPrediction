@@ -55,6 +55,21 @@ def settings():
 def weather():
     return render_template('weather.html')
 
+# --- STATIC FILE SERVING (Fix for Render/Production) ---
+from flask import send_from_directory
+
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory('assets', filename)
+
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory('css', filename)
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory('js', filename)
+
 # --- Route: Handle prediction requests ---
 @app.route('/predict', methods=['POST'])
 def predict():
