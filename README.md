@@ -10,6 +10,7 @@
 [![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-Admin-orange.svg)](https://firebase.google.com/)
 [![Machine Learning](https://img.shields.io/badge/ML-Scikit--Learn-red.svg)](https://scikit-learn.org/)
+[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
 
 [Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots)
 
@@ -22,102 +23,96 @@
 **AquaWise** is an intelligent irrigation management system that leverages machine learning to predict optimal water usage for agricultural crops. By analyzing environmental factors such as temperature, humidity, rainfall, and soil moisture, AquaWise helps farmers make data-driven irrigation decisions, conserve water, and maximize crop yield.
 
 ### 🎯 Problem Statement
-- Water scarcity affecting agricultural productivity
-- Manual irrigation leading to water wastage
-- Lack of data-driven decision making in farming
-- Difficulty predicting optimal irrigation schedules
+- **Water Scarcity:** Increasing demand and limited supply affect agricultural productivity.
+- **Inefficient Practices:** Manual irrigation often leads to over-watering or under-watering.
+- **Lack of Data:** Farmers struggle to make informed decisions without real-time environmental insights.
+- **Planning Challenges:** Difficulty in predicting optimal irrigation schedules based on future weather.
 
 ### 💡 Solution
-AquaWise provides:
-- **AI-powered water usage predictions** based on real-time environmental data
-- **Smart irrigation recommendations** tailored to crop types and weather conditions
-- **Historical tracking** of irrigation patterns and water consumption
-- **Weather forecasting integration** for proactive irrigation planning
+AquaWise provides a comprehensive solution:
+- **AI-Powered Predictions:** Utilizes a Random Forest Regressor model to calculate precise water requirements.
+- **Smart Recommendations:** Tailored advice based on specific crop types and growth stages.
+- **Historical Analytics:** Tracks irrigation patterns and water consumption over time.
+- **Integrated Weather Forecasts:** 5-day weather data to support proactive planning.
+- **User-Centric Design:** Modern, responsive interface with intuitive dashboards.
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication & Security
-- **Firebase Authentication** - Secure user registration and login
-- **OTP Email Verification** - Two-factor authentication for password reset
-- **Session Management** - Secure user sessions with auto-logout
+### 🔐 Robust Authentication
+- **Secure Login/Signup:** Firebase Authentication ensures user data privacy.
+- **Email Verification:** Two-factor authentication for password resets via SMTP OTP.
+- **Session Management:** Secure, persistent user sessions with auto-logout.
 
-### 🌾 Smart Predictions
-- **ML-Based Water Prediction** - Scikit-learn Random Forest model
-- **Multi-Factor Analysis** - Temperature, humidity, rainfall, soil moisture, crop type
-- **Real-Time Calculations** - Instant water usage predictions per hectare
-- **Irrigation Recommendations** - AI-generated advice based on current conditions
+### 🌾 Intelligent Predictions
+- **ML Engine:** Scikit-learn Random Forest model trained on agricultural datasets.
+- **Multi-Factor Analysis:** Considers temperature, humidity, rainfall, soil moisture, crop type, and field size.
+- **Real-Time Calculation:** Instant water usage predictions in liters per hectare.
+- **Actionable Advice:** AI-generated recommendations for optimal irrigation strategies.
 
-### 📊 Dashboard & Analytics
-- **Comprehensive Dashboard** - Real-time overview of system status
-- **Historical Data Tracking** - View past predictions and irrigation patterns
-- **Visual Analytics** - Charts and graphs for data visualization
-- **Comparison Metrics** - Analyze water usage trends over time
+### 📊 comprehensive Analytics Dashboard
+- **Visual Overview:** Real-time system status and key metrics at a glance.
+- **Historical Data:** detailed records of past predictions and irrigation activities.
+- **Trend Analysis:** Charts and graphs to visualize water usage patterns.
+- **Efficiency Metrics:** Comparative analysis of actual vs. predicted water usage.
 
 ### 🌤️ Weather Integration
-- **OpenWeatherMap API** - Real-time weather data
-- **5-Day Forecasts** - Plan irrigation schedules in advance
-- **Location-Based** - GPS or manual location selection
-- **Smart Recommendations** - Weather-aware irrigation advice
+- **Real-Time Data:** Integration with OpenWeatherMap API for current conditions.
+- **5-Day Forecast:** Detailed weather predictions to aid longer-term planning.
+- **Location Awareness:** Automatic or manual location selection for precise weather data.
+- **Smart Alerts:** Weather-based notifications for rainfall or extreme conditions.
 
 ### ⚙️ User Management
-- **Profile Management** - Update user information
-- **Settings Dashboard** - Customize application preferences
-- **Account Statistics** - Track usage and activity
-- **Password Reset** - Secure password recovery with OTP
+- **Profile Customization:** Update personal details and display preferences.
+- **Settings Dashboard:** Configure default crop types, field sizes, and notification preferences.
+- **Data Management:** Tools to export history or reset account data.
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **HTML5** - Semantic markup structure
-- **CSS3** - Modern styling with animations and gradients
-- **JavaScript (ES6+)** - Interactive user interface
-- **Font Awesome** - Icon library
-- **Google Fonts (Outfit)** - Typography
+- **HTML5 & CSS3:** Semantic structure with modern, responsive styling using custom CSS variables and glassmorphism effects.
+- **JavaScript (ES6+):** Dynamic client-side logic for interactivity and API communication.
+- **Font Awesome:** Comprehensive icon library for visual enhancement.
+- **Google Fonts:** 'Outfit' and 'Plus Jakarta Sans' for professional typography.
 
 ### Backend
-- **Python 3.9+** - Core programming language
-- **Flask** - Web framework and REST API
-- **Flask-CORS** - Cross-Origin Resource Sharing
+- **Python 3.9+:** Robust server-side logic and ML integration.
+- **Flask:** Lightweight and efficient web framework for the RESTful API.
+- **Flask-CORS:** Handling Cross-Origin Resource Sharing for secure frontend-backend communication.
 
 ### Machine Learning
-- **Scikit-learn** - Random Forest Regressor model
-- **Pandas** - Data manipulation and analysis
-- **NumPy** - Numerical computing
-- **Pickle** - Model serialization
+- **Scikit-learn:** Implementation of the Random Forest Regressor algorithm.
+- **Pandas & NumPy:** Efficient data manipulation and numerical analysis.
+- **Pickle:** Model serialization for deployment.
 
-### Database & Authentication
-- **Firebase Admin SDK** - User authentication and management
-- **Firebase Auth** - Secure authentication service
-
-### APIs & Services
-- **OpenWeatherMap API** - Weather data and forecasts
-- **SMTP (Gmail)** - Email service for OTP delivery
+### Database & Services
+- **Firebase:** Real-time database and secure user authentication.
+- **OpenWeatherMap API:** Third-party service for accurate weather data.
+- **SMTP (Gmail):** Email service for OTP delivery and notifications.
 
 ### Development Tools
-- **Git** - Version control
-- **VS Code** - Code editor
-- **Chrome DevTools** - Debugging and testing
+- **Git:** Version control system.
+- **VS Code:** Integrated Development Environment.
 
 ---
 
 ## 📋 Prerequisites
 
-Before installation, ensure you have:
+Before setting up the project, ensure you have the following installed:
 
-- **Python 3.9 or higher** - [Download](https://www.python.org/downloads/)
-- **pip** - Python package manager (included with Python)
-- **Git** - [Download](https://git-scm.com/downloads)
-- **Firebase Account** - [Create](https://firebase.google.com/)
-- **OpenWeatherMap API Key** - [Get Free Key](https://openweathermap.org/api)
-- **Gmail Account** - For SMTP email service
+- **Python 3.9 or higher:** [Download Python](https://www.python.org/downloads/)
+- **pip:** Python package manager (included with Python).
+- **Git:** [Download Git](https://git-scm.com/downloads)
+- **Firebase Account:** A valid Firebase project configuration.
+- **OpenWeatherMap API Key:** A free API key for weather data.
+- **Gmail Account:** An App Password for SMTP functionality.
 
 ---
 
-## 🚀 Installation
+## 🚀 Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -125,15 +120,16 @@ git clone https://github.com/faheemhaswan/fypWebPrediction.git
 cd smart_irrigation_project
 ```
 
-### 2. Set Up Python Virtual Environment
+### 2. Set Up Virtual Environment
+It is recommended to use a virtual environment to manage dependencies.
+**Windows:**
 ```bash
-# Create virtual environment
 python -m venv venv
-
-# Activate virtual environment
-# Windows:
 venv\Scripts\activate
-# macOS/Linux:
+```
+**macOS/Linux:**
+```bash
+python3 -m venv venv
 source venv/bin/activate
 ```
 
@@ -143,27 +139,24 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configure Firebase
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create a new project or select existing
-3. Generate Firebase Admin SDK private key:
-   - Project Settings → Service Accounts → Generate New Private Key
-4. Save the JSON file as `smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json`
-5. Place in project root directory
+1.  Go to the [Firebase Console](https://console.firebase.google.com/).
+2.  Create a project or select an existing one.
+3.  Navigate to **Project Settings > Service Accounts**.
+4.  Click **Generate New Private Key**.
+5.  Rename the downloaded JSON file to `smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json` and place it in the project root.
 
 ### 5. Configure Environment Variables
-Create a `.env` file in the project root (optional, or use direct configuration):
-```env
-GMAIL_USER=your-email@gmail.com
-GMAIL_APP_PASSWORD=your-16-digit-app-password
-WEATHER_API_KEY=your-openweathermap-api-key
+Create a `.env` file or update the configuration directly in `app.py`:
+```python
+# app.py settings
+SMTP_SERVER = 'smtp.gmail.com'
+SMTP_PORT = 587
+SENDER_EMAIL = 'your-email@gmail.com'
+SENDER_PASSWORD = 'your-app-password'
 ```
 
-**Note:** For Gmail SMTP, you need to:
-1. Enable 2-Factor Authentication on your Google Account
-2. Generate an App Password: [Google Account Security](https://myaccount.google.com/security)
-
-### 6. Update API Configuration
-In `weather.html`, update line 752:
+### 6. Update API Keys
+In `weather.html` (and other relevant files), update the API key:
 ```javascript
 const WEATHER_API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
 ```
@@ -172,77 +165,40 @@ const WEATHER_API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
 
 ## 💻 Usage
 
-### Starting the Backend Server
+### Starting the Application
 
-#### Option 1: Using Batch File (Windows)
+#### Option 1: Quick Start (Windows)
+Run the provided batch script:
 ```bash
 .\run_backend.bat
 ```
 
 #### Option 2: Manual Start
-```bash
-# Activate virtual environment first
-venv\Scripts\activate
+1.  Activate your virtual environment.
+2.  Run the Flask server:
+    ```bash
+    python app.py
+    ```
+3.  The backend API will start at `http://localhost:5000`.
 
-# Run Flask server
-python app.py
-```
-
-The server will start at `http://localhost:5000`
-
-**Keep this terminal window open** while using the application.
-
-### Opening the Frontend
-
-1. Navigate to the project directory
-2. Open `index.html` in your web browser
-3. Or use a local server (recommended):
-   ```bash
-   # Python 3
-   python -m http.server 8000
-   ```
-   Then visit `http://localhost:8000`
-
-### First-Time Setup
-
-1. **Create Account**
-   - Click "Sign Up" on the login page
-   - Enter email and password (min 6 characters)
-   - Agree to terms and conditions
-
-2. **Login**
-   - Use your registered email and password
-   - Check "Remember Me" for persistent login
-
-3. **Make Your First Prediction**
-   - Go to "Predict" page
-   - Enter crop details (type, area, soil moisture, etc.)
-   - Click "Get Prediction"
-   - View AI-generated water usage recommendation
+### Accessing the Interface
+1.  For the best experience, use a local web server for the frontend files.
+    ```bash
+    python -m http.server 8000
+    ```
+2.  Open your browser and navigate to `http://localhost:8000`.
+3.  Log in or sign up to start using AquaWise.
 
 ---
 
 ## 📸 Screenshots
 
-### Login & Authentication
-![Login Page](screenshots/login.png)
-*Secure login with modern UI*
+*(Screenshots to be added here)*
 
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-*Real-time overview of irrigation system*
-
-### Water Prediction
-![Prediction](screenshots/prediction.png)
-*AI-powered water usage calculations*
-
-### Weather Forecast
-![Weather](screenshots/weather.png)
-*5-day weather forecast with irrigation recommendations*
-
-### History Tracking
-![History](screenshots/history.png)
-*Track past predictions and irrigation patterns*
+- **Login Page:** Secure access point.
+- **Dashboard:** Central hub for all activities.
+- **Prediction Tool:** Input parameters and get results.
+- **Weather Forecast:** Upcoming weather conditions.
 
 ---
 
@@ -250,158 +206,64 @@ The server will start at `http://localhost:5000`
 
 ```
 smart_irrigation_project/
-├── app.py                          # Flask backend API
-├── run_backend.bat                 # Backend startup script
-├── requirements.txt                # Python dependencies
-├── optimized_irrigation_model.pkl  # Trained ML model
-├── smart-irrigation-system-*.json  # Firebase credentials
+├── app.py                          # Main Flask application and API routes
+├── run_backend.bat                 # Windows startup script
+├── requirements.txt                # Python package dependencies
+├── optimized_irrigation_model.pkl  # Trained Random Forest model
+├── smart-irrigation-system-*.json  # Firebase Admin SDK credentials
 │
-├── index.html                      # Login/Signup page
-├── dashboard.html                  # Main dashboard
-├── predict.html                    # Water prediction interface
-├── history.html                    # Prediction history
-├── weather.html                    # Weather forecast
-├── settings.html                   # User settings
+├── index.html                      # Landing page (Login/Signup)
+├── dashboard.html                  # User Dashboard
+├── predict.html                    # Prediction Interface
+├── history.html                    # Prediction History & Analytics
+├── weather.html                    # Weather Forecast Page
+├── settings.html                   # User Settings & Profile
+├── 404.html                        # Error Page
 │
-├── assets/                         # Images and logos
+├── css/                            # Stylesheets
+│   └── style.css
+├── assets/                         # Images, icons, and static assets
 │   ├── aquawise_logo.png
-│   └── background.png
+│   ├── background.png
+│   └── professional-ui.css         # Shared UI styles
 │
-├── datasets/                       # Training data
+├── datasets/                       # Data used for training and testing
 │   ├── irrigation_dataset.csv
 │   └── adapted_data.csv
 │
-├── model_advanced/                 # ML model files
-├── retrain_model.py                # Script to retrain/fix model locally
-│
-└── venv/                          # Virtual environment
+├── model_advanced/                 # Advanced model training scripts and artifacts
+├── retrain_model.py                # Utility script for model retraining
+└── venv/                           # Python Virtual Environment
 ```
 
 ---
 
-## 🔧 Configuration
+## 🔧 Maintenance
 
-### Email SMTP Settings
-In `app.py`, update lines 120-125:
-```python
-SMTP_SERVER = 'smtp.gmail.com'
-SMTP_PORT = 587
-SENDER_EMAIL = 'your-email@gmail.com'
-SENDER_PASSWORD = 'your-16-digit-app-password'
-```
+### Retraining the Model
+If you need to update the model with new data or fix compatibility issues:
+1.  Ensure your dataset is in the `datasets/` folder.
+2.  Run the retraining script:
+    ```bash
+    python retrain_model.py
+    ```
+3.  The `optimized_irrigation_model.pkl` file will be updated.
 
-### Weather API
-Update `WEATHER_API_KEY` in `weather.html` (line 752)
-
-### Default Location
-In `weather.html`, modify lines 753-754:
-```javascript
-const DEFAULT_LAT = 4.1996;  // Your latitude
-const DEFAULT_LON = 101.2570; // Your longitude
-```
-
----
-
-## 🤖 Machine Learning Model
-
-### Model Details
-- **Algorithm:** Random Forest Regressor
-- **Training Data:** Historical irrigation data from agricultural studies
-- **Features:** Temperature, Humidity, Rainfall, Soil Moisture, Crop Type, Growth Stage
-- **Output:** Water requirement in liters per hectare
-
-### Model Training / Retraining
-If you encounter version compatibility issues or want to retrain the model locally:
-```bash
-python retrain_model.py
-```
-
-This script will:
-1. Load the dataset
-2. Apply necessary scaling (to match Rule-Based units)
-3. Train a Random Forest model compatible with your local scikit-learn version
-4. Save the new `optimized_irrigation_model.pkl`
-
-The trained model is saved as `optimized_irrigation_model.pkl`.
-
----
-
-## 🌐 API Endpoints
-
-### Authentication
-- `POST /api/send-otp` - Send OTP to email
-- `POST /api/verify-otp` - Verify OTP code
-- `POST /api/reset-password` - Reset user password
-
-### Predictions
-- `POST /api/predict` - Get water usage prediction
-  ```json
-  {
-    "temperature": 28.5,
-    "humidity": 65.0,
-    "rainfall": 10.0,
-    "soil_moisture": 45.0,
-    "crop_type": "Rice",
-    "growth_stage": "Vegetative",
-    "area": 2.5
-  }
-  ```
-
----
-
-## 🐛 Troubleshooting
-
-### Backend won't start
-- Ensure virtual environment is activated
-- Check Firebase credentials file exists
-- Verify all dependencies installed: `pip install -r requirements.txt`
-
-### Email OTP not sending
-- Check Gmail App Password is correct (16 digits, no spaces)
-- Ensure 2FA is enabled on Google Account
-- Verify SMTP settings in `app.py`
-
-### Weather data not loading
-- Verify OpenWeatherMap API key is valid
-- Check internet connection
-- Ensure API key is correctly set in `weather.html`
-
-### Model prediction errors
-- Ensure `optimized_irrigation_model.pkl` exists
-- Check all input fields are filled correctly
-- Observe if the file size is ~1.7MB (if much smaller, retraining might be needed)
-- Verify numeric values are within valid ranges
-
-### "InconsistentVersionWarning" or Model Crash
-If the server crashes with a scikit-learn version mismatch error:
-1. Stop the server
-2. Run `python retrain_model.py`
-3. Restart the server
-
----
-
-## 📝 Future Enhancements
-
-- [ ] Mobile application (iOS/Android)
-- [ ] IoT sensor integration for real-time soil moisture
-- [ ] Multi-language support
-- [ ] Advanced analytics dashboard
-- [ ] Automated irrigation scheduling
-- [ ] SMS/WhatsApp notifications
-- [ ] Crop disease detection
-- [ ] Integration with smart irrigation controllers
+### Troubleshooting
+-   **Server Errors:** Check the terminal output for Python tracebacks.
+-   **API Issues:** Verify your network connection and API keys.
+-   **Database:** Ensure your Firebase security rules allow read/write access as configured.
 
 ---
 
 ## 👥 Contributing
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome!
+1.  Fork the project.
+2.  Create your feature branch (`git checkout -b feature/NewFeature`).
+3.  Commit your changes (`git commit -m 'Add some NewFeature'`).
+4.  Push to the branch (`git push origin feature/NewFeature`).
+5.  Open a Pull Request.
 
 ---
 
@@ -411,30 +273,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
-
-- **OpenWeatherMap** - Weather data API
-- **Firebase** - Authentication services
-- **Scikit-learn** - Machine learning framework
-- **Font Awesome** - Icon library
-- **Google Fonts** - Typography
-
----
-
 ## 📞 Contact
 
-**Faheem Haswan**
-- GitHub: [@faheemhaswan](https://github.com/faheemhaswan)
-- Email: faheem.hswn@gmail.com
+**Muhammad Faheem Bin Haswanorrizam**
+-   **Student ID:** CDCS2306B
+-   **Course:** CSP650
+-   **GitHub:** [@faheemhaswan](https://github.com/faheemhaswan)
+-   **Email:** faheem.hswn@gmail.com
 
 **Project Link:** [https://github.com/faheemhaswan/fypWebPrediction](https://github.com/faheemhaswan/fypWebPrediction)
-
----
-
-<div align="center">
-
-**MUHAMMAD FAHEEM BIN HASWANORRIZAM**
-CDCS2306B
-CSP650
-
-</div>
