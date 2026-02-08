@@ -43,6 +43,10 @@ def index():
 def dashboard():
     return render_template('dashboard.html')
 
+@app.route('/predict.html')
+def predict_page():
+    return render_template('predict.html')
+
 @app.route('/history.html')
 def history():
     return render_template('history.html')
