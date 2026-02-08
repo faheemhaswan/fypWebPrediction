@@ -1000,8 +1000,8 @@
 
     <script>
         // --- Configuration ---
-        // Use relative path for production compatibility (Works on localhost AND Render)
-        const FLASK_API_URL = '/predict';
+        // Construct absolute URL dynamically to prevent mobile path issues
+        const FLASK_API_URL = window.location.origin + '/predict';
         const WEATHER_API_KEY = '7941d1d68e6c2211e4eac4a66bab0097';
 
         const CROP_BASE_VALUES = {
@@ -1402,7 +1402,10 @@
 
                 const response = await fetch(FLASK_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(data)
                 });
 
