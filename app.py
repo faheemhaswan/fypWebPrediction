@@ -137,8 +137,18 @@ SMTP_PASSWORD = "zyoo arad mwpd lekm".replace(" ", "")  # Sanitize spaces
 # Initialize Firebase Admin SDK
 try:
     if not firebase_admin._apps:
-        # Use the specific filename provided by the user
-        cred = credentials.Certificate("smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json")
+        # Check for environment variable first (Best for Render/Cloud)
+        firebase_creds_env = os.environ.get('FIREBASE_CREDENTIALS')
+        
+        if firebase_creds_env:
+            # Load from JSON string in environment variable
+            import json
+            cred_dict = json.loads(firebase_creds_env)
+            cred = credentials.Certificate(cred_dict)
+        else:
+            # Fallback to local file (Development)
+            cred = credentials.Certificate("smart-irrigation-system-3a5ff-firebase-adminsdk-fbsvc-9a698da30d.json")
+            
         firebase_admin.initialize_app(cred)
     print("✅ Firebase Admin SDK Initialized")
 except Exception as e:
